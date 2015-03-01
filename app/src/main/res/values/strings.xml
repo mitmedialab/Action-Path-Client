@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ActionPath</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+
+    <string-array name="city_array">
+        <item>Boston</item>
+        <item>Cambridge</item>
+        <item>Somerville</item>
+        <item>Top</item>
+        <item>Ten?</item>
+        <item>From</item>
+        <item>Current</item>
+        <item>Location</item>
+    </string-array>
+</resources>
