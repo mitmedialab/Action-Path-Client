@@ -6,7 +6,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 
 public class Notification extends ActionBarActivity{
@@ -17,7 +18,17 @@ public class Notification extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
+        Button loginBtn = (Button) findViewById(R.id.respond_issue);
+        loginBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Notification.this, Response.class);
+                startActivity(intent);
+            }
+        });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

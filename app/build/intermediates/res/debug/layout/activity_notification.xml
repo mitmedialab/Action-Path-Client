@@ -15,6 +15,15 @@
         android:layout_marginBottom="39dp"
         android:layout_above="@+id/textView3" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Is this still a problem?"
+        android:id="@+id/textView3"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -33,13 +42,5 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_marginBottom="154dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Is this still a problem?"
-        android:id="@+id/textView3"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
 </RelativeLayout>
 <!-- From: file:/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/src/main/res/layout/activity_notification.xml -->

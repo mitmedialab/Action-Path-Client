@@ -27,7 +27,7 @@ MERGED from com.android.support:support-v4:21.0.3:16:5
 		ADDED from AndroidManifest.xml:7:9
 	android:theme
 		ADDED from AndroidManifest.xml:9:9
-activity#com.example.kimberlyleon1.actionpath.Notification
+activity#com.example.kimberlyleon1.actionpath.AlertTest
 ADDED from AndroidManifest.xml:10:9
 	android:label
 		ADDED from AndroidManifest.xml:12:13
@@ -43,6 +43,24 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:16:17
 	android:name
 		ADDED from AndroidManifest.xml:16:27
+activity#com.example.kimberlyleon1.actionpath.Response
+ADDED from AndroidManifest.xml:19:9
+	android:label
+		ADDED from AndroidManifest.xml:21:13
+	android:name
+		ADDED from AndroidManifest.xml:20:13
+intent-filter#android.intent.action.MAIN+android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:22:13
+category#android.intent.category.DEFAULT
+ADDED from AndroidManifest.xml:24:17
+	android:name
+		ADDED from AndroidManifest.xml:24:27
+activity#com.example.kimberlyleon1.actionpath.Notification
+ADDED from AndroidManifest.xml:27:9
+	android:label
+		ADDED from AndroidManifest.xml:29:13
+	android:name
+		ADDED from AndroidManifest.xml:28:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:21.0.3:15:5

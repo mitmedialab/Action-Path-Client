@@ -439,11 +439,12 @@ int id action_menu_presenter 0x7f090003
 int id action_mode_bar 0x7f09003f
 int id action_mode_bar_stub 0x7f09003e
 int id action_mode_close_button 0x7f090031
-int id action_settings 0x7f090060
+int id action_settings 0x7f090062
 int id activity_chooser_view_content 0x7f090032
 int id always 0x7f090019
 int id beginning 0x7f090013
 int id book_now 0x7f090029
+int id button 0x7f090061
 int id button3 0x7f09005f
 int id button4 0x7f09005b
 int id button5 0x7f09005c
@@ -513,6 +514,7 @@ int id strict_sandbox 0x7f090025
 int id submit_area 0x7f09004d
 int id tabMode 0x7f09000b
 int id terrain 0x7f090018
+int id text 0x7f090060
 int id textView 0x7f09005d
 int id textView2 0x7f090050
 int id textView3 0x7f090051
@@ -551,7 +553,8 @@ int layout abc_simple_dropdown_hint 0x7f030016
 int layout activity_notification 0x7f030017
 int layout activity_response 0x7f030018
 int layout activity_signup 0x7f030019
-int layout support_simple_spinner_dropdown_item 0x7f03001a
+int layout alert 0x7f03001a
+int layout support_simple_spinner_dropdown_item 0x7f03001b
 int menu menu_notification 0x7f0d0000
 int string abc_action_bar_home_description 0x7f0b0000
 int string abc_action_bar_home_description_format 0x7f0b0001

@@ -9,6 +9,27 @@
         <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/internal_impl-21.0.3-8f865f15679c2d1db08c240bb1e9623e95070f5a.jar" />
     </item>
     <item
+        jar="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.1.71/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="0f6d5c1ef2e982c3b7858408e3df389cf5d202da">
+        <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/classes-d72f2fe4455de3696f1b7073672ed29801d798af.jar" />
+    </item>
+    <item
+        jar="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
+        <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/classes-affbf7716f6a27cf49a31ced8902c8686e909ec9.jar" />
+    </item>
+    <item
+        jar="/Users/kimberlyleon1/.gradle/caches/modules-2/files-2.1/net.sf.opencsv/opencsv/2.3/c23708cdb9e80a144db433e23344a788a1fd6599/opencsv-2.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c23708cdb9e80a144db433e23344a788a1fd6599">
+        <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/opencsv-2.3-3a992d81ac1719e02c5d5249bd8741412f2209a2.jar" />
+    </item>
+    <item
         jar="/Users/kimberlyleon1/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar"
         jumboMode="false"
         revision="21.1.2"
@@ -21,13 +42,6 @@
         revision="21.1.2"
         sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
         <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/classes-8dcc2f795214e78c30caa3b2278f51eee2426b77.jar" />
-    </item>
-    <item
-        jar="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.3/classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="/Users/kimberlyleon1/AndroidStudioProjects/ActionPath/app/build/intermediates/pre-dexed/debug/classes-affbf7716f6a27cf49a31ced8902c8686e909ec9.jar" />
     </item>
 
 </items>

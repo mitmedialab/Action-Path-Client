@@ -1663,11 +1663,12 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09003f;
         public static final int action_mode_bar_stub=0x7f09003e;
         public static final int action_mode_close_button=0x7f090031;
-        public static final int action_settings=0x7f090060;
+        public static final int action_settings=0x7f090062;
         public static final int activity_chooser_view_content=0x7f090032;
         public static final int always=0x7f090019;
         public static final int beginning=0x7f090013;
         public static final int book_now=0x7f090029;
+        public static final int button=0x7f090061;
         public static final int button3=0x7f09005f;
         public static final int button4=0x7f09005b;
         public static final int button5=0x7f09005c;
@@ -1737,6 +1738,7 @@ containing a value of this type.
         public static final int submit_area=0x7f09004d;
         public static final int tabMode=0x7f09000b;
         public static final int terrain=0x7f090018;
+        public static final int text=0x7f090060;
         public static final int textView=0x7f09005d;
         public static final int textView2=0x7f090050;
         public static final int textView3=0x7f090051;
@@ -1779,7 +1781,8 @@ containing a value of this type.
         public static final int activity_notification=0x7f030017;
         public static final int activity_response=0x7f030018;
         public static final int activity_signup=0x7f030019;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001a;
+        public static final int alert=0x7f03001a;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
     }
     public static final class menu {
         public static final int menu_notification=0x7f0d0000;
