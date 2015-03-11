@@ -71,6 +71,14 @@ ADDED from AndroidManifest.xml:28:9
 		ADDED from AndroidManifest.xml:30:13
 	android:name
 		ADDED from AndroidManifest.xml:29:13
+service#com.example.kimberlyleon1.actionpath.GeofencingReceiver
+ADDED from AndroidManifest.xml:36:9
+	android:label
+		ADDED from AndroidManifest.xml:39:13
+	android:exported
+		ADDED from AndroidManifest.xml:38:13
+	android:name
+		ADDED from AndroidManifest.xml:37:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:21.0.3:15:5

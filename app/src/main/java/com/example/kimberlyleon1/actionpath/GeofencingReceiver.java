@@ -36,7 +36,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 // go to a new activity of the app
-                Intent positveActivity = new Intent(getApplicationContext(),
+                Intent positveActivity = new Intent(GeofencingReceiver.this,
                         Response.class);
                 startActivity(positveActivity);
             }
@@ -46,7 +46,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
             public void onClick(DialogInterface dialog,int id) {
                 // cancel the alert box and put a Toast to the user
                 dialog.cancel();
-                Toast.makeText(getApplicationContext(), "You chose a to ignore the alert",
+                Toast.makeText(GeofencingReceiver.this, "You chose a to ignore the alert",
                         Toast.LENGTH_LONG).show();
             }
         });

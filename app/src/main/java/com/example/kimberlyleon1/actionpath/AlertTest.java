@@ -63,7 +63,6 @@ public class AlertTest extends Activity {
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AlertTest.this);
 
-
         alertDialogBuilder.setTitle("Title of notification Nearby");
 
         alertDialogBuilder.setMessage("Short description of notification\n\nWould you like to respond?");
@@ -71,7 +70,7 @@ public class AlertTest extends Activity {
         alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {
                 // go to a new activity of the app
-                Intent positveActivity = new Intent(getApplicationContext(),
+                Intent positveActivity = new Intent(AlertTest.this,
                         Response.class);
                 startActivity(positveActivity);
             }
@@ -84,7 +83,7 @@ public class AlertTest extends Activity {
             public void onClick(DialogInterface dialog,int id) {
                 // cancel the alert box and put a Toast to the user
                 dialog.cancel();
-                Toast.makeText(getApplicationContext(), "You chose a negative answer",
+                Toast.makeText(AlertTest.this, "You chose a negative answer",
                         Toast.LENGTH_LONG).show();
             }
         });
