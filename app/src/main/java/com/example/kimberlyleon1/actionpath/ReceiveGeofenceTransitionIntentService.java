@@ -2,6 +2,7 @@ package com.example.kimberlyleon1.actionpath;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
@@ -19,7 +20,7 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
+        Log.e("D", "onHandleIntent called");
         GeofencingEvent event = GeofencingEvent.fromIntent(intent);
         if(event != null){
 
@@ -29,6 +30,7 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
                 int transition = event.getGeofenceTransition();
                 if(transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL || transition == Geofence.GEOFENCE_TRANSITION_EXIT){
                     String[] geofenceIds = new String[event.getTriggeringGeofences().size()];
+                    Log.e("D", "in geofence");
                     for (int index = 0; index < event.getTriggeringGeofences().size(); index++) {
                         geofenceIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
                     }

@@ -65,7 +65,9 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                     // Successfully registered
                     if(mCallback != null){
                         mCallback.onGeofencesRegisteredSuccessful();
+                        Log.e(TAG, "callback not null: " + status.getStatusMessage());
                     }
+                    Log.e(TAG, "Registering success: " + status.getStatusMessage());
                 } else if (status.hasResolution()) {
                     // Google provides a way to fix the issue
                     /*
@@ -76,6 +78,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                     */
                 } else {
                     // No recovery. Weep softly or inform the user.
+                    Log.e(TAG, "Status code: " + status.getStatusCode());
                     Log.e(TAG, "Registering failed: " + status.getStatusMessage());
                 }
             }

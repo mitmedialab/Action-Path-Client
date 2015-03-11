@@ -28,21 +28,22 @@ public class AlertTest extends Activity {
 
 
         List<Geofence> cambridge = new ArrayList<Geofence>();
-        final double Cambridge_long = 42.3736;
-        final double Cambridge_lat = 71.1106;
-        final float Cambridge_rad = 80467;
+        final double Cambridge_lat = 42.359254;
+        final double Cambridge_long = -71.093667;
+        final float Cambridge_rad = 2000;
         Geofence.Builder builder_test = new Geofence.Builder();
         builder_test.setRequestId("1234");
         builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
-        builder_test.setCircularRegion(Cambridge_long, Cambridge_lat, Cambridge_rad);
+        builder_test.setCircularRegion(Cambridge_lat, Cambridge_long, Cambridge_rad);
         builder_test.setExpirationDuration(5000);
 
 
         GeofencingRegisterer registerCambridge = new GeofencingRegisterer(this);
 
+        cambridge.add(builder_test.build());
+
         registerCambridge.registerGeofences(cambridge);
 
-        cambridge.add(builder_test.build());
 
 
 
