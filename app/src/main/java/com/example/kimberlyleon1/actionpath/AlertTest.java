@@ -10,18 +10,42 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
-/**
- * Created by kimberlyleon1 on 3/2/15.
- */
+import com.google.android.gms.location.Geofence;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class AlertTest extends Activity {
 
 
     private Button mainBtn;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alert);
+
+
+        List<Geofence> cambridge = new ArrayList<Geofence>();
+        final double Cambridge_long = 42.3736;
+        final double Cambridge_lat = 71.1106;
+        final float Cambridge_rad = 80467;
+        Geofence.Builder builder_test = new Geofence.Builder();
+        builder_test.setRequestId("1234");
+        builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
+        builder_test.setCircularRegion(Cambridge_long, Cambridge_lat, Cambridge_rad);
+        builder_test.setExpirationDuration(5000);
+
+
+        GeofencingRegisterer registerCambridge = new GeofencingRegisterer(this);
+
+        registerCambridge.registerGeofences(cambridge);
+
+        cambridge.add(builder_test.build());
+
+
+
         mainBtn = (Button) findViewById(R.id.button);
         mainBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -39,9 +63,9 @@ public class AlertTest extends Activity {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AlertTest.this);
 
 
-        alertDialogBuilder.setTitle(this.getTitle()+ " decision");
+        alertDialogBuilder.setTitle("Title of notification Nearby");
 
-        alertDialogBuilder.setMessage("Are you sure?");
+        alertDialogBuilder.setMessage("Short description of notification\n\nWould you like to respond?");
         // set positive button: Yes message
         alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int id) {

@@ -16,9 +16,8 @@ import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 
-/**
-* Created by kimberlyleon1 on 2/23/15.
-*/
+
+
 public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
@@ -37,6 +36,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
         mCallback = callback;
     }
 
+
     public void registerGeofences(List<Geofence> geofences){
         geofencesToAdd = geofences;
 
@@ -47,6 +47,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                 .build();
         mGoogleApiClient.connect();
     }
+
 
 
     @Override

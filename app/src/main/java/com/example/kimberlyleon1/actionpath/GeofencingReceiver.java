@@ -4,26 +4,33 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-/**
-* Created by kimberlyleon1 on 2/23/15.
-*/
+
+
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     @Override
     protected void onEnteredGeofences(String[] strings) {
         Log.d(GeofencingReceiver.class.getName(), "onEnter");
 
         //have pop-up on screen with specified location
-        for (int index = 0; index < strings.length; index++) {
-//            openAlert(View v);
-        }
+
+
+        //change so it takes in a list of strings
+        //ex: String[] alert where
+        //alert[0] is latitude
+        //alert[1] is longitude
+        //alert[2] is Name of alert
+        //alert[3] is a short description of the alert
+        //alert[4] is a picture url??
+        openAlert(strings);
     }
 
-    private void openAlert(View view) {
+    private void openAlert(String[] alert) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(GeofencingReceiver.this);
+        //alert[2]
         alertDialogBuilder.setTitle("Alert");
+        //alert[3]
         alertDialogBuilder.setMessage("This will depend on the specific event");
         // set positive button: Respond message
         alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
@@ -39,7 +46,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
             public void onClick(DialogInterface dialog,int id) {
                 // cancel the alert box and put a Toast to the user
                 dialog.cancel();
-                Toast.makeText(getApplicationContext(), "You chose a negative answer",
+                Toast.makeText(getApplicationContext(), "You chose a to ignore the alert",
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -48,7 +55,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         alertDialog.show();
     }
 
-        @Override
+    @Override
     protected void onExitedGeofences(String[] strings) {
         Log.d(GeofencingReceiver.class.getName(), "onExit");
 
@@ -56,8 +63,8 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         //or do nothing
     }
 
-@Override
-protected void onError(int i) {
+    @Override
+    protected void onError(int i) {
         Log.e(GeofencingReceiver.class.getName(), "Error: " + i);
         }
 

@@ -6,9 +6,8 @@ import android.content.Intent;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
-/**
-* Created by kimberlyleon1 on 2/23/15.
-*/
+
+
 public abstract class ReceiveGeofenceTransitionIntentService extends IntentService {
 
     /**
