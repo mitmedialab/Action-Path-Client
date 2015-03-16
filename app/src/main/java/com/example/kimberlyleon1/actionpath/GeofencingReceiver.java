@@ -1,6 +1,5 @@
 package com.example.kimberlyleon1.actionpath;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
+
     @Override
     protected void onEnteredGeofences(String[] strings) {
         Log.d(GeofencingReceiver.class.getName(), "onEnter");
@@ -91,7 +91,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     /**
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the main Activity.
-     * @param transitionType The type of transition that occurred.
+     * param transitionType The type of transition that occurred.
      * For now, ActionPath only handles enter transitionTypes
      *
      */
@@ -124,12 +124,15 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     			R.drawable.ic_stat_snooze,
     			"Snooze", pi); // TODO: Make this an actual snooze button*/
 
-        //notificationBuilder.setContentIntent(pi);
+        notificationBuilder.setContentIntent(pi);
+
+        Notification notification = notificationBuilder.build();
+
 
 
         // Now create the Big picture notification.
-        Notification notification = new Notification.BigTextStyle(notificationBuilder)
-                .bigText("Take the survey!").build();
+//        Notification notification = new Notification.BigTextStyle(notificationBuilder)
+//                .bigText("Take the survey!").build();
         //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
     	/*.bigPicture(
     			BitmapFactory.decodeResource(getResources(),
@@ -137,7 +140,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         // Put the auto cancel notification flag
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.notify(0, notification);
+        notificationManager.notify(1, notification);
 
         // TODO: Create a way to clear the notification once it has been clicked
 
@@ -148,8 +151,9 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     public PendingIntent getPendingIntent(String surveyKey) {
         Log.v("INTENT","returning an intent for SurveyActivity.class");
 
-        Intent surveyIntent = new Intent(this, Activity.class)
-                .putExtra("surveyKey", surveyKey);
+        Intent surveyIntent = new Intent(this, Response.class)
+                .putExtra("surveyKey", surveyKey)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
