@@ -17,9 +17,19 @@ public class Notification extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
 
-        Button loginBtn = (Button) findViewById(R.id.respond_issue);
+        Button respondBtn = (Button) findViewById(R.id.respond_issue);
+        Button ignoreBtn = (Button) findViewById(R.id.ignore_issue);
 
-        loginBtn.setOnClickListener(new OnClickListener() {
+
+        ignoreBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    finish();
+                    System.exit(0);
+            }
+        });
+
+        respondBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -28,6 +38,8 @@ public class Notification extends ActionBarActivity{
             }
         });
     }
+
+    Intent intent = getIntent();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

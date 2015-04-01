@@ -43,7 +43,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
             public void onClick(DialogInterface dialog,int id) {
                 // go to a new activity of the app
                 Intent positveActivity = new Intent(GeofencingReceiver.this,
-                        Response.class);
+                        com.example.kimberlyleon1.actionpath.Notification.class);
                 startActivity(positveActivity);
             }
         });
@@ -115,7 +115,8 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 // you can put subject line.
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("My notification")
-                .setContentText("it works!");
+                .setContentText("it works!")
+                .setContentIntent(pi);
                         // Set your notification icon here.
 
                         //TODO: ADD THESE BACK IN WHEN NEEDED
@@ -151,7 +152,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     public PendingIntent getPendingIntent(String surveyKey) {
         Log.v("INTENT","returning an intent for SurveyActivity.class");
 
-        Intent surveyIntent = new Intent(this, Response.class)
+        Intent surveyIntent = new Intent(this, com.example.kimberlyleon1.actionpath.Notification.class)
                 .putExtra("surveyKey", surveyKey)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

@@ -1663,7 +1663,7 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09003f;
         public static final int action_mode_bar_stub=0x7f09003e;
         public static final int action_mode_close_button=0x7f090031;
-        public static final int action_settings=0x7f090062;
+        public static final int action_settings=0x7f09006d;
         public static final int activity_chooser_view_content=0x7f090032;
         public static final int always=0x7f090019;
         public static final int beginning=0x7f090013;
@@ -1688,6 +1688,13 @@ containing a value of this type.
         public static final int end=0x7f090014;
         public static final int expand_activities_button=0x7f090033;
         public static final int expanded_menu=0x7f090039;
+        public static final int filler1=0x7f090062;
+        public static final int filler2=0x7f090063;
+        public static final int filler3=0x7f090064;
+        public static final int filler4=0x7f090065;
+        public static final int filler5=0x7f090066;
+        public static final int filler6=0x7f090067;
+        public static final int filler7=0x7f090068;
         public static final int grayscale=0x7f09002d;
         public static final int holo_dark=0x7f090021;
         public static final int holo_light=0x7f090022;
@@ -1704,6 +1711,7 @@ containing a value of this type.
         public static final int match_parent=0x7f090028;
         public static final int middle=0x7f090015;
         public static final int monochrome=0x7f09002e;
+        public static final int myRadioGroup=0x7f090069;
         public static final int never=0x7f09001c;
         public static final int none=0x7f09000e;
         public static final int normal=0x7f09000a;
@@ -1713,6 +1721,8 @@ containing a value of this type.
         public static final int radio=0x7f09003c;
         public static final int radioButton=0x7f090058;
         public static final int radioButton2=0x7f090059;
+        public static final int radio_resolved=0x7f09006b;
+        public static final int radio_unresolved=0x7f09006a;
         public static final int respond_issue=0x7f090052;
         public static final int sandbox=0x7f090024;
         public static final int satellite=0x7f090017;
@@ -1736,6 +1746,7 @@ containing a value of this type.
         public static final int split_action_bar=0x7f090007;
         public static final int strict_sandbox=0x7f090025;
         public static final int submit_area=0x7f09004d;
+        public static final int submit_button=0x7f09006c;
         public static final int tabMode=0x7f09000b;
         public static final int terrain=0x7f090018;
         public static final int text=0x7f090060;
@@ -1782,7 +1793,9 @@ containing a value of this type.
         public static final int activity_response=0x7f030018;
         public static final int activity_signup=0x7f030019;
         public static final int alert=0x7f03001a;
-        public static final int support_simple_spinner_dropdown_item=0x7f03001b;
+        public static final int home_page=0x7f03001b;
+        public static final int short_response=0x7f03001c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03001d;
     }
     public static final class menu {
         public static final int menu_notification=0x7f0d0000;

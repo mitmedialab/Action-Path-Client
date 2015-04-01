@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
@@ -18,13 +18,12 @@ import java.util.List;
 
 public class AlertTest extends Activity {
 
-
-    private Button mainBtn;
+    private TextView filler1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.alert);
+        setContentView(R.layout.home_page);
 
 
         List<Geofence> cambridge = new ArrayList<Geofence>();
@@ -37,22 +36,17 @@ public class AlertTest extends Activity {
         builder_test.setCircularRegion(Cambridge_lat, Cambridge_long, Cambridge_rad);
         builder_test.setExpirationDuration(5000);
 
-
         GeofencingRegisterer registerCambridge = new GeofencingRegisterer(this);
-
         cambridge.add(builder_test.build());
-
         registerCambridge.registerGeofences(cambridge);
 
+        filler1 = (TextView) findViewById(R.id.filler1);
+        filler1.setOnClickListener(new OnClickListener() {
 
-
-
-        mainBtn = (Button) findViewById(R.id.button);
-        mainBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
-                openAlert(v);
+                Intent intent = new Intent(AlertTest.this, Response.class);
+                startActivity(intent);
             }
         });
     }
@@ -71,7 +65,7 @@ public class AlertTest extends Activity {
             public void onClick(DialogInterface dialog,int id) {
                 // go to a new activity of the app
                 Intent positveActivity = new Intent(AlertTest.this,
-                        Response.class);
+                        Notification.class);
                 startActivity(positveActivity);
             }
         });
