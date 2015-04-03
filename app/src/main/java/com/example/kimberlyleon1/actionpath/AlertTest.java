@@ -1,20 +1,26 @@
 package com.example.kimberlyleon1.actionpath;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.Geofence;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: create account page at start & send data
+// include: city following (account page where this can be edited), user_id
 
 public class AlertTest extends Activity {
 
@@ -25,11 +31,12 @@ public class AlertTest extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        final float rad = 500;
 
         List<Geofence> cambridge = new ArrayList<Geofence>();
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
-        final float Cambridge_rad = 2000;
+        final float Cambridge_rad = 2001;
         Geofence.Builder builder_test = new Geofence.Builder();
         builder_test.setRequestId("1234");
         builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
@@ -49,51 +56,92 @@ public class AlertTest extends Activity {
                 startActivity(intent);
             }
         });
+
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try {
+                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
+                    InputStream in = u.openStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+//                    System.out.println(result.toString());
+
+
+
+
+                    Log.e("GAH", "url success: "+ result.toString());
+                } catch (Exception ex) {
+
+
+                    System.err.println(ex);
+                }
+            }
+        });
+        thread.start();
+
+
+
+//        String readJSON = HTTPRequests.getJSON("https://api.dev.actionpath.org/places/9841/issues/");
+//        try{
+//
+//            JSONArray array = new JSONArray(readJSON);
+//            for (int i = 0; i < array.length(); i++) {
+//                JSONObject issue = array.getJSONObject(i);
+//                String issue_status = issue.getString("status");
+//                double issue_lat = issue.getInt("lat");
+//                double issue_long = issue.getInt("lng");
+//                String issue_id = issue.getString("id");
+//                String issue_summary = issue.getString("summary");
+//
+//                Geofence.Builder builder123 = new Geofence.Builder();
+//                builder123.setRequestId(issue_id);
+//                builder123.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
+//                builder123.setCircularRegion(issue_lat, issue_long, rad);
+//                builder123.setExpirationDuration(5000);
+//            }
+//
+//
+//            //info for each issue:
+//            //   "status"
+//            //   "summary"
+//            //   "description"
+//            //  "lat"
+//            //  "lng"
+//            //     "address"
+//            //  "image_full"
+//            // "created_at",  null: false
+//            // "updated_at",  null: false
+//            //  "place_id"
+//
+//
+//        } catch(Exception e){e.printStackTrace();}
+//        finally{System.out.println("Success");}
+//
+//
     }
 
 
-
-    private void openAlert(View view) {
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(AlertTest.this);
-
-        alertDialogBuilder.setTitle("Title of notification Nearby");
-
-        alertDialogBuilder.setMessage("Short description of notification\n\nWould you like to respond?");
-        // set positive button: Yes message
-        alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int id) {
-                // go to a new activity of the app
-                Intent positveActivity = new Intent(AlertTest.this,
-                        Notification.class);
-                startActivity(positveActivity);
-            }
-        });
-
-        // set negative button: No message
-
-        alertDialogBuilder.setNegativeButton("Ignore",new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog,int id) {
-                // cancel the alert box and put a Toast to the user
-                dialog.cancel();
-                Toast.makeText(AlertTest.this, "You chose a negative answer",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-
-        // set neutral button: Exit the app message
-
-        alertDialogBuilder.setNeutralButton("Exit the app",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int id) {
-                // exit the app and go to the HOME
-                AlertTest.this.finish();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        // show alert
-        alertDialog.show();
-
+    public String readFully(InputStream inputStream, String encoding)
+            throws IOException {
+        return new String(readFully(inputStream), encoding);
     }
+
+    private byte[] readFully(InputStream inputStream)
+            throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length = 0;
+        while ((length = inputStream.read(buffer)) != -1) {
+            baos.write(buffer, 0, length);
+        }
+        return baos.toByteArray();
+    }
+
+
 }
 
