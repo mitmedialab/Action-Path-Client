@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 //TODO: create account page at start & send data
@@ -58,8 +59,9 @@ public class AlertTest extends Activity {
                     while((line = reader.readLine()) != null) {
                         result.append(line);
                     }
+
                     parseResult(result.toString());
-                    Log.e("GAH", "url success: "+ result.toString());
+                    Log.e("GAH", "url success: "+ result);
                 } catch (Exception ex) {
 
 
@@ -73,7 +75,9 @@ public class AlertTest extends Activity {
 
     // parse result from server and send info to create geofences
     public void parseResult(String result){
-
+        List<String> items = Arrays.asList(result.split("\\{"));
+        //do more things to parse
+        //all the things
     }
 
 

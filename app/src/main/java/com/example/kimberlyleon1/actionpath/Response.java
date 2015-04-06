@@ -12,7 +12,9 @@ import android.widget.RadioGroup;
 public class Response extends Activity {
 
     private RadioGroup radioGroup;
-    private Button submitBtn;
+    private Button resBtn;
+    private Button unresBtn;
+
 
 
     @Override
@@ -21,12 +23,22 @@ public class Response extends Activity {
         setContentView(R.layout.short_response);
 
 
-        submitBtn = (Button) findViewById(R.id.submit_button);
-        submitBtn.setOnClickListener(new OnClickListener() {
+        resBtn = (Button) findViewById(R.id.resolved_button);
+        resBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Response.this, AlertTest.class);
+                Intent intent = new Intent(Response.this, AfterAction.class);
+                startActivity(intent);
+            }
+        });
+
+        unresBtn = (Button) findViewById(R.id.unresolved_button);
+        unresBtn.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Response.this, AfterAction.class);
                 startActivity(intent);
             }
         });
