@@ -96,21 +96,23 @@ public class AlertTest extends Activity {
             Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length()-2));
-            Log.e("GAH", "contents example: " +contents);
-            Log.e("GAH", "id: " +id);
-            Log.e("GAH", "status: " +status);
-            Log.e("GAH", "summary: " +summary);
-            Log.e("GAH", "description: " +description);
-            Log.e("GAH", "lat: " +latitude);
-            Log.e("GAH", "long: " +longitude);
-            Log.e("GAH", "address: " +address);
-            Log.e("GAH", "picture: " +picture);
-            Log.e("GAH", "created: " +dtCreate);
-            Log.e("GAH", "updated: " +dtUpdate);
-            Log.e("GAH", "place_id: " +place_id);
+//            Log.e("GAH", "contents example: " +contents);
+//            Log.e("GAH", "id: " +id);
+//            Log.e("GAH", "status: " +status);
+//            Log.e("GAH", "summary: " +summary);
+//            Log.e("GAH", "description: " +description);
+//            Log.e("GAH", "lat: " +latitude);
+//            Log.e("GAH", "long: " +longitude);
+//            Log.e("GAH", "address: " +address);
+//            Log.e("GAH", "picture: " +picture);
+//            Log.e("GAH", "created: " +dtCreate);
+//            Log.e("GAH", "updated: " +dtUpdate);
+//            Log.e("GAH", "place_id: " +place_id);
 
+
+            buildGeofence(latitude,longitude,rad,Integer.toString(id));
         }
-        Log.e("GAH", "url success1: " +items.get(1));
+//        Log.e("GAH", "url success1: " +items.get(1));
 
     }
 
