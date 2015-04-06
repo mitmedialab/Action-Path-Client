@@ -14,6 +14,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.text.ParsePosition;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -61,7 +64,7 @@ public class AlertTest extends Activity {
                     }
 
                     parseResult(result.toString());
-                    Log.e("GAH", "url success: "+ result);
+                    Log.e("GAH", "url success ");
                 } catch (Exception ex) {
 
 
@@ -76,8 +79,39 @@ public class AlertTest extends Activity {
     // parse result from server and send info to create geofences
     public void parseResult(String result){
         List<String> items = Arrays.asList(result.split("\\{"));
-        //do more things to parse
-        //all the things
+        for (int i=1; i< items.size(); i++){
+            String single_issue = items.get(i);
+            List<String> contents = Arrays.asList(single_issue.split(",\"(.*?)\":"));
+            int id = Integer.parseInt(contents.get(0).substring(5));
+            String status = contents.get(1).replace("\"", "");
+            String summary = contents.get(2).replace("\"", "");
+            String description = contents.get(3).replace("\"", "");
+            double latitude = Double.parseDouble(contents.get(4).replace("\"", ""));
+            double longitude = Double.parseDouble(contents.get(5).replace("\"", ""));
+            String address = contents.get(6).replace("\"", "");
+            String picture = contents.get(7).replace("\"", "");
+            String dtCreate = contents.get(8).replace("\"", "");
+            String dtUpdate = contents.get(9).replace("\"", "");
+            //STRING --> DATE DOESN'T WORK
+            Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
+            Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
+            int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length()-2));
+            Log.e("GAH", "contents example: " +contents);
+            Log.e("GAH", "id: " +id);
+            Log.e("GAH", "status: " +status);
+            Log.e("GAH", "summary: " +summary);
+            Log.e("GAH", "description: " +description);
+            Log.e("GAH", "lat: " +latitude);
+            Log.e("GAH", "long: " +longitude);
+            Log.e("GAH", "address: " +address);
+            Log.e("GAH", "picture: " +picture);
+            Log.e("GAH", "created: " +dtCreate);
+            Log.e("GAH", "updated: " +dtUpdate);
+            Log.e("GAH", "place_id: " +place_id);
+
+        }
+        Log.e("GAH", "url success1: " +items.get(1));
+
     }
 
 
@@ -97,5 +131,15 @@ public class AlertTest extends Activity {
     }
 
 
+
+    private Date stringToDate(String aDate,String aFormat) {
+
+        if(aDate==null) return null;
+        ParsePosition pos = new ParsePosition(0);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
+        Date stringDate = simpledateformat.parse(aDate, pos);
+        return stringDate;
+
+    }
 }
 

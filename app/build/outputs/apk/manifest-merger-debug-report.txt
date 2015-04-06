@@ -61,7 +61,7 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:18:17
 	android:name
 		ADDED from AndroidManifest.xml:18:27
-activity#com.example.kimberlyleon1.actionpath.Response
+activity#com.example.kimberlyleon1.actionpath.AfterAction
 ADDED from AndroidManifest.xml:21:9
 	android:label
 		ADDED from AndroidManifest.xml:23:13
@@ -73,20 +73,26 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:26:17
 	android:name
 		ADDED from AndroidManifest.xml:26:27
-activity#com.example.kimberlyleon1.actionpath.Notification
+activity#com.example.kimberlyleon1.actionpath.Response
 ADDED from AndroidManifest.xml:29:9
 	android:label
 		ADDED from AndroidManifest.xml:31:13
 	android:name
 		ADDED from AndroidManifest.xml:30:13
-service#com.example.kimberlyleon1.actionpath.GeofencingReceiver
+activity#com.example.kimberlyleon1.actionpath.Notification
 ADDED from AndroidManifest.xml:37:9
 	android:label
-		ADDED from AndroidManifest.xml:40:13
-	android:exported
 		ADDED from AndroidManifest.xml:39:13
 	android:name
 		ADDED from AndroidManifest.xml:38:13
+service#com.example.kimberlyleon1.actionpath.GeofencingReceiver
+ADDED from AndroidManifest.xml:45:9
+	android:label
+		ADDED from AndroidManifest.xml:48:13
+	android:exported
+		ADDED from AndroidManifest.xml:47:13
+	android:name
+		ADDED from AndroidManifest.xml:46:13
 uses-sdk
 INJECTED from AndroidManifest.xml:0:0 reason: use-sdk injection requested
 MERGED from com.android.support:appcompat-v7:21.0.3:15:5

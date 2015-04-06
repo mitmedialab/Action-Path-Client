@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.RadioGroup;
 
 
 public class Response extends Activity {
 
-    private RadioGroup radioGroup;
+//    private RadioGroup radioGroup;
     private Button resBtn;
     private Button unresBtn;
 
@@ -44,7 +43,7 @@ public class Response extends Activity {
         });
 
 
-        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
+//        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
 
 //        radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 //
