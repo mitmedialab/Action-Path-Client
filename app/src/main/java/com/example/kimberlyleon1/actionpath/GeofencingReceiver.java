@@ -1,21 +1,18 @@
 package com.example.kimberlyleon1.actionpath;
 
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onEnteredGeofences(String[] strings) {
-        Log.d(GeofencingReceiver.class.getName(), "onEnter");
+        Log.d(GeofencingReceiver.class.getName(), "onEnter"+ strings[0]);
 
         sendNotification(strings[0]);
 
@@ -32,34 +29,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 //        openAlert(strings);
     }
 
-    private void openAlert(String[] alert) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(GeofencingReceiver.this);
-        //alert[2]
-        alertDialogBuilder.setTitle("Alert");
-        //alert[3]
-        alertDialogBuilder.setMessage("This will depend on the specific event");
-        // set positive button: Respond message
-        alertDialogBuilder.setPositiveButton("Respond",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int id) {
-                // go to a new activity of the app
-                Intent positveActivity = new Intent(GeofencingReceiver.this,
-                        com.example.kimberlyleon1.actionpath.Notification.class);
-                startActivity(positveActivity);
-            }
-        });
-        // set negative button: Ignore message
-        alertDialogBuilder.setNegativeButton("Ignore",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int id) {
-                // cancel the alert box and put a Toast to the user
-                dialog.cancel();
-                Toast.makeText(GeofencingReceiver.this, "You chose a to ignore the alert",
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-        AlertDialog alertDialog = alertDialogBuilder.create();
-        // show alert
-        alertDialog.show();
-    }
+
 
     @Override
     protected void onExitedGeofences(String[] strings) {
@@ -75,19 +45,6 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         }
 
 
-//    private void sendNotifications(String transitionType, String[] ids){
-//
-//        //retrieve the relevant survey keys and print them
-//        Context ctx = this.getApplicationContext();
-//        SurveyGeofenceStore mPrefs = new SurveyGeofenceStore(ctx);
-//        ArrayList<String> surveyKeys = mPrefs.getUniqueSurveyKeys(ids);
-//        ArrayList<String> y = mPrefs.getGeofenceStoreKeys();
-//        Log.i("NotificationContext", ctx.toString());
-//        for (String surveyKey : surveyKeys) {
-//            sendNotification(surveyKey);
-//        }
-//    }
-
     /**
      * Posts a notification in the notification bar when a transition is detected.
      * If the user clicks the notification, control goes to the main Activity.
@@ -95,27 +52,31 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      * For now, ActionPath only handles enter transitionTypes
      *
      */
-    private void sendNotification(String surveyKey) {
+    private void sendNotification(String issueID) {
 
         Log.d("sendNotification","sending notification build thing in ReceiveTransitionsIntentService");
-        Log.i("sendNotification", surveyKey);
+        Log.i("sendNotification", issueID);
+        Log.e("yo", "issue id: "+ issueID);
 
+        int id = Integer.parseInt(issueID);
+        Issue issue = AlertTest.getIssue(id);
+        String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
 
         // create "surveyIntent" to be triggered when user clicks on notification
-        PendingIntent pi = getPendingIntent(surveyKey);
+        PendingIntent pi = getPendingIntent(issueID);
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);
-        notificationBuilder.setContentTitle("Action: " + surveyKey)
+        notificationBuilder.setContentTitle("Action: " + issueID)
                 //notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
                 // Notification title
                 // not sure how to make this appear, or where it does appear
                 //.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
                 // you can put subject line.
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("My notification")
-                .setContentText("it works!")
+                .setContentTitle("ActionPath Notification")
+                .setContentText(summary)
                 .setContentIntent(pi);
                         // Set your notification icon here.
 
@@ -143,17 +104,20 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.notify(1, notification);
 
-        // TODO: Create a way to clear the notification once it has been clicked
 
     }
 
 
     //creates a PendingIntent for bigPicture notifications
-    public PendingIntent getPendingIntent(String surveyKey) {
+    public PendingIntent getPendingIntent(String issueID) {
         Log.v("INTENT","returning an intent for SurveyActivity.class");
 
+        int id = Integer.parseInt(issueID);
+        Issue issue = AlertTest.getIssue(id);
+        String summary = issue.getIssueSummary();
+
         Intent surveyIntent = new Intent(this, com.example.kimberlyleon1.actionpath.Notification.class)
-                .putExtra("surveyKey", surveyKey)
+                .putExtra("issueID", issueID)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);

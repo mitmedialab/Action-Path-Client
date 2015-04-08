@@ -3,6 +3,7 @@ package com.example.kimberlyleon1.actionpath;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,6 +17,14 @@ public class Notification extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        Bundle bundle = getIntent().getExtras();
+
+        if(bundle.getString("issueID")!= null)
+        {
+            int id = Integer.parseInt(bundle.getString("issueID"));
+            Log.e("yusss we are here", "issue id from notification: "+ id);
+        }
+
 
         Button respondBtn = (Button) findViewById(R.id.respond_issue);
         Button ignoreBtn = (Button) findViewById(R.id.ignore_issue);
@@ -39,7 +48,6 @@ public class Notification extends ActionBarActivity{
         });
     }
 
-    Intent intent = getIntent();
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

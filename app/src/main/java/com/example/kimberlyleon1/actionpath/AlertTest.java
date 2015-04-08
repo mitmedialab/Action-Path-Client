@@ -10,15 +10,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.Geofence;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.text.ParsePosition;
-import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 //TODO: create account page at start & send data
@@ -27,18 +24,21 @@ import java.util.List;
 public class AlertTest extends Activity {
 
     private TextView filler1;
-    final float rad = 500;
+    final float rad = 800;
+    public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        final double Cambridge_lat = 42.359254;
-        final double Cambridge_long = -71.093667;
+        final double Cambridge_lat = 42.355889; //42.359254;
+        final double Cambridge_long = -71.098094; //-71.093667;
         final float Cambridge_rad = 2001;
         String id = "1234";
-        buildGeofence(Cambridge_lat, Cambridge_long, Cambridge_rad, id);
+        geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Graffiti Removal", "The cement wall of the old stool store at 29 Mystic has been tagged.", Cambridge_lat, Cambridge_long, "29 Mystic Ave Somerville, Massachusetts", "null", null, null, 9841));
+        buildGeofence(Cambridge_lat,Cambridge_long,rad,id);
+        Log.e("what is this why", "mapampamap: "+ geofenced_issuemap);
 
         filler1 = (TextView) findViewById(R.id.filler1);
         filler1.setOnClickListener(new OnClickListener() {
@@ -50,29 +50,29 @@ public class AlertTest extends Activity {
             }
         });
 
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                try {
-                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
-                    InputStream in = u.openStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    parseResult(result.toString());
-                    Log.e("GAH", "url success ");
-                } catch (Exception ex) {
-
-
-                    System.err.println(ex);
-                }
-            }
-        });
-        thread.start();
+//        Thread thread = new Thread(new Runnable(){
+//            @Override
+//            public void run(){
+//                try {
+//                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
+//                    InputStream in = u.openStream();
+//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+//                    StringBuilder result = new StringBuilder();
+//                    String line;
+//                    while((line = reader.readLine()) != null) {
+//                        result.append(line);
+//                    }
+//
+//                    parseResult(result.toString());
+//                    Log.e("GAH", "url success ");
+//                } catch (Exception ex) {
+//
+//
+//                    System.err.println(ex);
+//                }
+//            }
+//        });
+//        thread.start();
 
     }
 
@@ -109,10 +109,10 @@ public class AlertTest extends Activity {
 //            Log.e("GAH", "updated: " +dtUpdate);
 //            Log.e("GAH", "place_id: " +place_id);
 
-
+            geofenced_issuemap.put(id, new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id));
             buildGeofence(latitude,longitude,rad,Integer.toString(id));
         }
-//        Log.e("GAH", "url success1: " +items.get(1));
+        Log.e("GAH", "url success1: " + items.get(1));
 
     }
 
@@ -133,7 +133,7 @@ public class AlertTest extends Activity {
     }
 
 
-
+    //THIS ISN'T WORKING GHAKSJDNWEIFJ
     private Date stringToDate(String aDate,String aFormat) {
 
         if(aDate==null) return null;
@@ -142,6 +142,11 @@ public class AlertTest extends Activity {
         Date stringDate = simpledateformat.parse(aDate, pos);
         return stringDate;
 
+    }
+
+
+    public static Issue getIssue(int issue_id){
+        return geofenced_issuemap.get(issue_id);
     }
 }
 
