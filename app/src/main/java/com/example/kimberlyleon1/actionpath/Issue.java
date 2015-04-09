@@ -50,4 +50,8 @@ public class Issue {
     public String getIssueDescription(){
         return this.description;
     }
+
+    public String getIssueAddress(){
+        return this.address;
+    }
 }

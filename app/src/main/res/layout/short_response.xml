@@ -17,7 +17,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/textView4"
+                android:id="@+id/address"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="42dp"
@@ -28,11 +28,11 @@
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_below="@+id/textView4"
+                android:layout_below="@+id/address"
                 android:layout_centerHorizontal="true"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Summary of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/textView5" />
+                android:id="@+id/description" />
 
             <!--<RadioGroup-->
                 <!--android:layout_width="wrap_content"-->
@@ -68,7 +68,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
                 android:id="@+id/imageView"
-                android:layout_below="@+id/textView5"/>
+                android:layout_below="@+id/description"/>
 
 
             <Button

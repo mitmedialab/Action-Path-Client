@@ -3,9 +3,11 @@ package com.example.kimberlyleon1.actionpath;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class Response extends Activity {
@@ -13,6 +15,9 @@ public class Response extends Activity {
 //    private RadioGroup radioGroup;
     private Button resBtn;
     private Button unresBtn;
+    private TextView res_address;
+    private TextView res_description;
+    int id = 0;
 
 
 
@@ -20,6 +25,22 @@ public class Response extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.short_response);
+
+
+        Bundle bundle = getIntent().getExtras();
+        id = bundle.getInt("issueID");
+        Log.e("and now we are here", "issue id from response: " + id);
+        Issue issue = AlertTest.getIssue(id);
+        String issue_description = issue.getIssueDescription();
+        String issue_address = issue.getIssueAddress();
+
+
+        res_address = (TextView) findViewById(R.id.address);
+        res_address.setText(issue_address);
+
+        res_description = (TextView) findViewById(R.id.description);
+        res_description.setText(issue_description);
+
 
 
         resBtn = (Button) findViewById(R.id.resolved_button);

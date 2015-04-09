@@ -13,13 +13,15 @@ import android.widget.TextView;
 
 public class Notification extends ActionBarActivity{
 
+    int id = 0;
+    private TextView description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         Bundle bundle = getIntent().getExtras();
-        int id = 0;
+
 
         if(bundle.getString("issueID")!= null)
         {
@@ -30,7 +32,7 @@ public class Notification extends ActionBarActivity{
         String issue_description = issue.getIssueDescription();
 
 
-        TextView description = (TextView) findViewById(R.id.description);
+        description = (TextView) findViewById(R.id.description);
         description.setText(issue_description);
 
 
@@ -49,6 +51,7 @@ public class Notification extends ActionBarActivity{
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Notification.this, Response.class);
+                intent.putExtra("issueID", id);
                 startActivity(intent);
             }
         });
