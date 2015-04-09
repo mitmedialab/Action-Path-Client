@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.Geofence;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,7 +28,7 @@ import java.util.List;
 public class AlertTest extends Activity {
 
     private TextView filler1;
-    final float rad = 800;
+    final float rad = 1000;
     public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
 
     @Override
@@ -32,8 +36,8 @@ public class AlertTest extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
-        final double Cambridge_lat = 42.355889; //42.359254;
-        final double Cambridge_long = -71.098094; //-71.093667;
+        final double Cambridge_lat = 42.359254;
+        final double Cambridge_long = -71.093667;
         final float Cambridge_rad = 2001;
         String id = "1234";
         geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Graffiti Removal", "The cement wall of the old stool store at 29 Mystic has been tagged.", Cambridge_lat, Cambridge_long, "29 Mystic Ave Somerville, Massachusetts", "null", null, null, 9841));
@@ -50,29 +54,29 @@ public class AlertTest extends Activity {
             }
         });
 
-//        Thread thread = new Thread(new Runnable(){
-//            @Override
-//            public void run(){
-//                try {
-//                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
-//                    InputStream in = u.openStream();
-//                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-//                    StringBuilder result = new StringBuilder();
-//                    String line;
-//                    while((line = reader.readLine()) != null) {
-//                        result.append(line);
-//                    }
-//
-//                    parseResult(result.toString());
-//                    Log.e("GAH", "url success ");
-//                } catch (Exception ex) {
-//
-//
-//                    System.err.println(ex);
-//                }
-//            }
-//        });
-//        thread.start();
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try {
+                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
+                    InputStream in = u.openStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while((line = reader.readLine()) != null) {
+                        result.append(line);
+                    }
+
+                    parseResult(result.toString());
+                    Log.e("GAH", "url success ");
+                } catch (Exception ex) {
+
+
+                    System.err.println(ex);
+                }
+            }
+        });
+        thread.start();
 
     }
 
@@ -125,7 +129,7 @@ public class AlertTest extends Activity {
         builder_test.setRequestId(id);
         builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
         builder_test.setCircularRegion(latitude, longitude, radius);
-        builder_test.setExpirationDuration(5000);
+        builder_test.setExpirationDuration(Geofence.NEVER_EXPIRE);
 
         GeofencingRegisterer registerCambridge = new GeofencingRegisterer(this);
         new_geo.add(builder_test.build());
