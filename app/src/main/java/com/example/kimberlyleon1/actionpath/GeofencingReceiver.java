@@ -75,7 +75,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 //.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
                 // you can put subject line.
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("ActionPath Notification")
+                .setContentTitle("Action Path")
                 .setContentText(summary)
                 .setContentIntent(pi);
                         // Set your notification icon here.

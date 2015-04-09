@@ -46,4 +46,8 @@ public class Issue {
     public String getIssueSummary(){
         return this.summary;
     }
+
+    public String getIssueDescription(){
+        return this.description;
+    }
 }

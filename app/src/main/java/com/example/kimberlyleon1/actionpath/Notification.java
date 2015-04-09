@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 public class Notification extends ActionBarActivity{
@@ -18,18 +19,23 @@ public class Notification extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         Bundle bundle = getIntent().getExtras();
+        int id = 0;
 
         if(bundle.getString("issueID")!= null)
         {
-            int id = Integer.parseInt(bundle.getString("issueID"));
+            id = Integer.parseInt(bundle.getString("issueID"));
             Log.e("yusss we are here", "issue id from notification: "+ id);
         }
+        Issue issue = AlertTest.getIssue(id);
+        String issue_description = issue.getIssueDescription();
+
+
+        TextView description = (TextView) findViewById(R.id.description);
+        description.setText(issue_description);
 
 
         Button respondBtn = (Button) findViewById(R.id.respond_issue);
         Button ignoreBtn = (Button) findViewById(R.id.ignore_issue);
-
-
         ignoreBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1680,6 +1680,7 @@ containing a value of this type.
         public static final int collapseActionView=0x7f09001a;
         public static final int decor_content_parent=0x7f090040;
         public static final int default_activity_button=0x7f090035;
+        public static final int description=0x7f090050;
         public static final int dialog=0x7f09001e;
         public static final int disableHome=0x7f09000c;
         public static final int dropdown=0x7f09001f;
@@ -1749,7 +1750,6 @@ containing a value of this type.
         public static final int terrain=0x7f090018;
         public static final int text=0x7f090064;
         public static final int textView=0x7f09005d;
-        public static final int textView2=0x7f090050;
         public static final int textView3=0x7f090051;
         public static final int textView4=0x7f090054;
         public static final int textView5=0x7f090056;
