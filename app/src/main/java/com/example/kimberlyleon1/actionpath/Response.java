@@ -49,6 +49,7 @@ public class Response extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Response.this, AfterAction.class);
+                intent.putExtra("issueID", id);
                 startActivity(intent);
             }
         });
@@ -59,6 +60,7 @@ public class Response extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Response.this, AfterAction.class);
+                intent.putExtra("issueID", id);
                 startActivity(intent);
             }
         });

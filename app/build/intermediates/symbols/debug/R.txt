@@ -5,6 +5,7 @@ int anim abc_slide_in_top 0x7f040003
 int anim abc_slide_out_bottom 0x7f040004
 int anim abc_slide_out_top 0x7f040005
 int array city_array 0x7f050000
+int array sections1 0x7f050001
 int attr actionBarDivider 0x7f01006b
 int attr actionBarItemBackground 0x7f01006c
 int attr actionBarPopupTheme 0x7f010065
@@ -439,9 +440,9 @@ int id action_menu_presenter 0x7f090003
 int id action_mode_bar 0x7f09003f
 int id action_mode_bar_stub 0x7f09003e
 int id action_mode_close_button 0x7f090031
-int id action_settings 0x7f090070
+int id action_settings 0x7f09006a
 int id activity_chooser_view_content 0x7f090032
-int id address 0x7f09006d
+int id address 0x7f090067
 int id always 0x7f090019
 int id beginning 0x7f090013
 int id book_now 0x7f090029
@@ -466,13 +467,6 @@ int id edit_query 0x7f090044
 int id end 0x7f090014
 int id expand_activities_button 0x7f090033
 int id expanded_menu 0x7f090039
-int id filler1 0x7f090066
-int id filler2 0x7f090067
-int id filler3 0x7f090068
-int id filler4 0x7f090069
-int id filler5 0x7f09006a
-int id filler6 0x7f09006b
-int id filler7 0x7f09006c
 int id grayscale 0x7f09002d
 int id holo_dark 0x7f090021
 int id holo_light 0x7f090022
@@ -491,6 +485,7 @@ int id match_parent 0x7f090028
 int id middle 0x7f090015
 int id monochrome 0x7f09002e
 int id never 0x7f09001c
+int id newsfeed 0x7f090066
 int id none 0x7f09000e
 int id normal 0x7f09000a
 int id production 0x7f090023
@@ -499,7 +494,7 @@ int id progress_horizontal 0x7f090006
 int id radio 0x7f09003c
 int id radioButton 0x7f090058
 int id radioButton2 0x7f090059
-int id resolved_button 0x7f09006e
+int id resolved_button 0x7f090068
 int id respond_issue 0x7f090052
 int id sandbox 0x7f090024
 int id satellite 0x7f090017
@@ -534,7 +529,7 @@ int id textView6 0x7f090060
 int id textView7 0x7f090061
 int id title 0x7f090038
 int id unfollow_btn 0x7f090062
-int id unresolved_button 0x7f09006f
+int id unresolved_button 0x7f090069
 int id up 0x7f090008
 int id useLogo 0x7f090012
 int id withText 0x7f09001d

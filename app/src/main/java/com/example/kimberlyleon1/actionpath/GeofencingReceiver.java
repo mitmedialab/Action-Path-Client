@@ -60,6 +60,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         int id = Integer.parseInt(issueID);
         Issue issue = AlertTest.getIssue(id);
+        Log.e("issue", "this issue: "+issue);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
 

@@ -1,12 +1,14 @@
 package com.example.kimberlyleon1.actionpath;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.android.gms.location.Geofence;
 
@@ -25,10 +27,12 @@ import java.util.List;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class AlertTest extends Activity {
+public class AlertTest extends Activity{
 
-    private TextView filler1;
-    final float rad = 1000;
+    final ArrayList<String> newsfeedList = new ArrayList<>();
+    final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
+    final float rad = 500;
+    ListView listview;
     public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
 
     @Override
@@ -38,21 +42,49 @@ public class AlertTest extends Activity {
 
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
-        final float Cambridge_rad = 2001;
+        final float Cambridge_rad = 1601;
         String id = "1234";
         geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Graffiti Removal", "The cement wall of the old stool store at 29 Mystic has been tagged.", Cambridge_lat, Cambridge_long, "29 Mystic Ave Somerville, Massachusetts", "null", null, null, 9841));
-        buildGeofence(Cambridge_lat,Cambridge_long,rad,id);
+        buildGeofence(Cambridge_lat,Cambridge_long,Cambridge_rad,id);
         Log.e("what is this why", "mapampamap: "+ geofenced_issuemap);
 
-        filler1 = (TextView) findViewById(R.id.filler1);
-        filler1.setOnClickListener(new OnClickListener() {
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            int int_id = bundle.getInt("followThisID");
+            Log.e("and now we are here", "issue id from response: " + id);
+            Issue issue = AlertTest.getIssue(int_id);
+            String issue_summary = issue.getIssueSummary();
+            newsfeedList.add(issue_summary);
+            newsfeedIDs.add(int_id);
+        }
+
+        listview = (ListView) findViewById(R.id.newsfeed);
+
+
+        final StableArrayAdapter adapter = new StableArrayAdapter(this,
+                android.R.layout.simple_list_item_1, newsfeedList);
+        listview.setAdapter(adapter);
+
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(AlertTest.this, Response.class);
+            public void onItemClick(AdapterView<?> parent, final View view,
+                                    int position, long id) {
+                int issueID = newsfeedIDs.get(position);
+                Log.e("CLICKED", "YOU CLICKED ITEM with id: "+ issueID);
+                Log.e("CLICKED", "YOU CLICKED ITEM with position: "+ position);
+                Log.i("HelloListView", "You clicked Item: " + id);
+                // Then you start a new Activity via Intent
+                Intent intent = new Intent();
+                intent.setClass(AlertTest.this, Response.class);
+                intent.putExtra("issueID", issueID);
                 startActivity(intent);
             }
+
         });
+
+
 
         Thread thread = new Thread(new Runnable(){
             @Override
@@ -79,6 +111,37 @@ public class AlertTest extends Activity {
         thread.start();
 
     }
+
+
+    private class StableArrayAdapter extends ArrayAdapter<String> {
+
+        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
+
+        public StableArrayAdapter(Context context, int textViewResourceId,
+                                  List<String> objects) {
+            super(context, textViewResourceId, objects);
+            for (int i = 0; i < objects.size(); ++i) {
+                mIdMap.put(objects.get(i), i);
+            }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            String item = getItem(position);
+            return mIdMap.get(item);
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+    }
+
+
+
+
+
 
     // parse result from server and send info to create geofences
     public void parseResult(String result){
@@ -119,6 +182,10 @@ public class AlertTest extends Activity {
         Log.e("GAH", "url success1: " + items.get(1));
 
     }
+
+
+
+
 
 
     // creates a geofence at given location of given radius

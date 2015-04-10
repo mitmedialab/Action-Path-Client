@@ -18,6 +18,7 @@ public final class R {
     }
     public static final class array {
         public static final int city_array=0x7f050000;
+        public static final int sections1=0x7f050001;
     }
     public static final class attr {
         /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
@@ -1663,9 +1664,9 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09003f;
         public static final int action_mode_bar_stub=0x7f09003e;
         public static final int action_mode_close_button=0x7f090031;
-        public static final int action_settings=0x7f090070;
+        public static final int action_settings=0x7f09006a;
         public static final int activity_chooser_view_content=0x7f090032;
-        public static final int address=0x7f09006d;
+        public static final int address=0x7f090067;
         public static final int always=0x7f090019;
         public static final int beginning=0x7f090013;
         public static final int book_now=0x7f090029;
@@ -1690,13 +1691,6 @@ containing a value of this type.
         public static final int end=0x7f090014;
         public static final int expand_activities_button=0x7f090033;
         public static final int expanded_menu=0x7f090039;
-        public static final int filler1=0x7f090066;
-        public static final int filler2=0x7f090067;
-        public static final int filler3=0x7f090068;
-        public static final int filler4=0x7f090069;
-        public static final int filler5=0x7f09006a;
-        public static final int filler6=0x7f09006b;
-        public static final int filler7=0x7f09006c;
         public static final int grayscale=0x7f09002d;
         public static final int holo_dark=0x7f090021;
         public static final int holo_light=0x7f090022;
@@ -1715,6 +1709,7 @@ containing a value of this type.
         public static final int middle=0x7f090015;
         public static final int monochrome=0x7f09002e;
         public static final int never=0x7f09001c;
+        public static final int newsfeed=0x7f090066;
         public static final int none=0x7f09000e;
         public static final int normal=0x7f09000a;
         public static final int production=0x7f090023;
@@ -1723,7 +1718,7 @@ containing a value of this type.
         public static final int radio=0x7f09003c;
         public static final int radioButton=0x7f090058;
         public static final int radioButton2=0x7f090059;
-        public static final int resolved_button=0x7f09006e;
+        public static final int resolved_button=0x7f090068;
         public static final int respond_issue=0x7f090052;
         public static final int sandbox=0x7f090024;
         public static final int satellite=0x7f090017;
@@ -1758,7 +1753,7 @@ containing a value of this type.
         public static final int textView7=0x7f090061;
         public static final int title=0x7f090038;
         public static final int unfollow_btn=0x7f090062;
-        public static final int unresolved_button=0x7f09006f;
+        public static final int unresolved_button=0x7f090069;
         public static final int up=0x7f090008;
         public static final int useLogo=0x7f090012;
         public static final int withText=0x7f09001d;

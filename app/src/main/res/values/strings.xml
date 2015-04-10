@@ -5,6 +5,19 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!--<string-array name="sections1">-->
+        <!--<item >Pro Constructive</item>-->
+        <!--<item >Con Constructive</item>-->
+        <!--<item >1st Speaker Cross</item>-->
+        <!--<item >Pro Rebbutal</item>-->
+        <!--<item >Con Rebuttal</item>-->
+        <!--<item >2nd Speaker Cross</item>-->
+        <!--<item >Pro Summary</item>-->
+        <!--<item >Con Summary</item>-->
+        <!--<item >Grand Cross</item>-->
+        <!--<item >Pro Final Focus</item>-->
+        <!--<item >Con Final Focus</item>-->
+    <!--</string-array>-->
 
     <string-array name="city_array">
         <item>Boston</item>

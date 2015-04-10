@@ -1,90 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
 
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="30dp"
+        android:fillViewport="true"
         android:id="@+id/scrollView"
         android:layout_centerHorizontal="true">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler1" />
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler2"
-                android:layout_below="@+id/filler1"/>
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler3"
-                android:layout_below="@+id/filler2"/>
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler4"
-                android:layout_below="@+id/filler3"/>
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler5"
-                android:layout_below="@+id/filler4"/>
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler6"
-                android:layout_below="@+id/filler5"/>
-
-            <TextView
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Short description of problem. Ex: pothole on the intersection of 1st and Main"
-                android:id="@+id/filler7"
-                android:layout_below="@+id/filler6"/>
+            <ListView
+                android:id="@+id/newsfeed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+            </ListView>
 
 
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>
