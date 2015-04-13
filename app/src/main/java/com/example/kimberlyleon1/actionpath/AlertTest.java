@@ -3,6 +3,7 @@ package com.example.kimberlyleon1.actionpath;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,12 +29,22 @@ import java.util.List;
 // include: city following (account page where this can be edited), user_id
 
 public class AlertTest extends Activity{
-
+    public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     final float rad = 500;
     ListView listview;
     public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
+    String mString = "";
+//
+//    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+//
+//    String restoredText = prefs.getString("text", null);
+
+//    if (prefs != null) {
+//        mString = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+//    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,9 +54,15 @@ public class AlertTest extends Activity{
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
         final float Cambridge_rad = 1601;
+        final double Cambridge_lat2 = 42.359255;
+        final double Cambridge_long2 = -71.093666;
         String id = "1234";
-        geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Graffiti Removal", "The cement wall of the old stool store at 29 Mystic has been tagged.", Cambridge_lat, Cambridge_long, "29 Mystic Ave Somerville, Massachusetts", "null", null, null, 9841));
+        String id2 = "2345";
+        geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "null", null, null, 9841));
         buildGeofence(Cambridge_lat,Cambridge_long,Cambridge_rad,id);
+
+        geofenced_issuemap.put(Integer.parseInt(id2), new Issue(Integer.parseInt(id2), "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841));
+        buildGeofence(Cambridge_lat2,Cambridge_long2,Cambridge_rad,id2);
         Log.e("what is this why", "mapampamap: "+ geofenced_issuemap);
 
 
@@ -61,6 +78,17 @@ public class AlertTest extends Activity{
 
         listview = (ListView) findViewById(R.id.newsfeed);
 
+        if (mString != ""){
+            List<String> nums = Arrays.asList(mString.split(","));
+            Log.e("split string", nums.get(0));
+            for (String num: nums){
+                Integer old_id = Integer.getInteger(num);
+                Issue issue = AlertTest.getIssue(old_id);
+                String issue_summary = issue.getIssueSummary();
+                newsfeedList.add(issue_summary);
+                newsfeedIDs.add(old_id);
+            }
+        }
 
         final StableArrayAdapter adapter = new StableArrayAdapter(this,
                 android.R.layout.simple_list_item_1, newsfeedList);
@@ -113,6 +141,21 @@ public class AlertTest extends Activity{
     }
 
 
+    public void onStop() {
+        saveArray();
+        super.onStop();
+    }
+
+    public void saveArray() {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        String string_ids = "";
+        for (Integer each: newsfeedIDs){
+            string_ids.concat(each.toString()+",");
+        }
+        editor.putString("newsfeedSaved", string_ids).commit();
+        editor.commit();
+    }
+
     private class StableArrayAdapter extends ArrayAdapter<String> {
 
         HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
@@ -163,18 +206,6 @@ public class AlertTest extends Activity{
             Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length()-2));
-//            Log.e("GAH", "contents example: " +contents);
-//            Log.e("GAH", "id: " +id);
-//            Log.e("GAH", "status: " +status);
-//            Log.e("GAH", "summary: " +summary);
-//            Log.e("GAH", "description: " +description);
-//            Log.e("GAH", "lat: " +latitude);
-//            Log.e("GAH", "long: " +longitude);
-//            Log.e("GAH", "address: " +address);
-//            Log.e("GAH", "picture: " +picture);
-//            Log.e("GAH", "created: " +dtCreate);
-//            Log.e("GAH", "updated: " +dtUpdate);
-//            Log.e("GAH", "place_id: " +place_id);
 
             geofenced_issuemap.put(id, new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id));
             buildGeofence(latitude,longitude,rad,Integer.toString(id));

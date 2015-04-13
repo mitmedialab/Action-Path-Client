@@ -441,7 +441,7 @@ int id action_menu_presenter 0x7f090003
 int id action_mode_bar 0x7f09003f
 int id action_mode_bar_stub 0x7f09003e
 int id action_mode_close_button 0x7f090031
-int id action_settings 0x7f09006b
+int id action_settings 0x7f09006c
 int id activity_chooser_view_content 0x7f090032
 int id address 0x7f090068
 int id always 0x7f090019
@@ -483,6 +483,7 @@ int id image 0x7f090034
 int id imageView 0x7f090057
 int id listMode 0x7f090009
 int id list_item 0x7f090036
+int id map 0x7f09006b
 int id match_parent 0x7f090028
 int id middle 0x7f090015
 int id monochrome 0x7f09002e
@@ -568,7 +569,8 @@ int layout after_action 0x7f03001a
 int layout alert 0x7f03001b
 int layout home_page 0x7f03001c
 int layout short_response 0x7f03001d
-int layout support_simple_spinner_dropdown_item 0x7f03001e
+int layout suggested_route 0x7f03001e
+int layout support_simple_spinner_dropdown_item 0x7f03001f
 int menu menu_notification 0x7f0d0000
 int string abc_action_bar_home_description 0x7f0b0000
 int string abc_action_bar_home_description_format 0x7f0b0001

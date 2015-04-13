@@ -20,7 +20,7 @@
         android:layout_marginRight="55dp"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="You are now following this issue. \nIf you do not want to receive \nupdates about this issue, click &quot;Unfollow&quot;."
+        android:text="You are now following this issue. \nIf you do not want to receive updates about this issue, click &quot;Unfollow&quot;."
         android:id="@+id/textView7"
         android:layout_below="@+id/textView6"
         android:layout_centerHorizontal="true" />
