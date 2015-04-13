@@ -40,6 +40,9 @@ public class AlertTest extends Activity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
 
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
         final float Cambridge_rad = 1601;
