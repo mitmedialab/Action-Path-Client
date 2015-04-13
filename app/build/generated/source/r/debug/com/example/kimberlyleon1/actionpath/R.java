@@ -1647,8 +1647,9 @@ containing a value of this type.
         public static final int ic_plusone_small_off_client=0x7f02004f;
         public static final int ic_plusone_standard_off_client=0x7f020050;
         public static final int ic_plusone_tall_off_client=0x7f020051;
-        public static final int powered_by_google_dark=0x7f020052;
-        public static final int powered_by_google_light=0x7f020053;
+        public static final int kendall=0x7f020052;
+        public static final int powered_by_google_dark=0x7f020053;
+        public static final int powered_by_google_light=0x7f020054;
     }
     public static final class id {
         public static final int action_bar=0x7f090042;
@@ -1664,9 +1665,9 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09003f;
         public static final int action_mode_bar_stub=0x7f09003e;
         public static final int action_mode_close_button=0x7f090031;
-        public static final int action_settings=0x7f09006a;
+        public static final int action_settings=0x7f09006b;
         public static final int activity_chooser_view_content=0x7f090032;
-        public static final int address=0x7f090067;
+        public static final int address=0x7f090068;
         public static final int always=0x7f090019;
         public static final int beginning=0x7f090013;
         public static final int book_now=0x7f090029;
@@ -1697,6 +1698,7 @@ containing a value of this type.
         public static final int home=0x7f090004;
         public static final int homeAsUp=0x7f09000d;
         public static final int home_btn=0x7f090063;
+        public static final int home_layout=0x7f090066;
         public static final int hybrid=0x7f090016;
         public static final int icon=0x7f090037;
         public static final int ifRoom=0x7f09001b;
@@ -1709,7 +1711,7 @@ containing a value of this type.
         public static final int middle=0x7f090015;
         public static final int monochrome=0x7f09002e;
         public static final int never=0x7f09001c;
-        public static final int newsfeed=0x7f090066;
+        public static final int newsfeed=0x7f090067;
         public static final int none=0x7f09000e;
         public static final int normal=0x7f09000a;
         public static final int production=0x7f090023;
@@ -1718,7 +1720,7 @@ containing a value of this type.
         public static final int radio=0x7f09003c;
         public static final int radioButton=0x7f090058;
         public static final int radioButton2=0x7f090059;
-        public static final int resolved_button=0x7f090068;
+        public static final int resolved_button=0x7f090069;
         public static final int respond_issue=0x7f090052;
         public static final int sandbox=0x7f090024;
         public static final int satellite=0x7f090017;
@@ -1753,7 +1755,7 @@ containing a value of this type.
         public static final int textView7=0x7f090061;
         public static final int title=0x7f090038;
         public static final int unfollow_btn=0x7f090062;
-        public static final int unresolved_button=0x7f090069;
+        public static final int unresolved_button=0x7f09006a;
         public static final int up=0x7f090008;
         public static final int useLogo=0x7f090012;
         public static final int withText=0x7f09001d;

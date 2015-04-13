@@ -34,33 +34,6 @@
                 android:text="Summary of problem. Ex: pothole on the intersection of 1st and Main"
                 android:id="@+id/description" />
 
-            <!--<RadioGroup-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:id="@+id/myRadioGroup"-->
-                <!--android:layout_below="@+id/textView5"-->
-                <!--android:layout_centerHorizontal="true"-->
-                <!--android:orientation="horizontal"-->
-                <!--android:checkedButton="@+id/radio_unresolved" >-->
-
-                <!--<RadioButton-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Resolved"-->
-                    <!--android:id="@+id/radio_resolved"-->
-                    <!--android:checked="false"-->
-                    <!--android:layout_marginTop="10dp" />-->
-
-                <!--<RadioButton-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:text="Unresolved"-->
-                    <!--android:id="@+id/radio_unresolved"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:checked="false" />-->
-
-            <!--</RadioGroup>-->
-
 
             <ImageView
                 android:layout_width="250dp"

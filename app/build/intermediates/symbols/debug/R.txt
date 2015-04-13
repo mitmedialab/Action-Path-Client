@@ -425,8 +425,9 @@ int drawable ic_plusone_medium_off_client 0x7f02004e
 int drawable ic_plusone_small_off_client 0x7f02004f
 int drawable ic_plusone_standard_off_client 0x7f020050
 int drawable ic_plusone_tall_off_client 0x7f020051
-int drawable powered_by_google_dark 0x7f020052
-int drawable powered_by_google_light 0x7f020053
+int drawable kendall 0x7f020052
+int drawable powered_by_google_dark 0x7f020053
+int drawable powered_by_google_light 0x7f020054
 int id action_bar 0x7f090042
 int id action_bar_activity_content 0x7f090000
 int id action_bar_container 0x7f090041
@@ -440,9 +441,9 @@ int id action_menu_presenter 0x7f090003
 int id action_mode_bar 0x7f09003f
 int id action_mode_bar_stub 0x7f09003e
 int id action_mode_close_button 0x7f090031
-int id action_settings 0x7f09006a
+int id action_settings 0x7f09006b
 int id activity_chooser_view_content 0x7f090032
-int id address 0x7f090067
+int id address 0x7f090068
 int id always 0x7f090019
 int id beginning 0x7f090013
 int id book_now 0x7f090029
@@ -473,6 +474,7 @@ int id holo_light 0x7f090022
 int id home 0x7f090004
 int id homeAsUp 0x7f09000d
 int id home_btn 0x7f090063
+int id home_layout 0x7f090066
 int id hybrid 0x7f090016
 int id icon 0x7f090037
 int id ifRoom 0x7f09001b
@@ -485,7 +487,7 @@ int id match_parent 0x7f090028
 int id middle 0x7f090015
 int id monochrome 0x7f09002e
 int id never 0x7f09001c
-int id newsfeed 0x7f090066
+int id newsfeed 0x7f090067
 int id none 0x7f09000e
 int id normal 0x7f09000a
 int id production 0x7f090023
@@ -494,7 +496,7 @@ int id progress_horizontal 0x7f090006
 int id radio 0x7f09003c
 int id radioButton 0x7f090058
 int id radioButton2 0x7f090059
-int id resolved_button 0x7f090068
+int id resolved_button 0x7f090069
 int id respond_issue 0x7f090052
 int id sandbox 0x7f090024
 int id satellite 0x7f090017
@@ -529,7 +531,7 @@ int id textView6 0x7f090060
 int id textView7 0x7f090061
 int id title 0x7f090038
 int id unfollow_btn 0x7f090062
-int id unresolved_button 0x7f090069
+int id unresolved_button 0x7f09006a
 int id up 0x7f090008
 int id useLogo 0x7f090012
 int id withText 0x7f09001d
