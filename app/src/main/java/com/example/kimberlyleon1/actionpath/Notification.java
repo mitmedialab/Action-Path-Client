@@ -41,8 +41,16 @@ public class Notification extends Activity {
         ignoreBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                    finish();
-                    System.exit(0);
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
+                loggerServiceIntent.putExtra("action", "NotificationIgnoreClick");
+                startService(loggerServiceIntent);
+
+                finish();
+                System.exit(0);
             }
         });
 
@@ -50,6 +58,15 @@ public class Notification extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
+                loggerServiceIntent.putExtra("action", "NotificationRespondClick");
+                startService(loggerServiceIntent);
+
+
                 Intent intent = new Intent(Notification.this, Response.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);

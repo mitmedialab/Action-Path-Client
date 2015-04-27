@@ -67,6 +67,9 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                         mCallback.onGeofencesRegisteredSuccessful();
                         Log.e(TAG, "callback not null: " + status.getStatusMessage());
                     }
+
+
+
                     Log.e(TAG, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
                 } else if (status.hasResolution()) {
                     // Google provides a way to fix the issue

@@ -16,6 +16,12 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         sendNotification(strings[0]);
 
+        // CREATE AN ACTION LOG
+        Intent loggerServiceIntent = new Intent(GeofencingReceiver.this,LoggerService.class);
+        loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+        loggerServiceIntent.putExtra("issueID", String.valueOf(strings[0]));
+        loggerServiceIntent.putExtra("action", "EnteredGeofence");
+        startService(loggerServiceIntent);
 
 
 

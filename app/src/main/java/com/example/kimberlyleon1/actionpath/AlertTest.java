@@ -36,6 +36,7 @@ public class AlertTest extends Activity{
     ListView listview;
     public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
     String mString = "";
+    static int userID;
 //
 //    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 //
@@ -52,7 +53,7 @@ public class AlertTest extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-
+        userID = 0;
 
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
@@ -106,6 +107,14 @@ public class AlertTest extends Activity{
                 Log.e("CLICKED", "YOU CLICKED ITEM with id: "+ issueID);
                 Log.e("CLICKED", "YOU CLICKED ITEM with position: "+ position);
                 Log.i("HelloListView", "You clicked Item: " + id);
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(userID));
+                loggerServiceIntent.putExtra("issueID", String.valueOf(issueID));
+                loggerServiceIntent.putExtra("action", "NewsfeedClick");
+                startService(loggerServiceIntent);
+
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
                 intent.setClass(AlertTest.this, Response.class);
@@ -133,8 +142,6 @@ public class AlertTest extends Activity{
                     parseResult(result.toString());
                     Log.e("GAH", "url success ");
                 } catch (Exception ex) {
-
-
                     System.err.println(ex);
                 }
             }
@@ -186,9 +193,6 @@ public class AlertTest extends Activity{
 
 
 
-
-
-
     // parse result from server and send info to create geofences
     public void parseResult(String result){
         List<String> items = Arrays.asList(result.split("\\{"));
@@ -212,6 +216,13 @@ public class AlertTest extends Activity{
 
             geofenced_issuemap.put(id, new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id));
             buildGeofence(latitude,longitude,rad,Integer.toString(id));
+
+            // CREATE AN ACTION LOG
+            Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+            loggerServiceIntent.putExtra("userID", String.valueOf(userID));
+            loggerServiceIntent.putExtra("issueID", String.valueOf(id));
+            loggerServiceIntent.putExtra("action", "AddedGeofence");
+            startService(loggerServiceIntent);
         }
         Log.e("GAH", "url success1: " + items.get(1));
 
@@ -252,6 +263,10 @@ public class AlertTest extends Activity{
 
     public static Issue getIssue(int issue_id){
         return geofenced_issuemap.get(issue_id);
+    }
+
+    public static int getUserID(){
+        return userID;
     }
 }
 

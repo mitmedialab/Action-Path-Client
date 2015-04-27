@@ -48,6 +48,14 @@ public class Response extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
+                loggerServiceIntent.putExtra("action", "SurveyResponse");
+                startService(loggerServiceIntent);
+
                 Intent intent = new Intent(Response.this, AfterAction.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);
@@ -59,6 +67,14 @@ public class Response extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
+                loggerServiceIntent.putExtra("action", "SurveyResponse");
+                startService(loggerServiceIntent);
+
                 Intent intent = new Intent(Response.this, AfterAction.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);

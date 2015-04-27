@@ -162,9 +162,9 @@ public class LoggerService extends IntentService implements
     //QUESTION: Which actions need location data?
 //    AddedGeofence
 //    - timestamp, user id, geofence id
-//            LoadedLatestActions
+//    LoadedLatestActions------------------------------------
 //    - timestamp, user id, GPS coordinates
-//                              Entered (Geofence)
+//    Entered (Geofence)
 //    - timestamp, user id, geofence id, GPS coordinates
 //    NotificationClick
 //    - timestamp, user id, geofence id, GPS coordinates
@@ -173,6 +173,17 @@ public class LoggerService extends IntentService implements
 //    ThanksDismissed / Unfollowed Issue
 //    - timestamp, user id, geofence id
     // need: timestamp, user id, geofence id, gps coords, action
+    //actions: AddedGeofence
+    //         NewsfeedClick
+    //         NotificationRespondClick
+    //         NotificationIgnoreClick
+    //         SurveyResponse
+    //         EnteredGeofence
+    //         ThanksDismissed
+    //         UnfollowedIssue
+
+
+    //    what is LoadedLatestActions??
     public void logQueuedActions(){
            /* Insert data to a Table*/
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
