@@ -39,8 +39,6 @@ public class Issue {
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.place_id = place_id;
-
-
     }
 
     public String getIssueSummary(){
@@ -54,4 +52,17 @@ public class Issue {
     public String getIssueAddress(){
         return this.address;
     }
+
+    public void setUniqueID(int id){
+        this.id = id;
+    }
+
+    public double getLatitude(){
+        return this.latitude;
+    }
+
+    public double getLongitude(){
+        return this.longitude;
+    }
+
 }

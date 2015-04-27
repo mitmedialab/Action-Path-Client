@@ -46,10 +46,13 @@ public class AlertTest extends Activity{
 //    }
 
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
+
 
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
