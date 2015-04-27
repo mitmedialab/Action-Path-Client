@@ -10,7 +10,10 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -36,8 +39,13 @@ public class LoggerService extends IntentService implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener{
 
-    Location mCurrentLocation;
+    Location mLastLocation;
     LocationClient mLocationClient;
+
+    GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .addApi(Drive.API)
+            .addScope(Drive.SCOPE_FILE)
+            .build();
 
     Stack<ArrayList<String>> queuedActionLogs;
 
@@ -139,6 +147,10 @@ public class LoggerService extends IntentService implements
     public void onConnected(Bundle connectionHint) {
         // when connected, log queued locations
         logQueuedActions();
+
+        // also update last known location (current location)
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient);
     }
 
     @Override
@@ -162,7 +174,7 @@ public class LoggerService extends IntentService implements
     //QUESTION: Which actions need location data?
 //    AddedGeofence
 //    - timestamp, user id, geofence id
-//    LoadedLatestActions------------------------------------
+//    LoadedLatestActions
 //    - timestamp, user id, GPS coordinates
 //    Entered (Geofence)
 //    - timestamp, user id, geofence id, GPS coordinates
@@ -174,6 +186,7 @@ public class LoggerService extends IntentService implements
 //    - timestamp, user id, geofence id
     // need: timestamp, user id, geofence id, gps coords, action
     //actions: AddedGeofence
+    //         LoadedLatestActions
     //         NewsfeedClick
     //         NotificationRespondClick
     //         NotificationIgnoreClick
@@ -181,17 +194,18 @@ public class LoggerService extends IntentService implements
     //         EnteredGeofence
     //         ThanksDismissed
     //         UnfollowedIssue
-
-
-    //    what is LoadedLatestActions??
     public void logQueuedActions(){
            /* Insert data to a Table*/
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
         while(it.hasNext()){
             ArrayList<String> splitAction = it.next();
-            Issue issue = AlertTest.getIssue(Integer.valueOf(splitAction.get(2)));
-            String longitude = String.valueOf(issue.getLatitude());
-            String latitude = String.valueOf(issue.getLongitude());
+            String longitude = "";
+            String latitude = "";
+            if (mLastLocation != null) {
+                latitude = String.valueOf(mLastLocation.getLatitude());
+                longitude = String.valueOf(mLastLocation.getLongitude());
+            }
+
             myDB.execSQL("INSERT INTO "
                     + TableName
                     + " (timestamp, userID, geofenceID, lat, long, actionType)"
@@ -220,6 +234,7 @@ public class LoggerService extends IntentService implements
             e.printStackTrace();
         }
     }
+
 
 
 }

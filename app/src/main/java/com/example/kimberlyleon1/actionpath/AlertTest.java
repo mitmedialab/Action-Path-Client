@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.location.Geofence;
@@ -29,6 +30,8 @@ import java.util.List;
 // include: city following (account page where this can be edited), user_id
 
 public class AlertTest extends Activity{
+    private Button updateGeofences;
+
     public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
@@ -37,6 +40,7 @@ public class AlertTest extends Activity{
     public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
     String mString = "";
     static int userID;
+
 //
 //    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 //
@@ -125,7 +129,26 @@ public class AlertTest extends Activity{
         });
 
 
+        updateGeofences = (Button) findViewById(R.id.update);
+        updateGeofences.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", "n/a");
+                loggerServiceIntent.putExtra("action", "LoadedLatestActions");
+                startService(loggerServiceIntent);
+
+                getNewIssues();
+            }
+        });
+
+    }
+
+    public void getNewIssues(){
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run(){
@@ -147,8 +170,8 @@ public class AlertTest extends Activity{
             }
         });
         thread.start();
-
     }
+
 
 
     public void onStop() {
