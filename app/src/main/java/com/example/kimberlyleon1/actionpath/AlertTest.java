@@ -73,6 +73,23 @@ public class AlertTest extends Activity{
         buildGeofence(Cambridge_lat2,Cambridge_long2,Cambridge_rad,id2);
         Log.e("what is this why", "mapampamap: "+ geofenced_issuemap);
 
+        updateGeofences = (Button) findViewById(R.id.update);
+        updateGeofences.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                // CREATE AN ACTION LOG
+                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("issueID", "n/a");
+                loggerServiceIntent.putExtra("action", "LoadedLatestActions");
+                startService(loggerServiceIntent);
+                Log.e("gahhh", "load new issues");
+                getNewIssues();
+            }
+        });
+
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
@@ -126,24 +143,6 @@ public class AlertTest extends Activity{
                 startActivity(intent);
             }
 
-        });
-
-
-        updateGeofences = (Button) findViewById(R.id.update);
-        updateGeofences.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
-                loggerServiceIntent.putExtra("issueID", "n/a");
-                loggerServiceIntent.putExtra("action", "LoadedLatestActions");
-                startService(loggerServiceIntent);
-
-                getNewIssues();
-            }
         });
 
     }

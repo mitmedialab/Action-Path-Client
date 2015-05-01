@@ -53,7 +53,7 @@ public class LoggerService extends IntentService implements
     String storageFile = "geodata.txt";
 
     SQLiteDatabase myDB= null;
-    String TableName = "eventTable";
+    String TableName = "Action Table";
 
     public LoggerService(){
         super("LoggerService");
@@ -212,7 +212,14 @@ public class LoggerService extends IntentService implements
                     + " VALUES ("+splitAction.get(0)+", "+splitAction.get(1)+", "+splitAction.get(2)+", "+latitude+", "+longitude+", "+splitAction.get(3)+ ");");
         }
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
+        Intent logSyncServiceIntent = new Intent(LoggerService.this,LogSyncService.class);
+        logSyncServiceIntent.putExtra("syncType", "send");
+        startService(logSyncServiceIntent);
     }
+
+
+
+
 
     /// LOG CURRENT LOCATION TO A FILE
     public void logCurrentLocation(String timestamp, String action, String data, String latitude, String longitude){

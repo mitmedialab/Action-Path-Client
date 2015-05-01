@@ -1665,9 +1665,9 @@ containing a value of this type.
         public static final int action_mode_bar=0x7f09003f;
         public static final int action_mode_bar_stub=0x7f09003e;
         public static final int action_mode_close_button=0x7f090031;
-        public static final int action_settings=0x7f09006c;
+        public static final int action_settings=0x7f09006d;
         public static final int activity_chooser_view_content=0x7f090032;
-        public static final int address=0x7f090068;
+        public static final int address=0x7f090069;
         public static final int always=0x7f090019;
         public static final int beginning=0x7f090013;
         public static final int book_now=0x7f090029;
@@ -1707,7 +1707,7 @@ containing a value of this type.
         public static final int imageView=0x7f090057;
         public static final int listMode=0x7f090009;
         public static final int list_item=0x7f090036;
-        public static final int map=0x7f09006b;
+        public static final int map=0x7f09006c;
         public static final int match_parent=0x7f090028;
         public static final int middle=0x7f090015;
         public static final int monochrome=0x7f09002e;
@@ -1721,7 +1721,7 @@ containing a value of this type.
         public static final int radio=0x7f09003c;
         public static final int radioButton=0x7f090058;
         public static final int radioButton2=0x7f090059;
-        public static final int resolved_button=0x7f090069;
+        public static final int resolved_button=0x7f09006a;
         public static final int respond_issue=0x7f090052;
         public static final int sandbox=0x7f090024;
         public static final int satellite=0x7f090017;
@@ -1756,8 +1756,9 @@ containing a value of this type.
         public static final int textView7=0x7f090061;
         public static final int title=0x7f090038;
         public static final int unfollow_btn=0x7f090062;
-        public static final int unresolved_button=0x7f09006a;
+        public static final int unresolved_button=0x7f09006b;
         public static final int up=0x7f090008;
+        public static final int update=0x7f090068;
         public static final int useLogo=0x7f090012;
         public static final int withText=0x7f09001d;
         public static final int wrap_content=0x7f090020;
