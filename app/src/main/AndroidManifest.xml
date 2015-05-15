@@ -63,6 +63,20 @@
             android:exported="true"
             android:label="@string/app_name" >
         </service>
+        <service
+            android:name=".LoggerService"
+            android:icon="@drawable/ic_launcher"
+            android:label="ActionPath"
+            >
+            <intent-filter><action android:name="com.sample.service.serviceClass"></action>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".LogSyncService"
+            android:icon="@drawable/ic_launcher"
+            android:label="ActionPath"
+            >
+        </service>
     </application>
 
 </manifest>

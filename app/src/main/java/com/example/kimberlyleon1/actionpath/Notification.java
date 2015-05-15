@@ -44,11 +44,12 @@ public class Notification extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "NotificationIgnoreClick");
                 startService(loggerServiceIntent);
-
+                Log.e("Action","NotificationIgnoreClick Notification");
                 finish();
                 System.exit(0);
             }
@@ -61,11 +62,12 @@ public class Notification extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "NotificationRespondClick");
                 startService(loggerServiceIntent);
-
+                Log.e("Action","NotificationRespondClick Notification");
 
                 Intent intent = new Intent(Notification.this, Response.class);
                 intent.putExtra("issueID", id);

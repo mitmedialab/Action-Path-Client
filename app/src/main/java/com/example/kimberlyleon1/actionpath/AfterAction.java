@@ -32,10 +32,12 @@ public class AfterAction extends Activity{
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AfterAction.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "ThanksDismissed");
                 startService(loggerServiceIntent);
+                Log.e("Action","ThanksDismissed AfterAction");
 
                 Intent intent = new Intent(AfterAction.this, AlertTest.class);
                 intent.putExtra("followThisID", id);
@@ -52,11 +54,12 @@ public class AfterAction extends Activity{
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AfterAction.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "UnfollowedIssue");
                 startService(loggerServiceIntent);
-
+                Log.e("Action","UnfollowedIssue AfterAction");
                 Intent intent = new Intent(AfterAction.this, AlertTest.class);
                 startActivity(intent);
             }

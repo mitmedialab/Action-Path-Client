@@ -81,10 +81,12 @@ public class AlertTest extends Activity{
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", "n/a");
                 loggerServiceIntent.putExtra("action", "LoadedLatestActions");
                 startService(loggerServiceIntent);
+                Log.e("Action","LoadedLatestActions AlertTest");
                 Log.e("gahhh", "load new issues");
                 getNewIssues();
             }
@@ -131,10 +133,12 @@ public class AlertTest extends Activity{
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(userID));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(issueID));
                 loggerServiceIntent.putExtra("action", "NewsfeedClick");
                 startService(loggerServiceIntent);
+                Log.e("Action","NewsfeedClick AlertTest");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
@@ -241,10 +245,13 @@ public class AlertTest extends Activity{
 
             // CREATE AN ACTION LOG
             Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+            loggerServiceIntent.putExtra("logType", "action");
             loggerServiceIntent.putExtra("userID", String.valueOf(userID));
             loggerServiceIntent.putExtra("issueID", String.valueOf(id));
             loggerServiceIntent.putExtra("action", "AddedGeofence");
             startService(loggerServiceIntent);
+            Log.e("Action","AddedGeofence AlertTest");
+
         }
         Log.e("GAH", "url success1: " + items.get(1));
 

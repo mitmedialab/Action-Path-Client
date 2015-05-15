@@ -38,14 +38,10 @@ import java.util.Stack;
 public class LoggerService extends IntentService implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener{
+    private GoogleApiClient mGoogleApiClient;
 
     Location mLastLocation;
     LocationClient mLocationClient;
-
-    GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-            .addApi(Drive.API)
-            .addScope(Drive.SCOPE_FILE)
-            .build();
 
     Stack<ArrayList<String>> queuedActionLogs;
 
@@ -53,7 +49,7 @@ public class LoggerService extends IntentService implements
     String storageFile = "geodata.txt";
 
     SQLiteDatabase myDB= null;
-    String TableName = "Action Table";
+    private static final String TableName = "Actions";
 
     public LoggerService(){
         super("LoggerService");
@@ -64,19 +60,22 @@ public class LoggerService extends IntentService implements
         super.onCreate();
         mLocationClient = new LocationClient(this, this, this);
         queuedActionLogs = new Stack<ArrayList<String>>();
+        // Create a GoogleApiClient instance
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .build();
+        Intent intent=new Intent("com.sample.service.serviceClass");
+        this.startService(intent);
 
-
-
-        String Data="";
 
   /* Create a Database. */
         try {
             myDB = this.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
-
    /* Create a Table in the Database. */
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + TableName
-                    + " (timestamp TEXT, userID TEXT, geofenceID TEXT, lat TEXT, long TEXT, actionType TEXT);");
+                    + "  (timestamp VARCHAR, userID VARCHAR, geofenceID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR);");
 
 //   /*retrieve data from database */
 //            Cursor c = myDB.rawQuery("SELECT * FROM " + TableName , null);
@@ -102,10 +101,20 @@ public class LoggerService extends IntentService implements
             Log.e("Error", "Error", e);
         } finally {
             if (myDB != null)
+                Log.e("Error", "Error finally");
                 myDB.close();
         }
 
 
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("LOGGERSERVICE","NEW THING");
+        onHandleIntent(intent);
+        // We want this service to continue running until it is explicitly
+        // stopped, so return sticky.
+        return START_STICKY;
     }
 
 
@@ -113,8 +122,9 @@ public class LoggerService extends IntentService implements
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
 
-        Bundle extras = intent.getExtras();
+        Log.e("LOGGERSERVICE","LOGGERSERVICEHGALSDKFLAKSDFMALSD");
         String logType = intent.getStringExtra("logType");
+        Log.e("logtype",logType);
         Log.i("LoggerService", logType);
         if(logType.equals("action")) {
             String userID = String.valueOf(intent.getStringExtra("userID"));
@@ -205,11 +215,11 @@ public class LoggerService extends IntentService implements
                 latitude = String.valueOf(mLastLocation.getLatitude());
                 longitude = String.valueOf(mLastLocation.getLongitude());
             }
-
+            myDB = this.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
             myDB.execSQL("INSERT INTO "
                     + TableName
-                    + " (timestamp, userID, geofenceID, lat, long, actionType)"
-                    + " VALUES ("+splitAction.get(0)+", "+splitAction.get(1)+", "+splitAction.get(2)+", "+latitude+", "+longitude+", "+splitAction.get(3)+ ");");
+//                    + " (timestamp, userID, issueID, lat, long, actionType)"
+                    + " VALUES ('"+splitAction.get(0)+"','"+splitAction.get(1)+"','"+splitAction.get(2)+"','"+latitude+"','"+longitude+"','"+splitAction.get(3)+"');");
         }
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
         Intent logSyncServiceIntent = new Intent(LoggerService.this,LogSyncService.class);
@@ -219,7 +229,13 @@ public class LoggerService extends IntentService implements
 
 
 
-
+//    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+//    {
+//
+//        db.execSQL("DROP TABLE IF IT EXISTS " + TableName);
+//        Log.d("onUpgrade", "dropping table");
+//        onCreate(db);
+//    }
 
     /// LOG CURRENT LOCATION TO A FILE
     public void logCurrentLocation(String timestamp, String action, String data, String latitude, String longitude){

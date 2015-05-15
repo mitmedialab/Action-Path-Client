@@ -51,10 +51,12 @@ public class Response extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);
+                Log.e("Action","SurveyResponse1 Response");
 
                 Intent intent = new Intent(Response.this, AfterAction.class);
                 intent.putExtra("issueID", id);
@@ -70,10 +72,12 @@ public class Response extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);
+                Log.e("Action","SurveyResponse2 Response");
 
                 Intent intent = new Intent(Response.this, AfterAction.class);
                 intent.putExtra("issueID", id);
