@@ -70,7 +70,7 @@ public class LoggerService extends IntentService implements
                 .addApi(Drive.API)
                 .addScope(Drive.SCOPE_FILE)
                 .build();
-        Intent intent=new Intent("org.actionpath.logging.LoggerService");
+        Intent intent=new Intent(getApplicationContext(),this.getClass());
         this.startService(intent);
 
 
@@ -104,10 +104,6 @@ public class LoggerService extends IntentService implements
         }
         catch(Exception e) {
             Log.e("LoggerService", "Could not create logging db and table: "+e.toString());
-        } finally {
-            if (myDB != null)
-                Log.e("LoggerService", "Really couldn't make the logging DB :-(");
-                myDB.close();
         }
 
     }
