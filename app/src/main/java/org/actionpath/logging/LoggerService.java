@@ -40,16 +40,21 @@ public class LoggerService extends IntentService implements
         GooglePlayServicesClient.OnConnectionFailedListener{
     private GoogleApiClient mGoogleApiClient;
 
+    public static final String PARAM_LOG_TYPE = "logType";
+    public static final String LOG_TYPE_ACTION = "action";
+    public static final String PARAM_USER_ID = "userID";
+    public static final String PARAM_ISSUE_ID = "issueID";
+    public static final String PARAM_ACTION = "action";
+
+    public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/logging";
+    public static final String DB_TABLE_NAME = "actions";
+
     Location mLastLocation;
     LocationClient mLocationClient;
 
     Stack<ArrayList<String>> queuedActionLogs;
 
-    String storagePath = "/Android/data/action_path";
-    String storageFile = "geodata.txt";
-
     SQLiteDatabase myDB= null;
-    private static final String TableName = "Actions";
 
     public LoggerService(){
         super("LoggerService");
@@ -65,16 +70,16 @@ public class LoggerService extends IntentService implements
                 .addApi(Drive.API)
                 .addScope(Drive.SCOPE_FILE)
                 .build();
-        Intent intent=new Intent("com.sample.service.serviceClass");
+        Intent intent=new Intent("org.actionpath.logging.LoggerService");
         this.startService(intent);
 
 
   /* Create a Database. */
         try {
-            myDB = this.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
+            myDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
    /* Create a Table in the Database. */
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "
-                    + TableName
+                    + DB_TABLE_NAME
                     + "  (timestamp VARCHAR, userID VARCHAR, geofenceID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR);");
 
 //   /*retrieve data from database */
@@ -98,39 +103,33 @@ public class LoggerService extends IntentService implements
 //            setContentView(tv);
         }
         catch(Exception e) {
-            Log.e("Error", "Error", e);
+            Log.e("LoggerService", "Could not create logging db and table: "+e.toString());
         } finally {
             if (myDB != null)
-                Log.e("Error", "Error finally");
+                Log.e("LoggerService", "Really couldn't make the logging DB :-(");
                 myDB.close();
         }
-
 
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("LOGGERSERVICE","NEW THING");
+        Log.d("LoggerService","Starting ");
         onHandleIntent(intent);
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
         return START_STICKY;
     }
 
-
     @Override
     protected void onHandleIntent(Intent intent) {
-        // TODO Auto-generated method stub
-
-        Log.e("LOGGERSERVICE","LOGGERSERVICEHGALSDKFLAKSDFMALSD");
         String logType = intent.getStringExtra("logType");
-        Log.e("logtype",logType);
-        Log.i("LoggerService", logType);
-        if(logType.equals("action")) {
-            String userID = String.valueOf(intent.getStringExtra("userID"));
-            String issueID = intent.getStringExtra("issueID");
-            String action = intent.getStringExtra("action");
-            Log.i("LoggerAction", action);
+        Log.i("LoggerService", "recieved intent to log "+logType);
+        if (logType.equals(LOG_TYPE_ACTION)) {
+            String userID = String.valueOf(intent.getStringExtra(PARAM_USER_ID));
+            String issueID = intent.getStringExtra(PARAM_ISSUE_ID);
+            String action = intent.getStringExtra(PARAM_ACTION);
+            Log.d("LoggerService", "action is "+action);
             queueAction(userID, issueID, action);
         }
     }
@@ -217,7 +216,7 @@ public class LoggerService extends IntentService implements
             }
             myDB = this.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
             myDB.execSQL("INSERT INTO "
-                    + TableName
+                    + DB_TABLE_NAME
 //                    + " (timestamp, userID, issueID, lat, long, actionType)"
                     + " VALUES ('"+splitAction.get(0)+"','"+splitAction.get(1)+"','"+splitAction.get(2)+"','"+latitude+"','"+longitude+"','"+splitAction.get(3)+"');");
         }
@@ -236,28 +235,6 @@ public class LoggerService extends IntentService implements
 //        Log.d("onUpgrade", "dropping table");
 //        onCreate(db);
 //    }
-
-    /// LOG CURRENT LOCATION TO A FILE
-    public void logCurrentLocation(String timestamp, String action, String data, String latitude, String longitude){
-        try{
-            String root = Environment.getExternalStorageDirectory().getAbsolutePath().toString();
-            File dir = new File(root + storagePath);
-            Log.i("LogCurrentLocation",root);
-            if(dir.mkdirs() || dir.isDirectory()){
-
-                FileWriter write = new FileWriter(root + storagePath + File.separator + storageFile, true);
-                String line = timestamp + "," + action + "," + data +
-                        "," + latitude + "," + longitude+"\n";
-                Log.i("LogCurrentLocation",line);
-                write.append(line);
-                write.flush();
-                write.close();
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-    }
-
 
 
 }

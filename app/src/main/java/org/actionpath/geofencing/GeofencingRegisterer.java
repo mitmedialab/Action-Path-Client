@@ -65,12 +65,12 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                     // Successfully registered
                     if(mCallback != null){
                         mCallback.onGeofencesRegisteredSuccessful();
-                        Log.e(TAG, "callback not null: " + status.getStatusMessage());
+                        Log.d(TAG, "callback not null: " + status.getStatusMessage());
                     }
 
 
 
-                    Log.e(TAG, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
+                    Log.d(TAG, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
                 } else if (status.hasResolution()) {
                     // Google provides a way to fix the issue
                     /*
@@ -94,7 +94,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
             mCallback.onApiClientSuspended();
         }
 
-        Log.e(TAG, "onConnectionSuspended: " + i);
+        Log.d(TAG, "onConnectionSuspended: " + i);
     }
 
     @Override

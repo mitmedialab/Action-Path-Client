@@ -28,16 +28,14 @@ public class LogSyncService extends IntentService{
         // TODO Auto-generated method stub
         String logType = intent.getStringExtra("syncType");
         if(logType.equals("send")) {
-            Log.e("POST REQUEST", "POSTPOSTPOSTPOSTPOSTPSOTPSOTSPTO");
+            Log.d("POST REQUEST", "POSTPOSTPOSTPOSTPOSTPSOTPSOTSPTO");
             sendSQL();
         }
     }
 
     private JSONArray getResults(){
-        String myPath = "/Android/data/action_path";// Set path to your database
-        String myTable = "Action Table";//Set name of your table
-        SQLiteDatabase myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
-        String searchQuery = "SELECT  * FROM " + myTable;
+        SQLiteDatabase myDataBase = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READONLY);
+        String searchQuery = "SELECT  * FROM " + LoggerService.DB_TABLE_NAME;
         Cursor cursor = myDataBase.rawQuery(searchQuery, null );
         JSONArray resultSet = new JSONArray();
         cursor.moveToFirst();
@@ -63,7 +61,7 @@ public class LogSyncService extends IntentService{
         }
         cursor.close();
         Log.d("TAG_NAME", resultSet.toString() );
-        Log.e("json data", resultSet.toString());
+        Log.d("json data", resultSet.toString());
         return resultSet;
     }
 

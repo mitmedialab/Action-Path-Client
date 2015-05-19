@@ -75,7 +75,7 @@ public class MainActivity extends Activity{
 
         geofenced_issuemap.put(Integer.parseInt(id2), new Issue(Integer.parseInt(id2), "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841));
         buildGeofence(Cambridge_lat2,Cambridge_long2,Cambridge_rad,id2);
-        Log.e("what is this why", "mapampamap: "+ geofenced_issuemap);
+        Log.e("Main Activity", "issue map is: "+ geofenced_issuemap);
 
         updateGeofences = (Button) findViewById(R.id.update);
         updateGeofences.setOnClickListener(new View.OnClickListener() {
@@ -85,13 +85,13 @@ public class MainActivity extends Activity{
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra("issueID", "n/a");
-                loggerServiceIntent.putExtra("action", "LoadedLatestActions");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "n/a");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, "LoadedLatestIssues");
                 startService(loggerServiceIntent);
-                Log.e("Action","LoadedLatestActions AlertTest");
-                Log.e("gahhh", "load new issues");
+                Log.d("MainActivity","LoadedLatestActions AlertTest");
+                Log.d("MainActivity", "load new issues");
                 getNewIssues();
             }
         });
@@ -100,7 +100,7 @@ public class MainActivity extends Activity{
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
             int int_id = bundle.getInt("followThisID");
-            Log.e("and now we are here", "issue id from response: " + id);
+            Log.d("MainActivity", "issue id from response: " + id);
             Issue issue = MainActivity.getIssue(int_id);
             String issue_summary = issue.getIssueSummary();
             newsfeedList.add(issue_summary);
@@ -111,7 +111,7 @@ public class MainActivity extends Activity{
 
         if (mString != ""){
             List<String> nums = Arrays.asList(mString.split(","));
-            Log.e("split string", nums.get(0));
+            Log.d("MainActivity", nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
                 Issue issue = MainActivity.getIssue(old_id);
@@ -131,8 +131,8 @@ public class MainActivity extends Activity{
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 int issueID = newsfeedIDs.get(position);
-                Log.e("CLICKED", "YOU CLICKED ITEM with id: "+ issueID);
-                Log.e("CLICKED", "YOU CLICKED ITEM with position: "+ position);
+                Log.d("MainActivity", "YOU CLICKED ITEM with id: "+ issueID);
+                Log.d("MainActivity", "YOU CLICKED ITEM with position: "+ position);
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
@@ -142,7 +142,7 @@ public class MainActivity extends Activity{
                 loggerServiceIntent.putExtra("issueID", String.valueOf(issueID));
                 loggerServiceIntent.putExtra("action", "NewsfeedClick");
                 startService(loggerServiceIntent);
-                Log.e("Action","NewsfeedClick AlertTest");
+                Log.d("Action","NewsfeedClick AlertTest");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
@@ -170,9 +170,9 @@ public class MainActivity extends Activity{
                     }
 
                     parseResult(result.toString());
-                    Log.e("GAH", "url success ");
+                    Log.i("GAH", "url success ");
                 } catch (Exception ex) {
-                    System.err.println(ex);
+                    Log.e("MainActivity","Failed! "+ex.toString());
                 }
             }
         });
@@ -254,10 +254,10 @@ public class MainActivity extends Activity{
             loggerServiceIntent.putExtra("issueID", String.valueOf(id));
             loggerServiceIntent.putExtra("action", "AddedGeofence");
             startService(loggerServiceIntent);
-            Log.e("Action","AddedGeofence AlertTest");
+            Log.d("Action","AddedGeofence AlertTest");
 
         }
-        Log.e("GAH", "url success1: " + items.get(1));
+        Log.d("GAH", "url success1: " + items.get(1));
 
     }
 
