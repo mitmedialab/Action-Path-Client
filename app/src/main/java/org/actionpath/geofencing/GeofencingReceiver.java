@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
 
-import org.actionpath.AlertTest;
+import org.actionpath.MainActivity;
 import org.actionpath.issues.Issue;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.R;
@@ -24,7 +24,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         // CREATE AN ACTION LOG
         Intent loggerServiceIntent = new Intent(GeofencingReceiver.this,LoggerService.class);
         loggerServiceIntent.putExtra("logType", "action");
-        loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+        loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
         loggerServiceIntent.putExtra("issueID", String.valueOf(strings[0]));
         loggerServiceIntent.putExtra("action", "EnteredGeofence");
         startService(loggerServiceIntent);
@@ -32,12 +32,12 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
 
         //change so it takes in a list of strings
-        //ex: String[] alert where
-        //alert[0] is latitude
-        //alert[1] is longitude
-        //alert[2] is Name of alert
-        //alert[3] is a short description of the alert
-        //alert[4] is a picture url??
+        //ex: String[] main where
+        //main[0] is latitude
+        //main[1] is longitude
+        //main[2] is Name of main
+        //main[3] is a short description of the main
+        //main[4] is a picture url??
 //        openAlert(strings);
     }
 
@@ -71,7 +71,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.e("yo", "issue id: "+ issueID);
 
         int id = Integer.parseInt(issueID);
-        Issue issue = AlertTest.getIssue(id);
+        Issue issue = MainActivity.getIssue(id);
         Log.e("issue", "this issue: "+issue);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
@@ -126,7 +126,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.v("INTENT","returning an intent for SurveyActivity.class");
 
         int id = Integer.parseInt(issueID);
-        Issue issue = AlertTest.getIssue(id);
+        Issue issue = MainActivity.getIssue(id);
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, org.actionpath.Notification.class)

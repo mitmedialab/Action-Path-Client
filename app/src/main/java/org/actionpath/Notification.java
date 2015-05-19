@@ -31,7 +31,7 @@ public class Notification extends Activity {
             id = Integer.parseInt(bundle.getString("issueID"));
             Log.e("yusss we are here", "issue id from notification: "+ id);
         }
-        Issue issue = AlertTest.getIssue(id);
+        Issue issue = MainActivity.getIssue(id);
         String issue_description = issue.getIssueDescription();
 
 
@@ -48,7 +48,7 @@ public class Notification extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "NotificationIgnoreClick");
                 startService(loggerServiceIntent);
@@ -66,7 +66,7 @@ public class Notification extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "NotificationRespondClick");
                 startService(loggerServiceIntent);

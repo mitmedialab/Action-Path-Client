@@ -33,7 +33,7 @@ public class Response extends Activity {
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt("issueID");
         Log.e("and now we are here", "issue id from response: " + id);
-        Issue issue = AlertTest.getIssue(id);
+        Issue issue = MainActivity.getIssue(id);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
 
@@ -55,7 +55,7 @@ public class Response extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);
@@ -76,7 +76,7 @@ public class Response extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);

@@ -33,7 +33,7 @@ import java.util.List;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class AlertTest extends Activity{
+public class MainActivity extends Activity{
     private Button updateGeofences;
 
     public static final String MY_PREFS_NAME = "PREFIDS";
@@ -84,9 +84,9 @@ public class AlertTest extends Activity{
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(AlertTest.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", "n/a");
                 loggerServiceIntent.putExtra("action", "LoadedLatestActions");
                 startService(loggerServiceIntent);
@@ -101,7 +101,7 @@ public class AlertTest extends Activity{
         if (bundle != null){
             int int_id = bundle.getInt("followThisID");
             Log.e("and now we are here", "issue id from response: " + id);
-            Issue issue = AlertTest.getIssue(int_id);
+            Issue issue = MainActivity.getIssue(int_id);
             String issue_summary = issue.getIssueSummary();
             newsfeedList.add(issue_summary);
             newsfeedIDs.add(int_id);
@@ -114,7 +114,7 @@ public class AlertTest extends Activity{
             Log.e("split string", nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
-                Issue issue = AlertTest.getIssue(old_id);
+                Issue issue = MainActivity.getIssue(old_id);
                 String issue_summary = issue.getIssueSummary();
                 newsfeedList.add(issue_summary);
                 newsfeedIDs.add(old_id);
@@ -136,7 +136,7 @@ public class AlertTest extends Activity{
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(userID));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(issueID));
@@ -146,7 +146,7 @@ public class AlertTest extends Activity{
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
-                intent.setClass(AlertTest.this, Response.class);
+                intent.setClass(MainActivity.this, Response.class);
                 intent.putExtra("issueID", issueID);
                 startActivity(intent);
             }
@@ -248,7 +248,7 @@ public class AlertTest extends Activity{
             buildGeofence(latitude,longitude,rad,Integer.toString(id));
 
             // CREATE AN ACTION LOG
-            Intent loggerServiceIntent = new Intent(AlertTest.this,LoggerService.class);
+            Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
             loggerServiceIntent.putExtra("logType", "action");
             loggerServiceIntent.putExtra("userID", String.valueOf(userID));
             loggerServiceIntent.putExtra("issueID", String.valueOf(id));
