@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.logging;
 
 import android.app.IntentService;
 import android.content.Intent;

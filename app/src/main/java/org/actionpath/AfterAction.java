@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.actionpath.logging.LoggerService;
+
 public class AfterAction extends Activity{
 
     private Button unfollowBtn;

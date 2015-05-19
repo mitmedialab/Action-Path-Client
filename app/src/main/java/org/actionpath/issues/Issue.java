@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.issues;
 
 import java.util.Date;
 

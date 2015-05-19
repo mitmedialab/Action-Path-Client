@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.geofencing;
 
 import android.app.PendingIntent;
 import android.content.Context;

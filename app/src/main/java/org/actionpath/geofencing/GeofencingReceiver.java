@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.geofencing;
 
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -6,6 +6,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
+
+import org.actionpath.AlertTest;
+import org.actionpath.issues.Issue;
+import org.actionpath.logging.LoggerService;
+import org.actionpath.R;
 
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {

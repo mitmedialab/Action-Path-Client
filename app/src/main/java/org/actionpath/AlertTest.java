@@ -14,6 +14,10 @@ import android.widget.ListView;
 
 import com.google.android.gms.location.Geofence;
 
+import org.actionpath.geofencing.GeofencingRegisterer;
+import org.actionpath.issues.Issue;
+import org.actionpath.logging.LoggerService;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;

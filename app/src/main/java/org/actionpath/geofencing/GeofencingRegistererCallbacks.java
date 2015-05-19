@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.geofencing;
 
 import com.google.android.gms.common.ConnectionResult;
 
