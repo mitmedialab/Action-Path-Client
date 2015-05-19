@@ -1,4 +1,4 @@
-package com.example.kimberlyleon1.actionpath;
+package org.actionpath;
 
 import android.app.Activity;
 import android.content.Context;

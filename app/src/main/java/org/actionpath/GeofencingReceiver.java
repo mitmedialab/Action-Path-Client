@@ -1,4 +1,4 @@
-package com.example.kimberlyleon1.actionpath;
+package org.actionpath;
 
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -124,7 +124,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Issue issue = AlertTest.getIssue(id);
         String summary = issue.getIssueSummary();
 
-        Intent surveyIntent = new Intent(this, com.example.kimberlyleon1.actionpath.Notification.class)
+        Intent surveyIntent = new Intent(this, org.actionpath.Notification.class)
                 .putExtra("issueID", issueID)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
