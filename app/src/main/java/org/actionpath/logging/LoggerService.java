@@ -76,7 +76,7 @@ public class LoggerService extends IntentService implements
 
   /* Create a Database. */
         try {
-            myDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
+            myDB = this.openOrCreateDatabase(DATABASE_PATH, SQLiteDatabase.CREATE_IF_NECESSARY, null);
    /* Create a Table in the Database. */
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + DB_TABLE_NAME
