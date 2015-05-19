@@ -80,6 +80,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                     // onActivityResult method to retry registering
                     */
                 } else {
+                    //TODO: check errr code, if 1000 pop up dialog asking user to enable location in settings
                     // No recovery. Weep softly or inform the user.
                     Log.e(TAG, "Status code: " + status.getStatusCode());
                     Log.e(TAG, "Registering failed: " + status.getStatusMessage());

@@ -28,7 +28,7 @@ public class LogSyncService extends IntentService{
         // TODO Auto-generated method stub
         String logType = intent.getStringExtra("syncType");
         if(logType.equals("send")) {
-            Log.d("POST REQUEST", "POSTPOSTPOSTPOSTPOSTPSOTPSOTSPTO");
+            Log.d("LogSyncService", "Request to send new logs");
             sendSQL();
         }
     }
@@ -46,13 +46,13 @@ public class LogSyncService extends IntentService{
                 if( cursor.getColumnName(i) != null ){
                     try{
                         if( cursor.getString(i) != null ){
-                            Log.d("TAG_NAME", cursor.getString(i));
-                            rowObject.put(cursor.getColumnName(i) ,  cursor.getString(i) );
+                            //Log.d("LogSyncService", "  "+cursor.getString(i));
+                            rowObject.put(cursor.getColumnName(i), cursor.getString(i));
                         }else{
                             rowObject.put( cursor.getColumnName(i) ,  "" );
                         }
                     }catch( Exception e ){
-                        Log.d("TAG_NAME", e.getMessage()  );
+                        Log.e("LogSyncService", e.getMessage()  );
                     }
                 }
             }
@@ -60,8 +60,7 @@ public class LogSyncService extends IntentService{
             cursor.moveToNext();
         }
         cursor.close();
-        Log.d("TAG_NAME", resultSet.toString() );
-        Log.d("json data", resultSet.toString());
+        Log.d("LogSyncService", "JSON TO UPLOAD: "+resultSet.toString());
         return resultSet;
     }
 
@@ -77,10 +76,8 @@ public class LogSyncService extends IntentService{
                 try {
                     // Add your data
                     httppost.setEntity(new ByteArrayEntity(sendJSON.toString().getBytes("UTF8")));
-
                     // Execute HTTP Post Request
                     HttpResponse response = httpclient.execute(httppost);
-
                 } catch (ClientProtocolException e) {
                     // TODO Auto-generated catch block
                 } catch (IOException e) {

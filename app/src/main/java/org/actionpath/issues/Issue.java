@@ -65,4 +65,8 @@ public class Issue {
         return this.longitude;
     }
 
+    public String toString(){
+        return "issue"+this.id;
+    }
+
 }

@@ -172,7 +172,7 @@ public class MainActivity extends Activity{
                     parseResult(result.toString());
                     Log.i("GAH", "url success ");
                 } catch (Exception ex) {
-                    Log.e("MainActivity","Failed! "+ex.toString());
+                    Log.e("MainActivity", "Failed! " + ex.toString());
                 }
             }
         });
@@ -221,10 +221,10 @@ public class MainActivity extends Activity{
 
     }
 
-
-
     // parse result from server and send info to create geofences
     public void parseResult(String result){
+        //TODO: replace with a real JSON parser
+        int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
         for (int i=1; i< items.size(); i++){
             String single_issue = items.get(i);
@@ -242,11 +242,12 @@ public class MainActivity extends Activity{
             //STRING --> DATE DOESN'T WORK
             Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
-            int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length()-2));
-
-            geofenced_issuemap.put(id, new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id));
-            buildGeofence(latitude,longitude,rad,Integer.toString(id));
-
+            int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
+            Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
+            geofenced_issuemap.put(id, newIssue);
+            Log.d("MainActivity", "  AddedIssue " + newIssue);
+            buildGeofence(latitude, longitude, rad, Integer.toString(id));
+            newIssueCount++;
             // CREATE AN ACTION LOG
             Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
             loggerServiceIntent.putExtra("logType", "action");
@@ -254,10 +255,9 @@ public class MainActivity extends Activity{
             loggerServiceIntent.putExtra("issueID", String.valueOf(id));
             loggerServiceIntent.putExtra("action", "AddedGeofence");
             startService(loggerServiceIntent);
-            Log.d("Action","AddedGeofence AlertTest");
 
         }
-        Log.d("GAH", "url success1: " + items.get(1));
+        Log.d("MainActivity", "Added "+newIssueCount+ "geofence");
 
     }
 
