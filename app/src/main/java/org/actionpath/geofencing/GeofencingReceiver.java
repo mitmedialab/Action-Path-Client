@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.actionpath.MainActivity;
+import org.actionpath.NotificationActivity;
 import org.actionpath.issues.Issue;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.R;
@@ -129,7 +130,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Issue issue = MainActivity.getIssue(id);
         String summary = issue.getIssueSummary();
 
-        Intent surveyIntent = new Intent(this, org.actionpath.Notification.class)
+        Intent surveyIntent = new Intent(this, NotificationActivity.class)
                 .putExtra("issueID", issueID)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 

@@ -146,7 +146,7 @@ public class MainActivity extends Activity{
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
-                intent.setClass(MainActivity.this, Response.class);
+                intent.setClass(MainActivity.this, ResponseActivity.class);
                 intent.putExtra("issueID", issueID);
                 startActivity(intent);
             }

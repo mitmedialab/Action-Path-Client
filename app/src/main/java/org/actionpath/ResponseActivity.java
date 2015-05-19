@@ -13,7 +13,7 @@ import org.actionpath.issues.Issue;
 import org.actionpath.logging.LoggerService;
 
 
-public class Response extends Activity {
+public class ResponseActivity extends Activity {
 
 //    private RadioGroup radioGroup;
     private Button resBtn;
@@ -53,7 +53,7 @@ public class Response extends Activity {
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(ResponseActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
@@ -61,7 +61,7 @@ public class Response extends Activity {
                 startService(loggerServiceIntent);
                 Log.e("Action","SurveyResponse1 Response");
 
-                Intent intent = new Intent(Response.this, AfterAction.class);
+                Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);
             }
@@ -74,7 +74,7 @@ public class Response extends Activity {
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(Response.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(ResponseActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
@@ -82,7 +82,7 @@ public class Response extends Activity {
                 startService(loggerServiceIntent);
                 Log.e("Action","SurveyResponse2 Response");
 
-                Intent intent = new Intent(Response.this, AfterAction.class);
+                Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);
             }

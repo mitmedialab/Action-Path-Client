@@ -14,7 +14,7 @@ import org.actionpath.issues.Issue;
 import org.actionpath.logging.LoggerService;
 
 
-public class Notification extends Activity {
+public class NotificationActivity extends Activity {
 
     int id = 0;
     private TextView description;
@@ -46,7 +46,7 @@ public class Notification extends Activity {
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(NotificationActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
@@ -64,7 +64,7 @@ public class Notification extends Activity {
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(Notification.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(NotificationActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
@@ -72,7 +72,7 @@ public class Notification extends Activity {
                 startService(loggerServiceIntent);
                 Log.e("Action","NotificationRespondClick Notification");
 
-                Intent intent = new Intent(Notification.this, Response.class);
+                Intent intent = new Intent(NotificationActivity.this, ResponseActivity.class);
                 intent.putExtra("issueID", id);
                 startActivity(intent);
             }
@@ -90,7 +90,7 @@ public class Notification extends Activity {
 
 
     public void toResponse(View view) {
-        Intent intent = new Intent(view.getContext(), Response.class);
+        Intent intent = new Intent(view.getContext(), ResponseActivity.class);
         startActivityForResult(intent, 0);
     }
 }

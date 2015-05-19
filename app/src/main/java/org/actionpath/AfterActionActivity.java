@@ -9,7 +9,7 @@ import android.widget.Button;
 
 import org.actionpath.logging.LoggerService;
 
-public class AfterAction extends Activity{
+public class AfterActionActivity extends Activity{
 
     private Button unfollowBtn;
     private Button homeBtn;
@@ -33,7 +33,7 @@ public class AfterAction extends Activity{
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AfterAction.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
@@ -41,7 +41,7 @@ public class AfterAction extends Activity{
                 startService(loggerServiceIntent);
                 Log.e("Action","ThanksDismissed AfterAction");
 
-                Intent intent = new Intent(AfterAction.this, MainActivity.class);
+                Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
                 intent.putExtra("followThisID", id);
                 startActivity(intent);
             }
@@ -55,14 +55,14 @@ public class AfterAction extends Activity{
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AfterAction.this,LoggerService.class);
+                Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
                 loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "UnfollowedIssue");
                 startService(loggerServiceIntent);
                 Log.e("Action","UnfollowedIssue AfterAction");
-                Intent intent = new Intent(AfterAction.this, MainActivity.class);
+                Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
