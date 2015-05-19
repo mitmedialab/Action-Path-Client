@@ -26,8 +26,8 @@ public class LogSyncService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
-        String logType = intent.getStringExtra("syncType");
-        if(logType.equals("send")) {
+        String logType = intent.getStringExtra("syncType"); //TODO: make this a constant
+        if(logType.equals("send")) {    //TODO: make this a constant
             Log.d("LogSyncService", "Request to send new logs");
             sendSQL();
         }

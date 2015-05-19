@@ -41,7 +41,7 @@ public class MainActivity extends Activity{
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     final float rad = 500;
     ListView listview;
-    public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();
+    public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();//TODO: move this into a new IssueDB class inside issues package
     String mString = "";
     static int userID;
 
