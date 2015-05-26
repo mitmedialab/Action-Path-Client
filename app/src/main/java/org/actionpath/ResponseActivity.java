@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 
 
@@ -33,7 +34,7 @@ public class ResponseActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt("issueID");
         Log.e("and now we are here", "issue id from response: " + id);
-        Issue issue = MainActivity.getIssue(id);
+        Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
 

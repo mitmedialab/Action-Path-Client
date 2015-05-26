@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 
 
@@ -31,7 +32,7 @@ public class NotificationActivity extends Activity {
             id = Integer.parseInt(bundle.getString("issueID"));
             Log.e("yusss we are here", "issue id from notification: "+ id);
         }
-        Issue issue = MainActivity.getIssue(id);
+        Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
 
 

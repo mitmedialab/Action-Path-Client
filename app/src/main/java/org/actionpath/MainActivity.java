@@ -16,6 +16,7 @@ import com.google.android.gms.location.Geofence;
 
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 
 import java.io.BufferedReader;
@@ -36,12 +37,13 @@ import java.util.List;
 public class MainActivity extends Activity{
     private Button updateGeofences;
 
+    private IssueDatabase issueDB;
+
     public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     final float rad = 500;
     ListView listview;
-    public static HashMap<Integer, Issue> geofenced_issuemap = new HashMap<>();//TODO: move this into a new IssueDB class inside issues package
     String mString = "";
     static int userID;
 
@@ -59,6 +61,7 @@ public class MainActivity extends Activity{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        issueDB = IssueDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
         userID = 0;
@@ -70,12 +73,13 @@ public class MainActivity extends Activity{
         final double Cambridge_long2 = -71.093666;
         String id = "1234";
         String id2 = "2345";
-        geofenced_issuemap.put(Integer.parseInt(id), new Issue(Integer.parseInt(id), "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "null", null, null, 9841));
-        buildGeofence(Cambridge_lat,Cambridge_long,Cambridge_rad,id);
-
-        geofenced_issuemap.put(Integer.parseInt(id2), new Issue(Integer.parseInt(id2), "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841));
+        Issue testIssue1 = new Issue(Integer.parseInt(id), "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "null", null, null, 9841);
+        issueDB.add(Integer.parseInt(id),testIssue1);
+        buildGeofence(Cambridge_lat, Cambridge_long, Cambridge_rad, id);
+        Issue testIssue2 = new Issue(Integer.parseInt(id2), "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841);
+        issueDB.add(Integer.parseInt(id2), testIssue2);
         buildGeofence(Cambridge_lat2,Cambridge_long2,Cambridge_rad,id2);
-        Log.e("Main Activity", "issue map is: "+ geofenced_issuemap);
+        Log.d("Main Activity", "added test issues to issuedb");
 
         updateGeofences = (Button) findViewById(R.id.update);
         updateGeofences.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +105,7 @@ public class MainActivity extends Activity{
         if (bundle != null){
             int int_id = bundle.getInt("followThisID");
             Log.d("MainActivity", "issue id from response: " + id);
-            Issue issue = MainActivity.getIssue(int_id);
+            Issue issue = issueDB.get(int_id);
             String issue_summary = issue.getIssueSummary();
             newsfeedList.add(issue_summary);
             newsfeedIDs.add(int_id);
@@ -114,7 +118,7 @@ public class MainActivity extends Activity{
             Log.d("MainActivity", nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
-                Issue issue = MainActivity.getIssue(old_id);
+                Issue issue = issueDB.get(old_id);
                 String issue_summary = issue.getIssueSummary();
                 newsfeedList.add(issue_summary);
                 newsfeedIDs.add(old_id);
@@ -179,8 +183,6 @@ public class MainActivity extends Activity{
         thread.start();
     }
 
-
-
     public void onStop() {
         saveArray();
         super.onStop();
@@ -223,7 +225,7 @@ public class MainActivity extends Activity{
 
     // parse result from server and send info to create geofences
     public void parseResult(String result){
-        //TODO: replace with a real JSON parser
+        //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
         for (int i=1; i< items.size(); i++){
@@ -244,7 +246,7 @@ public class MainActivity extends Activity{
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
             Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
-            geofenced_issuemap.put(id, newIssue);
+            issueDB.add(id, newIssue);
             Log.d("MainActivity", "  AddedIssue " + newIssue);
             buildGeofence(latitude, longitude, rad, Integer.toString(id));
             newIssueCount++;
@@ -257,7 +259,7 @@ public class MainActivity extends Activity{
             startService(loggerServiceIntent);
 
         }
-        Log.d("MainActivity", "Added "+newIssueCount+ "geofence");
+        Log.d("MainActivity", "Added " + newIssueCount + "geofence");
 
     }
 
@@ -293,10 +295,6 @@ public class MainActivity extends Activity{
 
     }
 
-
-    public static Issue getIssue(int issue_id){
-        return geofenced_issuemap.get(issue_id);
-    }
 
     public static int getUserID(){
         return userID;

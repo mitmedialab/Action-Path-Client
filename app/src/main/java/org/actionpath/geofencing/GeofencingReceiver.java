@@ -10,6 +10,7 @@ import android.util.Log;
 import org.actionpath.MainActivity;
 import org.actionpath.NotificationActivity;
 import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.R;
 
@@ -72,7 +73,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.e("yo", "issue id: "+ issueID);
 
         int id = Integer.parseInt(issueID);
-        Issue issue = MainActivity.getIssue(id);
+        Issue issue = IssueDatabase.get(id);
         Log.e("issue", "this issue: "+issue);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
@@ -127,7 +128,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.v("INTENT","returning an intent for SurveyActivity.class");
 
         int id = Integer.parseInt(issueID);
-        Issue issue = MainActivity.getIssue(id);
+        Issue issue = IssueDatabase.get(id);
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, NotificationActivity.class)
