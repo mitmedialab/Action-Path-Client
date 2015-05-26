@@ -37,7 +37,7 @@ import java.util.List;
 public class MainActivity extends Activity{
     private Button updateGeofences;
 
-    private String CLASS_NAME = this.getClass().getName();
+    private String TAG = this.getClass().getName();
 
     private IssueDatabase issueDB;
 
@@ -86,8 +86,8 @@ public class MainActivity extends Activity{
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "n/a");
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, "LoadedLatestIssues");
                 startService(loggerServiceIntent);
-                Log.d(CLASS_NAME,"LoadedLatestActions AlertTest");
-                Log.d(CLASS_NAME, "load new issues");
+                Log.d(TAG,"LoadedLatestActions AlertTest");
+                Log.d(TAG, "load new issues");
                 getNewIssues();
             }
         });
@@ -105,7 +105,7 @@ public class MainActivity extends Activity{
 
         if (mString != ""){
             List<String> nums = Arrays.asList(mString.split(","));
-            Log.d(CLASS_NAME, nums.get(0));
+            Log.d(TAG, nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
                 Issue issue = issueDB.get(old_id);
@@ -125,8 +125,8 @@ public class MainActivity extends Activity{
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 int issueID = newsfeedIDs.get(position);
-                Log.d(CLASS_NAME, "YOU CLICKED ITEM with id: "+ issueID);
-                Log.d(CLASS_NAME, "YOU CLICKED ITEM with position: "+ position);
+                Log.d(TAG, "YOU CLICKED ITEM with id: "+ issueID);
+                Log.d(TAG, "YOU CLICKED ITEM with position: "+ position);
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
@@ -136,7 +136,7 @@ public class MainActivity extends Activity{
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(issueID));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
-                Log.d(CLASS_NAME,"NewsfeedClick AlertTest");
+                Log.d(TAG,"NewsfeedClick AlertTest");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
@@ -166,7 +166,7 @@ public class MainActivity extends Activity{
                     parseResult(result.toString());
                     Log.i("GAH", "url success ");
                 } catch (Exception ex) {
-                    Log.e(CLASS_NAME, "Failed! " + ex.toString());
+                    Log.e(TAG, "Failed! " + ex.toString());
                 }
             }
         });
@@ -237,7 +237,7 @@ public class MainActivity extends Activity{
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
             Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
             issueDB.add(newIssue);
-            Log.d(CLASS_NAME, "  AddedIssue " + newIssue);
+            Log.d(TAG, "  AddedIssue " + newIssue);
             buildGeofence(latitude, longitude, Issue.DEFAULT_RADIUS, id);
             newIssueCount++;
             // CREATE AN ACTION LOG
@@ -249,7 +249,7 @@ public class MainActivity extends Activity{
             startService(loggerServiceIntent);
 
         }
-        Log.d(CLASS_NAME, "Added " + newIssueCount + "geofence");
+        Log.d(TAG, "Added " + newIssueCount + "geofence");
 
     }
 

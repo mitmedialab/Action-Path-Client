@@ -33,7 +33,7 @@ public class LoggerService extends IntentService implements
         GoogleApiClient.OnConnectionFailedListener {
     private GoogleApiClient googleApiClient;
 
-    public String CLASS_NAME = this.getClass().getName();
+    public String TAG = this.getClass().getName();
 
     public static final String PARAM_LOG_TYPE = "logType";
     public static final String LOG_TYPE_ACTION = "action";
@@ -58,7 +58,7 @@ public class LoggerService extends IntentService implements
     @Override
     public void onCreate(){
         super.onCreate();
-        Log.d(CLASS_NAME,"onCreate");
+        Log.d(TAG,"onCreate");
         queuedActionLogs = new Stack<ArrayList<String>>();
         // Create a GoogleApiClient instance
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -113,7 +113,7 @@ public class LoggerService extends IntentService implements
 		 * error.
 		 */
         //TODO: determine if we need to do this or not
-        Log.e(CLASS_NAME, "connection to google services failed");
+        Log.e(TAG, "connection to google services failed");
         if (result.hasResolution()) {
             // if there's a way to resolve the result
         } else {
@@ -125,7 +125,7 @@ public class LoggerService extends IntentService implements
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(CLASS_NAME, "connection to google services worked");
+        Log.i(TAG, "connection to google services worked");
         // also update last known location (current location)
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
@@ -135,7 +135,7 @@ public class LoggerService extends IntentService implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.e(CLASS_NAME,"connection suspended");
+        Log.e(TAG,"connection suspended");
     }
 
     /**
@@ -151,7 +151,7 @@ public class LoggerService extends IntentService implements
         a.add(1,userID);
         a.add(2,issueID);
         a.add(3, action);
-        Log.i(CLASS_NAME, action);
+        Log.i(TAG, action);
         queuedActionLogs.push(a);
     }
 
@@ -182,7 +182,7 @@ public class LoggerService extends IntentService implements
     private void writeLogQueueToDatabase() {
         SQLiteDatabase logDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
-        Log.i(CLASS_NAME,"writing queue to db");
+        Log.i(TAG,"writing queue to db");
         while (it.hasNext()) {
             ArrayList<String> splitAction = it.next();
             String longitude = "";
