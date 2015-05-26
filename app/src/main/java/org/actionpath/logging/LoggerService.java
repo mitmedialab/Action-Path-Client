@@ -76,7 +76,7 @@ public class LoggerService extends IntentService implements
 
   /* Create a Database. */
         try {
-            myDB = this.openOrCreateDatabase(DATABASE_PATH, SQLiteDatabase.CREATE_IF_NECESSARY, null);
+            myDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
    /* Create a Table in the Database. */
             myDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + DB_TABLE_NAME
@@ -119,14 +119,16 @@ public class LoggerService extends IntentService implements
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        String logType = intent.getStringExtra("logType");
+        String logType = intent.getStringExtra(PARAM_LOG_TYPE);
         Log.i("LoggerService", "recieved intent to log "+logType);
-        if (logType.equals(LOG_TYPE_ACTION)) {
+        if (LOG_TYPE_ACTION.equals(logType)) {
             String userID = String.valueOf(intent.getStringExtra(PARAM_USER_ID));
             String issueID = intent.getStringExtra(PARAM_ISSUE_ID);
             String action = intent.getStringExtra(PARAM_ACTION);
             Log.d("LoggerService", "action is "+action);
             queueAction(userID, issueID, action);
+        } else {
+            Log.e("LoggerService", "unknown action logType: "+logType);
         }
     }
 
@@ -210,7 +212,7 @@ public class LoggerService extends IntentService implements
                 latitude = String.valueOf(mLastLocation.getLatitude());
                 longitude = String.valueOf(mLastLocation.getLongitude());
             }
-            myDB = this.openOrCreateDatabase("DatabaseName", MODE_PRIVATE, null);
+            myDB = this.openOrCreateDatabase(DATABASE_PATH,MODE_PRIVATE,null);
             myDB.execSQL("INSERT INTO "
                     + DB_TABLE_NAME
 //                    + " (timestamp, userID, issueID, lat, long, actionType)"
@@ -218,7 +220,7 @@ public class LoggerService extends IntentService implements
         }
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
         Intent logSyncServiceIntent = new Intent(LoggerService.this,LogSyncService.class);
-        logSyncServiceIntent.putExtra("syncType", "send");
+        logSyncServiceIntent.putExtra(LogSyncService.PARAM_SYNC_TYPE, LogSyncService.SYNC_TYPE_SEND);
         startService(logSyncServiceIntent);
     }
 

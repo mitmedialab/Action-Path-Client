@@ -19,6 +19,9 @@ import java.io.IOException;
 
 public class LogSyncService extends IntentService{
 
+    public static final String PARAM_SYNC_TYPE = "syncType";
+    public static final String SYNC_TYPE_SEND = "send";
+
     public LogSyncService(){
         super("LogSyncService");
     }
@@ -26,8 +29,8 @@ public class LogSyncService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
-        String logType = intent.getStringExtra("syncType"); //TODO: make this a constant
-        if(logType.equals("send")) {    //TODO: make this a constant
+        String logType = intent.getStringExtra(PARAM_SYNC_TYPE); //TODO: make this a constant
+        if(logType.equals(SYNC_TYPE_SEND)) {    //TODO: make this a constant
             Log.d("LogSyncService", "Request to send new logs");
             sendSQL();
         }
