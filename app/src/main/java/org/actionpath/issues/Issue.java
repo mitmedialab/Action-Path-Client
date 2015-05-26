@@ -4,6 +4,9 @@ import java.util.Date;
 
 
 public class Issue {
+
+    public static final int DEFAULT_RADIUS = 500;
+
     int id;
     String status;
     String summary;
@@ -15,7 +18,8 @@ public class Issue {
     Date created_at;
     Date updated_at;
     int place_id;
-
+    int radiusMeters = DEFAULT_RADIUS;
+    boolean test = false;
 
     public Issue(int id,
             String status,
@@ -69,4 +73,14 @@ public class Issue {
         return "issue"+this.id;
     }
 
+    public int getId(){ return id; }
+
+    public int getRadius() { return radiusMeters; }
+
+    public void setTest(boolean isATestIssue){ test = isATestIssue; }
+
+    public boolean isTest() { return test; }
+
 }
+
+

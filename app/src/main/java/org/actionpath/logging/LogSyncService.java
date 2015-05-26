@@ -37,9 +37,9 @@ public class LogSyncService extends IntentService{
     }
 
     private JSONArray getResults(){
-        SQLiteDatabase myDataBase = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READONLY);
+        SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READONLY);
         String searchQuery = "SELECT  * FROM " + LoggerService.DB_TABLE_NAME;
-        Cursor cursor = myDataBase.rawQuery(searchQuery, null );
+        Cursor cursor = logDB.rawQuery(searchQuery, null );
         JSONArray resultSet = new JSONArray();
         cursor.moveToFirst();
         while (cursor.isAfterLast() == false) {
@@ -63,6 +63,7 @@ public class LogSyncService extends IntentService{
             cursor.moveToNext();
         }
         cursor.close();
+        logDB.close();
         Log.d("LogSyncService", "JSON TO UPLOAD: "+resultSet.toString());
         return resultSet;
     }
@@ -90,6 +91,5 @@ public class LogSyncService extends IntentService{
         });
         thread.start();
     }
-
 
 }

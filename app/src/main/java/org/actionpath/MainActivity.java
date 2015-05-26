@@ -37,12 +37,13 @@ import java.util.List;
 public class MainActivity extends Activity{
     private Button updateGeofences;
 
+    private String CLASS_NAME = this.getClass().getName();
+
     private IssueDatabase issueDB;
 
     public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
-    final float rad = 500;
     ListView listview;
     String mString = "";
     static int userID;
@@ -66,20 +67,11 @@ public class MainActivity extends Activity{
         setContentView(R.layout.home_page);
         userID = 0;
 
-        final double Cambridge_lat = 42.359254;
-        final double Cambridge_long = -71.093667;
-        final float Cambridge_rad = 1601;
-        final double Cambridge_lat2 = 42.359255;
-        final double Cambridge_long2 = -71.093666;
-        String id = "1234";
-        String id2 = "2345";
-        Issue testIssue1 = new Issue(Integer.parseInt(id), "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "null", null, null, 9841);
-        issueDB.add(Integer.parseInt(id),testIssue1);
-        buildGeofence(Cambridge_lat, Cambridge_long, Cambridge_rad, id);
-        Issue testIssue2 = new Issue(Integer.parseInt(id2), "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841);
-        issueDB.add(Integer.parseInt(id2), testIssue2);
-        buildGeofence(Cambridge_lat2,Cambridge_long2,Cambridge_rad,id2);
-        Log.d("Main Activity", "added test issues to issuedb");
+        for(Issue issue : issueDB.getAll()){
+            if(issue.isTest()) {
+                buildGeofence(issue.getLatitude(), issue.getLongitude(), issue.getRadius(), issue.getId());
+            }
+        }
 
         updateGeofences = (Button) findViewById(R.id.update);
         updateGeofences.setOnClickListener(new View.OnClickListener() {
@@ -94,28 +86,26 @@ public class MainActivity extends Activity{
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "n/a");
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, "LoadedLatestIssues");
                 startService(loggerServiceIntent);
-                Log.d("MainActivity","LoadedLatestActions AlertTest");
-                Log.d("MainActivity", "load new issues");
+                Log.d(CLASS_NAME,"LoadedLatestActions AlertTest");
+                Log.d(CLASS_NAME, "load new issues");
                 getNewIssues();
             }
         });
 
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            int int_id = bundle.getInt("followThisID");
-            Log.d("MainActivity", "issue id from response: " + id);
-            Issue issue = issueDB.get(int_id);
-            String issue_summary = issue.getIssueSummary();
-            newsfeedList.add(issue_summary);
-            newsfeedIDs.add(int_id);
+        // follow the test issue by default
+        int testIssueId = 1234;
+        Issue testIssue = issueDB.get(testIssueId);
+        if(testIssue!=null){
+            String testIssueSummary = testIssue.getIssueSummary();
+            newsfeedList.add(testIssueSummary);
+            newsfeedIDs.add(testIssueId);
         }
 
         listview = (ListView) findViewById(R.id.newsfeed);
 
         if (mString != ""){
             List<String> nums = Arrays.asList(mString.split(","));
-            Log.d("MainActivity", nums.get(0));
+            Log.d(CLASS_NAME, nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
                 Issue issue = issueDB.get(old_id);
@@ -135,18 +125,18 @@ public class MainActivity extends Activity{
             public void onItemClick(AdapterView<?> parent, final View view,
                                     int position, long id) {
                 int issueID = newsfeedIDs.get(position);
-                Log.d("MainActivity", "YOU CLICKED ITEM with id: "+ issueID);
-                Log.d("MainActivity", "YOU CLICKED ITEM with position: "+ position);
+                Log.d(CLASS_NAME, "YOU CLICKED ITEM with id: "+ issueID);
+                Log.d(CLASS_NAME, "YOU CLICKED ITEM with position: "+ position);
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(userID));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(issueID));
-                loggerServiceIntent.putExtra("action", "NewsfeedClick");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(userID));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(issueID));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
-                Log.d("Action","NewsfeedClick AlertTest");
+                Log.d(CLASS_NAME,"NewsfeedClick AlertTest");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
@@ -176,7 +166,7 @@ public class MainActivity extends Activity{
                     parseResult(result.toString());
                     Log.i("GAH", "url success ");
                 } catch (Exception ex) {
-                    Log.e("MainActivity", "Failed! " + ex.toString());
+                    Log.e(CLASS_NAME, "Failed! " + ex.toString());
                 }
             }
         });
@@ -246,9 +236,9 @@ public class MainActivity extends Activity{
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
             Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
-            issueDB.add(id, newIssue);
-            Log.d("MainActivity", "  AddedIssue " + newIssue);
-            buildGeofence(latitude, longitude, rad, Integer.toString(id));
+            issueDB.add(newIssue);
+            Log.d(CLASS_NAME, "  AddedIssue " + newIssue);
+            buildGeofence(latitude, longitude, Issue.DEFAULT_RADIUS, id);
             newIssueCount++;
             // CREATE AN ACTION LOG
             Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
@@ -259,7 +249,7 @@ public class MainActivity extends Activity{
             startService(loggerServiceIntent);
 
         }
-        Log.d("MainActivity", "Added " + newIssueCount + "geofence");
+        Log.d(CLASS_NAME, "Added " + newIssueCount + "geofence");
 
     }
 
@@ -270,10 +260,10 @@ public class MainActivity extends Activity{
 
     // creates a geofence at given location of given radius
     // TODO: keep track of each geofence's summary, address, etc.
-    public void buildGeofence(double latitude, double longitude, float radius, String id){
+    public void buildGeofence(double latitude, double longitude, float radius, int id){
         List<Geofence> new_geo = new ArrayList<>();
         Geofence.Builder builder_test = new Geofence.Builder();
-        builder_test.setRequestId(id);
+        builder_test.setRequestId((new Integer(id)).toString());
         builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
         builder_test.setCircularRegion(latitude, longitude, radius);
         builder_test.setExpirationDuration(Geofence.NEVER_EXPIRE);
