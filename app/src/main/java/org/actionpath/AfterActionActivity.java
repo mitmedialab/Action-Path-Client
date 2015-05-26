@@ -11,6 +11,8 @@ import org.actionpath.logging.LoggerService;
 
 public class AfterActionActivity extends Activity{
 
+    public String TAG = this.getClass().getName();
+
     private Button unfollowBtn;
     private Button homeBtn;
     int id = 0;
@@ -39,7 +41,7 @@ public class AfterActionActivity extends Activity{
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "ThanksDismissed");
                 startService(loggerServiceIntent);
-                Log.e("Action","ThanksDismissed AfterAction");
+                Log.i(TAG,"Thanks Dismissed");
 
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
                 intent.putExtra("followThisID", id);
@@ -61,7 +63,7 @@ public class AfterActionActivity extends Activity{
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "UnfollowedIssue");
                 startService(loggerServiceIntent);
-                Log.e("Action","UnfollowedIssue AfterAction");
+                Log.i(TAG,"Unfollowed Issue");
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
                 startActivity(intent);
             }

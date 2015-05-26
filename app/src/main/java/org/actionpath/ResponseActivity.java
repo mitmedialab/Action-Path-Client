@@ -16,14 +16,14 @@ import org.actionpath.logging.LoggerService;
 
 public class ResponseActivity extends Activity {
 
-//    private RadioGroup radioGroup;
+    public String TAG = this.getClass().getName();
+
+    // private RadioGroup radioGroup;
     private Button resBtn;
     private Button unresBtn;
     private TextView res_address;
     private TextView res_description;
     int id = 0;
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,7 +33,7 @@ public class ResponseActivity extends Activity {
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt("issueID");
-        Log.e("and now we are here", "issue id from response: " + id);
+        Log.i(TAG, "Responding to Issue " + id);
         Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
@@ -60,7 +60,7 @@ public class ResponseActivity extends Activity {
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);
-                Log.e("Action","SurveyResponse1 Response");
+                Log.i(TAG,"Response to Issue "+id+": Resolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
                 intent.putExtra("issueID", id);
@@ -81,7 +81,7 @@ public class ResponseActivity extends Activity {
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "SurveyResponse");
                 startService(loggerServiceIntent);
-                Log.e("Action","SurveyResponse2 Response");
+                Log.i(TAG,"Response to Issue "+id+": Unresolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
                 intent.putExtra("issueID", id);
