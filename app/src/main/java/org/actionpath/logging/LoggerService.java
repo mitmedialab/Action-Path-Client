@@ -66,6 +66,7 @@ public class LoggerService extends IntentService implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        googleApiClient.connect();
         Intent intent=new Intent(getApplicationContext(),this.getClass());
         this.startService(intent);
         try {
