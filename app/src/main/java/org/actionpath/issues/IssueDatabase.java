@@ -20,6 +20,7 @@ public class IssueDatabase {
 
     private IssueDatabase(){
         issues = new HashMap<Integer, Issue>();
+        addTestIssues();
     }
 
     private void addTestIssues(){

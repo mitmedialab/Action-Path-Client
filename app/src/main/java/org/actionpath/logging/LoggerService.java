@@ -129,13 +129,12 @@ public class LoggerService extends IntentService implements
         // also update last known location (current location)
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
-
         writeLogQueueToDatabase(); // now that we can get lat/lng, log and add those in
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.e(TAG,"connection suspended");
+        Log.e(TAG,"connection to google services suspended");
     }
 
     /**

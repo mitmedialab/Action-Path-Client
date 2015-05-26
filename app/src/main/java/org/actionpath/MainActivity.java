@@ -62,6 +62,7 @@ public class MainActivity extends Activity{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG,"onCreate");
         issueDB = IssueDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
