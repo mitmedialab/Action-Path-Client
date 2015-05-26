@@ -43,6 +43,8 @@ public class LoggerService extends IntentService implements
 
     public static final String PARAM_ACTION = "action";
     public static final String ACTION_NEWS_FEED_CLICK = "NewsfeedClick";
+    public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";
+    public static final String ACTION_NOTIFICATION_RESPOND_CLICK = "NotificationRespondClick";
 
     public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/logging";
     public static final String DB_TABLE_NAME = "actions";
@@ -191,7 +193,6 @@ public class LoggerService extends IntentService implements
                 latitude = String.valueOf(lastLocation.getLatitude());
                 longitude = String.valueOf(lastLocation.getLongitude());
             }
-            logDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
             logDB.execSQL("INSERT INTO "
                     + DB_TABLE_NAME
 //                    + " (timestamp, userID, issueID, lat, long, actionType)"

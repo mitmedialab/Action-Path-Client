@@ -20,17 +20,18 @@ public class NotificationActivity extends Activity {
     int id = 0;
     private TextView description;
 
+    public String TAG = this.getClass().getName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
         Bundle bundle = getIntent().getExtras();
 
-
         if(bundle.getString("issueID")!= null)
         {
             id = Integer.parseInt(bundle.getString("issueID"));
-            Log.e("yusss we are here", "issue id from notification: "+ id);
+            Log.i(TAG,"issue "+id);
         }
         Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
@@ -48,10 +49,10 @@ public class NotificationActivity extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(NotificationActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-                loggerServiceIntent.putExtra("action", "NotificationIgnoreClick");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NOTIFICATION_IGNORE_CLICK);
                 startService(loggerServiceIntent);
                 Log.e("Action","NotificationIgnoreClick Notification");
                 finish();
@@ -66,10 +67,10 @@ public class NotificationActivity extends Activity {
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(NotificationActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-                loggerServiceIntent.putExtra("action", "NotificationRespondClick");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NOTIFICATION_RESPOND_CLICK);
                 startService(loggerServiceIntent);
                 Log.e("Action","NotificationRespondClick Notification");
 
