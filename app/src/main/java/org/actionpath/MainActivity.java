@@ -165,9 +165,9 @@ public class MainActivity extends Activity{
                     }
 
                     parseResult(result.toString());
-                    Log.i("GAH", "url success ");
+                    Log.i(TAG, "Successfully pulled new issues from server");
                 } catch (Exception ex) {
-                    Log.e(TAG, "Failed! " + ex.toString());
+                    Log.e(TAG, "Failed to pull new issues " + ex.toString());
                 }
             }
         });

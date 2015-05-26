@@ -31,7 +31,7 @@ public class NotificationActivity extends Activity {
         if(bundle.getString("issueID")!= null)
         {
             id = Integer.parseInt(bundle.getString("issueID"));
-            Log.i(TAG,"issue "+id);
+            Log.i(TAG, "issue " + id);
         }
         Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
@@ -54,7 +54,7 @@ public class NotificationActivity extends Activity {
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NOTIFICATION_IGNORE_CLICK);
                 startService(loggerServiceIntent);
-                Log.e("Action","NotificationIgnoreClick Notification");
+                Log.i(TAG,"Notification Ignore Button Clicked");
                 finish();
                 System.exit(0);
             }
@@ -72,7 +72,7 @@ public class NotificationActivity extends Activity {
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NOTIFICATION_RESPOND_CLICK);
                 startService(loggerServiceIntent);
-                Log.e("Action","NotificationRespondClick Notification");
+                Log.i(TAG, "Notification Response Button Clicked");
 
                 Intent intent = new Intent(NotificationActivity.this, ResponseActivity.class);
                 intent.putExtra("issueID", id);
