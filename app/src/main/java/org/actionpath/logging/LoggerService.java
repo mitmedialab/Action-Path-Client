@@ -132,6 +132,11 @@ public class LoggerService extends IntentService implements
         // also update last known location (current location)
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
+        if(lastLocation==null){
+            Log.w(TAG,"unable to get last location");
+        } else {
+            Log.d(TAG,"@ "+lastLocation.getLatitude()+","+lastLocation.getLongitude());
+        }
         writeLogQueueToDatabase(); // now that we can get lat/lng, log and add those in
     }
 
