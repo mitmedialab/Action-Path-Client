@@ -205,7 +205,7 @@ public class LoggerService extends IntentService implements
                     + DB_TABLE_NAME
 //                    + " (timestamp, userID, issueID, lat, long, actionType)"
                     + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) + "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "');");
-        }
+        } // TODO: are the locations actually being saved?
         logDB.close();
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
         // and now try to sync to server
