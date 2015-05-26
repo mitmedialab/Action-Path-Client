@@ -197,6 +197,9 @@ public class LoggerService extends IntentService implements
             if (lastLocation != null) {
                 latitude = String.valueOf(lastLocation.getLatitude());
                 longitude = String.valueOf(lastLocation.getLongitude());
+                Log.d(TAG,"lastLocation @ "+lastLocation.getLatitude()+","+lastLocation.getLongitude());
+            } else {
+                Log.w(TAG,"lastLocation is null");
             }
             logDB.execSQL("INSERT INTO "
                     + DB_TABLE_NAME
