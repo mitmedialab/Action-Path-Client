@@ -16,13 +16,14 @@ import org.actionpath.logging.LoggerService;
 
 public class ResponseActivity extends Activity {
 
+    public final String PARAM_ISSUE_ID = "issueID";
+
     public String TAG = this.getClass().getName();
 
-    // private RadioGroup radioGroup;
-    private Button resBtn;
-    private Button unresBtn;
-    private TextView res_address;
-    private TextView res_description;
+    private Button resolvedButton;
+    private Button unresolvedButton;
+    private TextView issueAddressText;
+    private TextView issueDescriptionText;
     int id = 0;
 
     @Override
@@ -30,86 +31,62 @@ public class ResponseActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.short_response);
 
-
         Bundle bundle = getIntent().getExtras();
-        id = bundle.getInt("issueID");
+        id = bundle.getInt(PARAM_ISSUE_ID);
         Log.i(TAG, "Responding to Issue " + id);
         Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
 
 
-        res_address = (TextView) findViewById(R.id.address);
-        res_address.setText(issue_address);
+        issueAddressText = (TextView) findViewById(R.id.issue_address_text);
+        issueAddressText.setText(issue_address);
 
-        res_description = (TextView) findViewById(R.id.description);
-        res_description.setText(issue_description);
+        issueDescriptionText = (TextView) findViewById(R.id.issue_description_text);
+        issueDescriptionText.setText(issue_description);
 
-
-
-        resBtn = (Button) findViewById(R.id.resolved_button);
-        resBtn.setOnClickListener(new OnClickListener() {
+        resolvedButton = (Button) findViewById(R.id.resolved_button);
+        resolvedButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(ResponseActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-                loggerServiceIntent.putExtra("action", "SurveyResponse");
+                Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(loggerServiceIntent);
-                Log.i(TAG,"Response to Issue "+id+": Resolved");
+                Log.i(TAG, "Response to Issue " + id + ": Resolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
-                intent.putExtra("issueID", id);
+                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, id);
                 startActivity(intent);
             }
         });
 
-        unresBtn = (Button) findViewById(R.id.unresolved_button);
-        unresBtn.setOnClickListener(new OnClickListener() {
+        unresolvedButton = (Button) findViewById(R.id.unresolved_button);
+        unresolvedButton.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(ResponseActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-                loggerServiceIntent.putExtra("action", "SurveyResponse");
+                Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(loggerServiceIntent);
-                Log.i(TAG,"Response to Issue "+id+": Unresolved");
+                Log.i(TAG, "Response to Issue " + id + ": Unresolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
-                intent.putExtra("issueID", id);
+                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, id);
                 startActivity(intent);
             }
         });
-
-
-//        radioGroup = (RadioGroup) findViewById(R.id.myRadioGroup);
-
-//        radioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                // find which radio button is selected
-//                if(checkedId == R.id.radio_resolved) {
-//                    Toast.makeText(getApplicationContext(), "choice: Resolved",
-//                            Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getApplicationContext(), "choice: Unresolved",
-//                            Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-
 
     }
-
-
 
 }

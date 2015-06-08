@@ -8,7 +8,7 @@
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="SAMPLE TEXT about a reported problem nearby"
-        android:id="@+id/description"
+        android:id="@+id/issue_description_text"
         android:layout_marginBottom="39dp"
         android:layout_above="@+id/textView3" />
 
@@ -28,7 +28,7 @@
         android:id="@+id/respond_issue"
         android:onClick="toResponse"
         android:layout_alignTop="@+id/ignore_issue"
-        android:layout_alignRight="@+id/description" />
+        android:layout_alignRight="@+id/issue_description_text" />
 
     <Button
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:text="Ignore"
         android:id="@+id/ignore_issue"
         android:layout_alignParentBottom="true"
-        android:layout_alignLeft="@+id/description"
+        android:layout_alignLeft="@+id/issue_description_text"
         android:layout_marginBottom="154dp" />
 
 </RelativeLayout>
