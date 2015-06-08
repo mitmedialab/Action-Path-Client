@@ -51,6 +51,8 @@ public class ResponseActivity extends Activity {
             @Override
             public void onClick(View v) {
 
+                // TODO: actually post the response to the server
+
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
@@ -71,6 +73,8 @@ public class ResponseActivity extends Activity {
 
             @Override
             public void onClick(View v) {
+
+                // TODO: actually post the response to the server
 
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);

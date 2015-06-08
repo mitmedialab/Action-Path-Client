@@ -75,7 +75,6 @@ public class LogSyncService extends IntentService{
         return resultSet;
     }
 
-
     public void sendSQL() {
         AsyncHttpClient client = new AsyncHttpClient();
         JSONArray sendJSON = getResults();

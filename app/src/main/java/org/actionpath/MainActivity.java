@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -35,6 +36,10 @@ import java.util.List;
 // include: city following (account page where this can be edited), user_id
 
 public class MainActivity extends Activity{
+
+    public static final String PREF_INSTALL_ID = "installationId";
+    public static final int DEFAULT_INSTALL_ID = 0;
+
     private Button updateGeofences;
 
     private String TAG = this.getClass().getName();
@@ -57,16 +62,22 @@ public class MainActivity extends Activity{
 //        mString = prefs.getString("name", "No name defined");//"No name defined" is the default value.
 //    }
 
-
-
+    private void setInstallationId(){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        int installId = prefs.getInt(PREF_INSTALL_ID,DEFAULT_INSTALL_ID);
+        if(installId == DEFAULT_INSTALL_ID){
+            //TODO: ask the server to provision a new install id
+        }
+        userID = installId;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setInstallationId();
         Log.i(TAG,"onCreate");
         issueDB = IssueDatabase.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_page);
-        userID = 0;
 
         for(Issue issue : issueDB.getAll()){
             if(issue.isTest()) {
@@ -179,6 +190,10 @@ public class MainActivity extends Activity{
         super.onStop();
     }
 
+    /**
+     * Save all the issues that you've followed to a local prefs file so we don't have to ask the
+     * server for them each time (?)
+     */
     public void saveArray() {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         String string_ids = "";
