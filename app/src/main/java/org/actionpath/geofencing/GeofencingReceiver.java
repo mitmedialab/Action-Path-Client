@@ -123,6 +123,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
 
     //creates a PendingIntent for bigPicture notifications
+    //TODO: Build a bigPicture Notification with issue info and respond/ignore buttons
     public PendingIntent getPendingIntent(String issueID) {
         Log.v(TAG,"returning an intent for SurveyActivity.class");
 
