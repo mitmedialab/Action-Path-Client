@@ -19,6 +19,8 @@ import java.io.IOException;
 
 public class LogSyncService extends IntentService{
 
+    public String TAG = this.getClass().getName();
+
     public static final String PARAM_SYNC_TYPE = "syncType";
     public static final String SYNC_TYPE_SEND = "send";
 
@@ -83,9 +85,9 @@ public class LogSyncService extends IntentService{
                     // Execute HTTP Post Request
                     HttpResponse response = httpclient.execute(httppost);
                 } catch (ClientProtocolException e) {
-                    // TODO Auto-generated catch block
+                    Log.e(TAG,"Failed to send SQL "+e);
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
+                    Log.e(TAG,"Failed to send SQL "+e);
                 }
             }
         });
