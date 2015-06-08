@@ -14,8 +14,9 @@ import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.R;
 
-
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
+
+    public String TAG = this.getClass().getName();
 
     @Override
     protected void onEnteredGeofences(String[] strings) {
@@ -25,14 +26,12 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         // CREATE AN ACTION LOG
         Intent loggerServiceIntent = new Intent(GeofencingReceiver.this,LoggerService.class);
-        loggerServiceIntent.putExtra("logType", "action");
-        loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
-        loggerServiceIntent.putExtra("issueID", String.valueOf(strings[0]));
-        loggerServiceIntent.putExtra("action", "EnteredGeofence");
+        loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+        loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+        loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(strings[0]));
+        loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_ENTERED_GEOFENCE);
         startService(loggerServiceIntent);
-
-
-
+        
         //change so it takes in a list of strings
         //ex: String[] main where
         //main[0] is latitude
@@ -47,7 +46,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onExitedGeofences(String[] strings) {
-        Log.d(GeofencingReceiver.class.getName(), "onExit");
+        Log.d(TAG, "onExit");
 
         //remove pop-up from screen
         //or do nothing
@@ -55,7 +54,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onError(int i) {
-        Log.e(GeofencingReceiver.class.getName(), "Error: " + i);
+        Log.e(TAG, "Error: " + i);
         }
 
 
@@ -68,13 +67,13 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      */
     private void sendNotification(String issueID) {
 
-        Log.d("sendNotification","sending notification build thing in ReceiveTransitionsIntentService");
-        Log.i("sendNotification", issueID);
-        Log.e("yo", "issue id: "+ issueID);
+        Log.d(TAG,"sending notification build thing in ReceiveTransitionsIntentService");
+        Log.i(TAG, issueID);
+        Log.e(TAG, "issue id: "+ issueID);
 
         int id = Integer.parseInt(issueID);
         Issue issue = IssueDatabase.get(id);
-        Log.e("issue", "this issue: "+issue);
+        Log.e(TAG, "this issue: "+issue);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
 
@@ -125,7 +124,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     //creates a PendingIntent for bigPicture notifications
     public PendingIntent getPendingIntent(String issueID) {
-        Log.v("INTENT","returning an intent for SurveyActivity.class");
+        Log.v(TAG,"returning an intent for SurveyActivity.class");
 
         int id = Integer.parseInt(issueID);
         Issue issue = IssueDatabase.get(id);
