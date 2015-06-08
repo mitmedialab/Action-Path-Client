@@ -42,7 +42,7 @@ public class ResponseActivity extends Activity {
         res_address = (TextView) findViewById(R.id.address);
         res_address.setText(issue_address);
 
-        res_description = (TextView) findViewById(R.id.description);
+        res_description = (TextView) findViewById(R.id.notification_issue_description_text);
         res_description.setText(issue_description);
 
 

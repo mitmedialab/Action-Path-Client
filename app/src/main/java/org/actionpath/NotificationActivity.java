@@ -18,7 +18,7 @@ import org.actionpath.logging.LoggerService;
 public class NotificationActivity extends Activity {
 
     int id = 0;
-    private TextView description;
+    private TextView notificationIssueDescription;
 
     public String TAG = this.getClass().getName();
 
@@ -34,15 +34,15 @@ public class NotificationActivity extends Activity {
             Log.i(TAG, "issue " + id);
         }
         Issue issue = IssueDatabase.get(id);
-        String issue_description = issue.getIssueDescription();
+        String issueDescription = issue.getIssueDescription();
 
 
-        description = (TextView) findViewById(R.id.description);
-        description.setText(issue_description);
+        notificationIssueDescription = (TextView) findViewById(R.id.notification_issue_description_text);
+        notificationIssueDescription.setText(issueDescription);
 
 
-        Button respondBtn = (Button) findViewById(R.id.respond_issue);
-        Button ignoreBtn = (Button) findViewById(R.id.ignore_issue);
+        Button respondBtn = (Button) findViewById(R.id.notification_respond_button);
+        Button ignoreBtn = (Button) findViewById(R.id.notification_ignore_button);
         ignoreBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
