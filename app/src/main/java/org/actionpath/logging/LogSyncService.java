@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -33,7 +38,7 @@ public class LogSyncService extends IntentService{
         // TODO Auto-generated method stub
         String logType = intent.getStringExtra(PARAM_SYNC_TYPE); //TODO: make this a constant
         if(logType.equals(SYNC_TYPE_SEND)) {    //TODO: make this a constant
-            Log.d("LogSyncService", "Request to send new logs");
+            Log.d(TAG, "Request to send new logs");
             sendSQL();
         }
     }
@@ -72,26 +77,21 @@ public class LogSyncService extends IntentService{
 
 
     public void sendSQL() {
-        Thread thread = new Thread(new Runnable() {
+        AsyncHttpClient client = new AsyncHttpClient();
+        JSONArray sendJSON = getResults();
+        RequestParams params = new RequestParams();
+        params.add("data",sendJSON.toString());
+        client.post("https://api.dev.actionpath.org/logs", params, new AsyncHttpResponseHandler() {
             @Override
-            public void run() {
-                JSONArray sendJSON = getResults();
-                // Create a new HttpClient and Post Header
-                HttpClient httpclient = new DefaultHttpClient();
-                HttpPost httppost = new HttpPost("https://api.dev.actionpath.org/logs");
-                try {
-                    // Add your data
-                    httppost.setEntity(new ByteArrayEntity(sendJSON.toString().getBytes("UTF8")));
-                    // Execute HTTP Post Request
-                    HttpResponse response = httpclient.execute(httppost);
-                } catch (ClientProtocolException e) {
-                    Log.e(TAG,"Failed to send SQL "+e);
-                } catch (IOException e) {
-                    Log.e(TAG,"Failed to send SQL "+e);
-                }
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                Log.d(TAG,"sent all the info");
+                // TODO: remove things from the sqlite queue here
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                Log.e(TAG,"Failed to send SQL statusCode"+statusCode);
             }
         });
-        thread.start();
     }
 
 }
