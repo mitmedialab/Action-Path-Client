@@ -26,7 +26,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
 
     private GeofencingRegistererCallbacks mCallback;
 
-    private final String CLASS_NAME = this.getClass().getName();
+    private final String TAG = this.getClass().getName();
 
     public GeofencingRegisterer(Context context){
         mContext =context;
@@ -65,12 +65,9 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                     // Successfully registered
                     if(mCallback != null){
                         mCallback.onGeofencesRegisteredSuccessful();
-                        Log.d(CLASS_NAME, "callback not null: " + status.getStatusMessage());
+                        Log.d(TAG, "callback not null: " + status.getStatusMessage());
                     }
-
-
-
-                    Log.d(CLASS_NAME, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
+                    Log.d(TAG, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
                 } else if (status.hasResolution()) {
                     // Google provides a way to fix the issue
                     /*
@@ -82,8 +79,8 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
                 } else {
                     //TODO: check errr code, if 1000 pop up dialog asking user to enable location in settings
                     // No recovery. Weep softly or inform the user.
-                    Log.e(CLASS_NAME, "Status code: " + status.getStatusCode());
-                    Log.e(CLASS_NAME, "Registering failed: " + status.getStatusMessage());
+                    Log.e(TAG, "Status code: " + status.getStatusCode());
+                    Log.e(TAG, "Registering failed: " + status.getStatusMessage());
                 }
             }
         });
@@ -95,7 +92,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
             mCallback.onApiClientSuspended();
         }
 
-        Log.d(CLASS_NAME, "onConnectionSuspended: " + i);
+        Log.d(TAG, "onConnectionSuspended: " + i);
     }
 
     @Override
@@ -104,7 +101,7 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
             mCallback.onApiClientConnectionFailed(connectionResult);
         }
 
-        Log.e(CLASS_NAME, "onConnectionFailed: " + connectionResult.getErrorCode());
+        Log.e(TAG, "onConnectionFailed: " + connectionResult.getErrorCode());
     }
 
 

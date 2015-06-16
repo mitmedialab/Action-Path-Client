@@ -20,8 +20,6 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onEnteredGeofences(String[] strings) {
-        Log.d(GeofencingReceiver.class.getName(), "onEnter"+ strings[0]);
-
         sendNotification(strings[0]);
 
         // CREATE AN ACTION LOG
@@ -46,16 +44,14 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onExitedGeofences(String[] strings) {
-        Log.d(TAG, "onExit");
-
-        //remove pop-up from screen
+        //TODO: remove pop-up from screen
         //or do nothing
     }
 
     @Override
     protected void onError(int i) {
         Log.e(TAG, "Error: " + i);
-        }
+    }
 
 
     /**
@@ -67,13 +63,10 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      */
     private void sendNotification(String issueID) {
 
-        Log.d(TAG,"sending notification build thing in ReceiveTransitionsIntentService");
-        Log.i(TAG, issueID);
-        Log.e(TAG, "issue id: "+ issueID);
+        Log.d(TAG,"sending notification for issueId"+issueID);
 
         int id = Integer.parseInt(issueID);
         Issue issue = IssueDatabase.get(id);
-        Log.e(TAG, "this issue: "+issue);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
 

@@ -11,6 +11,8 @@ import com.google.android.gms.location.GeofencingEvent;
 
 public abstract class ReceiveGeofenceTransitionIntentService extends IntentService {
 
+    private String TAG = this.getClass().getName();
+
     /**
      * Sets an identifier for this class' background thread
      */
@@ -20,7 +22,7 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.e("D", "onHandleIntent called");
+        Log.d(TAG, "handling geofence trigger");
         GeofencingEvent event = GeofencingEvent.fromIntent(intent);
         if(event != null){
 
@@ -29,17 +31,16 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
             } else {
                 int transition = event.getGeofenceTransition();
                 if(transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL || transition == Geofence.GEOFENCE_TRANSITION_EXIT){
-                    String[] geofenceIds = new String[event.getTriggeringGeofences().size()];
-                    Log.e("D", "in geofence: "+ event.getTriggeringGeofences().get(0).getRequestId());
+                    String[] issuesIds = new String[event.getTriggeringGeofences().size()];
                     for (int index = 0; index < event.getTriggeringGeofences().size(); index++) {
-                        geofenceIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
-                        Log.e("D", "geofenceids: " + geofenceIds);
+                        issuesIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
+                        Log.d(TAG, "triggered issues: " + issuesIds);
                     }
 
                     if (transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
-                        onEnteredGeofences(geofenceIds);
+                        onEnteredGeofences(issuesIds);
                     } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
-                        onExitedGeofences(geofenceIds);
+                        onExitedGeofences(issuesIds);
                     }
                 }
             }

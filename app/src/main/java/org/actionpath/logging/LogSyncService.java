@@ -31,8 +31,8 @@ public class LogSyncService extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         // TODO Auto-generated method stub
-        String logType = intent.getStringExtra(PARAM_SYNC_TYPE); //TODO: make this a constant
-        if(logType.equals(SYNC_TYPE_SEND)) {    //TODO: make this a constant
+        String logType = intent.getStringExtra(PARAM_SYNC_TYPE);
+        if(logType.equals(SYNC_TYPE_SEND)) {
             Log.d(TAG, "Request to send new logs");
             sendToServer();
         }
@@ -70,6 +70,9 @@ public class LogSyncService extends IntentService{
             cursor.moveToNext();
         }
         cursor.close();
+        if(logIds.size()==0){   // if not logs to sync, don't send to server
+            return resultSet;
+        }
         // update the issues saying we are trying to sync
         for(int logId:logIds){
             String updateSql = "UPDATE "+LoggerService.DB_TABLE_NAME+

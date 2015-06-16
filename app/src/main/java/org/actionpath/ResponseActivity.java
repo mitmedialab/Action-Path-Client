@@ -32,7 +32,8 @@ public class ResponseActivity extends Activity {
         setContentView(R.layout.short_response);
 
         Bundle bundle = getIntent().getExtras();
-        id = bundle.getInt(PARAM_ISSUE_ID);
+        // TODO: handle case where issueID is unknown or badly formed
+        id = Integer.parseInt(bundle.getString(PARAM_ISSUE_ID));
         Log.i(TAG, "Responding to Issue " + id);
         Issue issue = IssueDatabase.get(id);
         String issue_description = issue.getIssueDescription();
