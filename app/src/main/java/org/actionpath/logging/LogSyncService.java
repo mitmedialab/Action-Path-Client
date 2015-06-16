@@ -81,7 +81,7 @@ public class LogSyncService extends IntentService{
         JSONArray sendJSON = getResults();
         RequestParams params = new RequestParams();
         params.add("data",sendJSON.toString());
-        client.post("https://api.dev.actionpath.org/logs", params, new AsyncHttpResponseHandler() {
+        client.post("https://api.dev.actionpath.org/logs/create", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 Log.d(TAG,"sent all the info");
