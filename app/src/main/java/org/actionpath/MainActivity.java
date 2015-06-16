@@ -247,7 +247,7 @@ public class MainActivity extends Activity{
             String picture = contents.get(7).replace("\"", "");
             String dtCreate = contents.get(8).replace("\"", "");
             String dtUpdate = contents.get(9).replace("\"", "");
-            //STRING --> DATE DOESN'T WORK
+            // TODO: STRING --> DATE DOESN'T WORK -- do we need to convert these to dateformat? -EG
             Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
@@ -265,7 +265,7 @@ public class MainActivity extends Activity{
             startService(loggerServiceIntent);
 
         }
-        Log.d(TAG, "Added " + newIssueCount + "geofence");
+        Log.d(TAG, "Added " + newIssueCount + " geofence");
 
     }
 
@@ -290,7 +290,7 @@ public class MainActivity extends Activity{
     }
 
 
-    //THIS ISN'T WORKING GHAKSJDNWEIFJ
+    // TODO: stringToDate doesn't work
     private Date stringToDate(String aDate,String aFormat) {
 
         if(aDate==null) return null;
