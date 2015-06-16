@@ -49,6 +49,10 @@ public class LoggerService extends IntentService implements
     public static final String ACTION_THANKS_DISMISSED = "ThanksDismissed";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
 
+    public static final Integer LOG_STATUS_NEW = 0;
+    public static final Integer LOG_STATUS_SYNCING = 1;
+    public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
+
     public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/logging";
     public static final String DB_TABLE_NAME = "actions";
 
@@ -76,9 +80,10 @@ public class LoggerService extends IntentService implements
         this.startService(intent);
         try {
             SQLiteDatabase logDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
+            // TODO: add a version table so we don't need to do migrations
             logDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + DB_TABLE_NAME
-                    + "  (timestamp VARCHAR, userID VARCHAR, geofenceID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR);");
+                    + "  (timestamp VARCHAR, userID VARCHAR, issueID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR, status INT,id integer primary key autoincrement);");
             logDB.close();
         } catch(Exception e) {
             Log.e("LoggerService", "Could not create logging db and table: "+e.toString());
@@ -207,9 +212,8 @@ public class LoggerService extends IntentService implements
                 Log.w(TAG,"lastLocation is null");
             }
             logDB.execSQL("INSERT INTO "
-                    + DB_TABLE_NAME
-//                    + " (timestamp, userID, issueID, lat, long, actionType)"
-                    + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) + "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "');");
+                    + DB_TABLE_NAME +"(timestamp, userID, issueID, lat, long, actionType, status) "
+                    + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) + "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "', "+LOG_STATUS_NEW+");");
         } // TODO: are the locations actually being saved?
         logDB.close();
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
