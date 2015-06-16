@@ -125,7 +125,6 @@ public class LoggerService extends IntentService implements
         } else {
             // otherwise consider showing an error
         }
-        writeLogQueueToDatabase();//log them even though you didn't get lat/lng
     }
 
 
@@ -140,7 +139,6 @@ public class LoggerService extends IntentService implements
         } else {
             Log.d(TAG,"@ "+lastLocation.getLatitude()+","+lastLocation.getLongitude());
         }
-        writeLogQueueToDatabase(); // now that we can get lat/lng, log and add those in
     }
 
     @Override
@@ -157,12 +155,14 @@ public class LoggerService extends IntentService implements
     private void queueLogItem(String userID, String issueID, String action){
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ArrayList<String> a = new ArrayList<>();
+        // TODO: should we get the lat/lng here?
         a.add(0,now.toString());
         a.add(1,userID);
         a.add(2,issueID);
         a.add(3, action);
         Log.i(TAG, action);
         queuedActionLogs.push(a);
+        writeLogQueueToDatabase();//log them even though you didn't get lat/lng
     }
 
     //LOG ACTIONS TO A FILE
@@ -190,6 +190,8 @@ public class LoggerService extends IntentService implements
     //         ThanksDismissed
     //         UnfollowedIssue
     private void writeLogQueueToDatabase() {
+        lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                googleApiClient);
         SQLiteDatabase logDB = this.openOrCreateDatabase(DATABASE_PATH, MODE_PRIVATE, null);
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
         Log.i(TAG,"writing queue to db");
