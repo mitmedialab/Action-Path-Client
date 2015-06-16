@@ -88,7 +88,7 @@ public class LogSyncService extends IntentService{
         try {
             for (int i = 0; i < sendJSON.length(); i++) {
                 JSONObject row = sendJSON.getJSONObject(i);
-                logIds.add(row.getInt("logId"));
+                logIds.add(row.getInt("id"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
