@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.gms.location.Geofence;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
@@ -73,10 +75,14 @@ public class MainActivity extends Activity{
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setInstallationId();
         Log.i(TAG,"onCreate");
+        // create the issue database
         issueDB = IssueDatabase.getInstance();
-        super.onCreate(savedInstanceState);
+        // create an image loader instance
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+        ImageLoader.getInstance().init(config);
         setContentView(R.layout.home_page);
 
         for(Issue issue : issueDB.getAll()){
