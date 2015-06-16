@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueDatabase;
@@ -24,6 +27,8 @@ public class ResponseActivity extends Activity {
     private Button unresolvedButton;
     private TextView issueAddressText;
     private TextView issueDescriptionText;
+    private ImageView issueImage;
+
     int id = 0;
 
     @Override
@@ -45,6 +50,12 @@ public class ResponseActivity extends Activity {
 
         issueDescriptionText = (TextView) findViewById(R.id.issue_description_text);
         issueDescriptionText.setText(issue_description);
+
+        if(issue.hasImageUrl()){
+            issueImage = (ImageView) findViewById(R.id.issue_image);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(issue.getImageUrl(), issueImage);
+        }
 
         resolvedButton = (Button) findViewById(R.id.resolved_button);
         resolvedButton.setOnClickListener(new OnClickListener() {

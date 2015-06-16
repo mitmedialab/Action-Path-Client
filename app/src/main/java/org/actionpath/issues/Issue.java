@@ -14,7 +14,7 @@ public class Issue {
     double latitude;
     double longitude;
     String address;
-    String picture;
+    String imageUrl;
     Date created_at;
     Date updated_at;
     int place_id;
@@ -28,7 +28,7 @@ public class Issue {
             double latitude,
             double longitude,
             String address,
-            String picture,
+            String imageUrl,
             Date created_at,
             Date updated_at,
             int place_id){
@@ -39,7 +39,7 @@ public class Issue {
         this.latitude = latitude;
         this.longitude = longitude;
         this.address = address;
-        this.picture = picture;
+        this.imageUrl = imageUrl;
         this.created_at = created_at;
         this.updated_at = updated_at;
         this.place_id = place_id;
@@ -80,6 +80,10 @@ public class Issue {
     public void setTest(boolean isATestIssue){ test = isATestIssue; }
 
     public boolean isTest() { return test; }
+
+    public String getImageUrl() {return imageUrl; }
+
+    public boolean hasImageUrl() {return imageUrl.length()>0; }
 
 }
 

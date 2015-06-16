@@ -45,7 +45,6 @@
                 android:layout_height="150dp"
                 android:layout_marginTop="10dp"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/kendall"
                 android:id="@+id/issue_image"
                 android:layout_below="@+id/issue_description_text"/>
 
