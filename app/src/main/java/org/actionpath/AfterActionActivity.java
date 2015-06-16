@@ -27,7 +27,7 @@ public class AfterActionActivity extends Activity{
 
         Bundle bundle = getIntent().getExtras();
         id = bundle.getInt(EXTRA_ISSUE_ID);
-        Log.e(TAG, "issue id from AfterAction: " + id);
+        Log.d(TAG, "issue id from AfterAction: " + id);
 
 
 
