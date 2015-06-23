@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -57,7 +56,6 @@ public class MainActivity extends Activity{
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     ListView listview;
     String mString = "";
-    static int userID;
 
 //
 //    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -76,7 +74,7 @@ public class MainActivity extends Activity{
             // CREATE AN ACTION LOG
             Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
             loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-            loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(this)));
+            loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(this)));
             loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
             loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_INSTALLED_APP);
             startService(loggerServiceIntent);
@@ -104,7 +102,7 @@ public class MainActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(appContext)));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION,LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(loggerServiceIntent);
@@ -154,7 +152,7 @@ public class MainActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(userID));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(issueID));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
@@ -244,6 +242,7 @@ public class MainActivity extends Activity{
         //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
+        final Context appContext = this.getApplicationContext();
         for (int i=1; i< items.size(); i++){
             String single_issue = items.get(i);
             List<String> contents = Arrays.asList(single_issue.split(",\"(.*?)\":"));
@@ -268,12 +267,11 @@ public class MainActivity extends Activity{
             newIssueCount++;
             // CREATE AN ACTION LOG
             Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-            loggerServiceIntent.putExtra("logType", "action");
-            loggerServiceIntent.putExtra("userID", String.valueOf(userID));
-            loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-            loggerServiceIntent.putExtra("action", "AddedGeofence");
+            loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+            loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
+            loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
+            loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_ADDED_GEOFENCE);
             startService(loggerServiceIntent);
-
         }
         Log.d(TAG, "Added " + newIssueCount + " geofence");
 

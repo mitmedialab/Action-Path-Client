@@ -11,6 +11,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 import org.actionpath.MainActivity;
+import org.actionpath.util.Installation;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,10 +103,12 @@ public class LogSyncService extends IntentService{
         }
         RequestParams params = new RequestParams();
         params.add("data",sendJSON.toString());
-        client.post(MainActivity.SERVER_BASE_URL + "/logs/create", params, new AsyncHttpResponseHandler() {
+        params.add("install_id", Installation.id(this));
+        client.post(MainActivity.SERVER_BASE_URL + "/logs/sync", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d(TAG,"Sent all loggable actions to " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
+                Log.d(TAG, "Sent all loggable actions to " + MainActivity.SERVER_BASE_URL);
+                Log.i(TAG, "Response from server: " + responseBody);
                 // delete sync'ed log items
                 SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
                 for(int logId:logIds){

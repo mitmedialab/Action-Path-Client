@@ -38,7 +38,7 @@ public class LoggerService extends IntentService implements
     public static final String PARAM_LOG_TYPE = "logType";
     public static final String LOG_TYPE_ACTION = "action";
 
-    public static final String PARAM_USER_ID = "userID";
+    public static final String PARAM_INSTALL_ID = "installID";
     public static final String PARAM_ISSUE_ID = "issueID";
 
     public static final String PARAM_ACTION = "action";
@@ -50,6 +50,7 @@ public class LoggerService extends IntentService implements
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
+    public static final String ACTION_ADDED_GEOFENCE = "AddedGeofence";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
@@ -85,7 +86,7 @@ public class LoggerService extends IntentService implements
             // TODO: add a version table so we don't need to do migrations
             logDB.execSQL("CREATE TABLE IF NOT EXISTS "
                     + DB_TABLE_NAME
-                    + "  (timestamp VARCHAR, userID VARCHAR, issueID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR, status INT,id integer primary key autoincrement);");
+                    + "  (timestamp VARCHAR, installID VARCHAR, issueID VARCHAR, lat VARCHAR, long VARCHAR, actionType VARCHAR, status INT,id integer primary key autoincrement);");
             logDB.close();
         } catch(Exception e) {
             Log.e("LoggerService", "Could not create logging db and table: "+e.toString());
@@ -105,13 +106,13 @@ public class LoggerService extends IntentService implements
     @Override
     protected void onHandleIntent(Intent intent) {
         String logType = intent.getStringExtra(PARAM_LOG_TYPE);
-        Log.i("LoggerService", "recieved intent to log " + logType);
+        Log.i("LoggerService", "received intent to log " + logType);
         if (LOG_TYPE_ACTION.equals(logType)) {
-            String userID = String.valueOf(intent.getStringExtra(PARAM_USER_ID));
+            String installID = String.valueOf(intent.getStringExtra(PARAM_INSTALL_ID));
             String issueID = intent.getStringExtra(PARAM_ISSUE_ID);
             String action = intent.getStringExtra(PARAM_ACTION);
             Log.d("LoggerService", "action is "+action);
-            queueLogItem(userID, issueID, action);
+            queueLogItem(installID, issueID, action);
         } else {
             Log.e("LoggerService", "unknown action logType: "+logType);
         }
@@ -155,16 +156,16 @@ public class LoggerService extends IntentService implements
 
     /**
      * queue it now and write it once we get a connection to services to get the lat/lng
-     * @param userID
+     * @param installID
      * @param issueID
      * @param action
      */
-    private void queueLogItem(String userID, String issueID, String action){
+    private void queueLogItem(String installID, String issueID, String action){
         Timestamp now = new Timestamp(System.currentTimeMillis());
         ArrayList<String> a = new ArrayList<>();
         // TODO: should we get the lat/lng here?
         a.add(0,now.toString());
-        a.add(1,userID);
+        a.add(1,installID);
         a.add(2,issueID);
         a.add(3, action);
         Log.i(TAG, action);
@@ -214,7 +215,7 @@ public class LoggerService extends IntentService implements
                 Log.w(TAG,"lastLocation is null");
             }
             logDB.execSQL("INSERT INTO "
-                    + DB_TABLE_NAME +"(timestamp, userID, issueID, lat, long, actionType, status) "
+                    + DB_TABLE_NAME +"(timestamp, installID, issueID, lat, long, actionType, status) "
                     + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) + "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "', "+LOG_STATUS_NEW+");");
         } // TODO: are the locations actually being saved?
         logDB.close();

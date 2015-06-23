@@ -72,7 +72,7 @@ public class ResponseActivity extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(appContext)));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(loggerServiceIntent);
@@ -95,7 +95,7 @@ public class ResponseActivity extends Activity {
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(appContext)));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(loggerServiceIntent);
