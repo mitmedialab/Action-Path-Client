@@ -99,8 +99,8 @@ public class MainActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-                Intent loggerServiceIntent = LoggerService.intentOf(appContext,0,LoggerService.ACTION_LOADED_LATEST_ISSUES);
-                startService(loggerServiceIntent);
+                Intent logIntent = LoggerService.intentOf(appContext,LoggerService.NO_ISSUE,LoggerService.ACTION_LOADED_LATEST_ISSUES);
+                startService(logIntent);
                 Log.d(TAG, "load new issues");
                 IssueDatabase.getInstance().loadNewIssues();
                 buildGeofences();

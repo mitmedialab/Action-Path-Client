@@ -63,16 +63,19 @@ public class IssueDatabase {
     }
 
     public void add(Issue issue) {
-        issues.put(issue.getId(),issue);
+        issues.put(issue.getId(), issue);
+    }
+
+    public Issue getById(int id){
+        Issue issue = issues.get(id);
+        if(issue==null){
+            Log.e(TAG,"request for issue that doesn't exist: "+id);
+        }
+        return issue;
     }
 
     public static Issue get(int id){
-        IssueDatabase issueDB = getInstance();
-        Issue issue = issueDB.issues.get(id);
-        if(issue==null){
-            Log.e("IssueDatabase","request for issue that doesn't exist: "+id);
-        }
-        return issue;
+        return getInstance().getById(id);
     }
 
     public Collection<Issue> getAll(){

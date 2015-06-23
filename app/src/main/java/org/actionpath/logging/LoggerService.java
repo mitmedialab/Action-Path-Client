@@ -55,6 +55,8 @@ public class LoggerService extends IntentService implements
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
     public static final String ACTION_ADDED_GEOFENCE = "AddedGeofence";
 
+    public static final Integer NO_ISSUE = -1;
+
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
