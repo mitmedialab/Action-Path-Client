@@ -64,19 +64,9 @@ public class MainActivity extends Activity{
 //        mString = prefs.getString("name", "No name defined");//"No name defined" is the default value.
 //    }
 
-    private void setInstallationId(){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        int installId = prefs.getInt(PREF_INSTALL_ID,DEFAULT_INSTALL_ID);
-        if(installId == DEFAULT_INSTALL_ID){
-            //TODO: ask the server to provision a new install id
-        }
-        userID = installId;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setInstallationId();
         Log.i(TAG,"onCreate");
         // create the issue database
         issueDB = IssueDatabase.getInstance();
