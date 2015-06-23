@@ -43,6 +43,9 @@ public class MainActivity extends Activity{
     public static final String PREF_INSTALL_ID = "installationId";
     public static final int DEFAULT_INSTALL_ID = 0;
 
+    //public static final String SERVER_BASE_URL = "https://api.dev.actionpath.org";
+    public static final String SERVER_BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
+
     private Button updateGeofences;
 
     private String TAG = this.getClass().getName();
@@ -173,7 +176,7 @@ public class MainActivity extends Activity{
             @Override
             public void run(){
                 try {
-                    URL u = new URL("https://api.dev.actionpath.org/places/9841/issues/");
+                    URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
                     InputStream in = u.openStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder result = new StringBuilder();
@@ -183,9 +186,9 @@ public class MainActivity extends Activity{
                     }
 
                     parseResult(result.toString());
-                    Log.i(TAG, "Successfully pulled new issues from server");
+                    Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
                 } catch (Exception ex) {
-                    Log.e(TAG, "Failed to pull new issues " + ex.toString());
+                    Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
                 }
             }
         });

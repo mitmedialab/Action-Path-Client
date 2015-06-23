@@ -10,6 +10,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.actionpath.MainActivity;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -101,10 +102,10 @@ public class LogSyncService extends IntentService{
         }
         RequestParams params = new RequestParams();
         params.add("data",sendJSON.toString());
-        client.post("https://api.dev.actionpath.org/logs/create", params, new AsyncHttpResponseHandler() {
+        client.post(MainActivity.SERVER_BASE_URL + "/logs/create", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                Log.d(TAG,"sent all the info");
+                Log.d(TAG,"Sent all loggable actions to " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
                 // delete sync'ed log items
                 SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
                 for(int logId:logIds){
