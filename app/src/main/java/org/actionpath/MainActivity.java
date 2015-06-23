@@ -211,10 +211,10 @@ public class MainActivity extends Activity{
         }
     }
 
-    private void buildGeofence(double latitude, double longitude, float radius, int id){
+    private void buildGeofence(double latitude, double longitude, float radius, int issueId){
         List<Geofence> newGeoFences = new ArrayList<>();
         Geofence.Builder geofenceBuilder = new Geofence.Builder();
-        geofenceBuilder.setRequestId((new Integer(id)).toString());
+        geofenceBuilder.setRequestId((new Integer(issueId)).toString());
         geofenceBuilder.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
         geofenceBuilder.setCircularRegion(latitude, longitude, radius);
         geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);
