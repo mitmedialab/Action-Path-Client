@@ -150,11 +150,9 @@ public class MainActivity extends Activity{
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(issueID));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_NEWS_FEED_CLICK);
+                Intent loggerServiceIntent = LoggerService.intentOf(
+                        MainActivity.this, Installation.id(appContext), issueID,
+                        LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
                 Log.d(TAG,"NewsfeedClick AlertTest");
 

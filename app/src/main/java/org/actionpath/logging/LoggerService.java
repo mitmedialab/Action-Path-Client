@@ -1,6 +1,7 @@
 package org.actionpath.logging;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -224,6 +225,15 @@ public class LoggerService extends IntentService implements
         Intent logSyncServiceIntent = new Intent(LoggerService.this, LogSyncService.class);
         logSyncServiceIntent.putExtra(LogSyncService.PARAM_SYNC_TYPE, LogSyncService.SYNC_TYPE_SEND);
         startService(logSyncServiceIntent);
+    }
+
+    public static Intent intentOf(Context context,String installId, Integer issueId, String action){
+        Intent intent = new Intent(context,LoggerService.class);
+        intent.putExtra(PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+        intent.putExtra(PARAM_INSTALL_ID, installId);
+        intent.putExtra(PARAM_ISSUE_ID, String.valueOf(issueId));
+        intent.putExtra(PARAM_ACTION, action);
+        return intent;
     }
 
 }
