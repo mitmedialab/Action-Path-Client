@@ -12,6 +12,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.actionpath.util.Installation;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -227,10 +229,10 @@ public class LoggerService extends IntentService implements
         startService(logSyncServiceIntent);
     }
 
-    public static Intent intentOf(Context context,String installId, Integer issueId, String action){
+    public static Intent intentOf(Context context, Integer issueId, String action){
         Intent intent = new Intent(context,LoggerService.class);
         intent.putExtra(PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-        intent.putExtra(PARAM_INSTALL_ID, installId);
+        intent.putExtra(PARAM_INSTALL_ID, Installation.id(context));
         intent.putExtra(PARAM_ISSUE_ID, String.valueOf(issueId));
         intent.putExtra(PARAM_ACTION, action);
         return intent;

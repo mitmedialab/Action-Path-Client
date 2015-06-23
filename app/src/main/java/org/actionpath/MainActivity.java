@@ -33,6 +33,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -98,17 +99,11 @@ public class MainActivity extends Activity{
 
             @Override
             public void onClick(View v) {
-
-                // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION,LoggerService.ACTION_LOADED_LATEST_ISSUES);
+                Intent loggerServiceIntent = LoggerService.intentOf(appContext,0,LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(loggerServiceIntent);
-                Log.d(TAG,"LoadedLatestActions AlertTest");
                 Log.d(TAG, "load new issues");
-                getNewIssues();
+                IssueDatabase.getInstance().loadNewIssues();
+                buildGeofences();
             }
         });
 
@@ -150,9 +145,7 @@ public class MainActivity extends Activity{
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = LoggerService.intentOf(
-                        MainActivity.this, Installation.id(appContext), issueID,
-                        LoggerService.ACTION_NEWS_FEED_CLICK);
+                Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueID, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
                 Log.d(TAG,"NewsfeedClick AlertTest");
 
@@ -165,30 +158,6 @@ public class MainActivity extends Activity{
 
         });
 
-    }
-
-    public void getNewIssues(){
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                try {
-                    URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
-                    InputStream in = u.openStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-
-                    parseResult(result.toString());
-                    Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
-                } catch (Exception ex) {
-                    Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
-                }
-            }
-        });
-        thread.start();
     }
 
     public void onStop() {
@@ -235,71 +204,28 @@ public class MainActivity extends Activity{
 
     }
 
-    // parse result from server and send info to create geofences
-    public void parseResult(String result){
-        //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
-        int newIssueCount = 0;
-        List<String> items = Arrays.asList(result.split("\\{"));
-        final Context appContext = this.getApplicationContext();
-        for (int i=1; i< items.size(); i++){
-            String single_issue = items.get(i);
-            List<String> contents = Arrays.asList(single_issue.split(",\"(.*?)\":"));
-            int id = Integer.parseInt(contents.get(0).substring(5));
-            String status = contents.get(1).replace("\"", "");
-            String summary = contents.get(2).replace("\"", "");
-            String description = contents.get(3).replace("\"", "");
-            double latitude = Double.parseDouble(contents.get(4).replace("\"", ""));
-            double longitude = Double.parseDouble(contents.get(5).replace("\"", ""));
-            String address = contents.get(6).replace("\"", "");
-            String picture = contents.get(7).replace("\"", "");
-            String dtCreate = contents.get(8).replace("\"", "");
-            String dtUpdate = contents.get(9).replace("\"", "");
-            // TODO: STRING --> DATE DOESN'T WORK -- do we need to convert these to dateformat? -EG
-            Date created_at = stringToDate(dtCreate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
-            Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
-            int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
-            Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
-            issueDB.add(newIssue);
-            Log.d(TAG, "  AddedIssue " + newIssue);
-            buildGeofence(latitude, longitude, Issue.DEFAULT_RADIUS, id);
-            newIssueCount++;
-            // CREATE AN ACTION LOG
-            Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-            loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-            loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-            loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
-            loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_ADDED_GEOFENCE);
+    /**
+     * Build geofences for all the issues in the database
+     * TODO: consider filtering for closed issues, and remember we can only do 100 total
+     */
+    private void buildGeofences(){
+        for(Issue issue : IssueDatabase.getInstance().getAll()) {
+            buildGeofence(issue.getLatitude(), issue.getLongitude(), Issue.DEFAULT_RADIUS, issue.getId());
+            Intent loggerServiceIntent = LoggerService.intentOf(this,issue.getId(),LoggerService.ACTION_ADDED_GEOFENCE);
             startService(loggerServiceIntent);
         }
-        Log.d(TAG, "Added " + newIssueCount + " geofence");
-
     }
 
-    // creates a geofence at given location of given radius
-    // TODO: keep track of each geofence's summary, address, etc.
-    public void buildGeofence(double latitude, double longitude, float radius, int id){
-        List<Geofence> new_geo = new ArrayList<>();
-        Geofence.Builder builder_test = new Geofence.Builder();
-        builder_test.setRequestId((new Integer(id)).toString());
-        builder_test.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
-        builder_test.setCircularRegion(latitude, longitude, radius);
-        builder_test.setExpirationDuration(Geofence.NEVER_EXPIRE);
-
-        GeofencingRegisterer registerCambridge = new GeofencingRegisterer(this);
-        new_geo.add(builder_test.build());
-        registerCambridge.registerGeofences(new_geo);
-    }
-
-
-    // TODO: stringToDate doesn't work
-    private Date stringToDate(String aDate,String aFormat) {
-
-        if(aDate==null) return null;
-        ParsePosition pos = new ParsePosition(0);
-        SimpleDateFormat simpledateformat = new SimpleDateFormat(aFormat);
-        Date stringDate = simpledateformat.parse(aDate, pos);
-        return stringDate;
-
+    private void buildGeofence(double latitude, double longitude, float radius, int id){
+        List<Geofence> newGeoFences = new ArrayList<>();
+        Geofence.Builder geofenceBuilder = new Geofence.Builder();
+        geofenceBuilder.setRequestId((new Integer(id)).toString());
+        geofenceBuilder.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
+        geofenceBuilder.setCircularRegion(latitude, longitude, radius);
+        geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);
+        GeofencingRegisterer registerer= new GeofencingRegisterer(this);
+        newGeoFences.add(geofenceBuilder.build());
+        registerer.registerGeofences(newGeoFences);
     }
 
 }
