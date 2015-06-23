@@ -31,7 +31,7 @@ public class ResponseActivity extends Activity {
     private TextView issueDescriptionText;
     private ImageView issueImage;
 
-    int id = 0;
+    int issueID = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,13 +39,14 @@ public class ResponseActivity extends Activity {
         setContentView(R.layout.short_response);
 
         Bundle bundle = getIntent().getExtras();
+        Log.d(TAG, "IssueID = " + bundle.getString(PARAM_ISSUE_ID));
+
         // TODO: handle case where issueID is unknown or badly formed
-        id = Integer.parseInt(bundle.getString(PARAM_ISSUE_ID));
-        Log.i(TAG, "Responding to Issue " + id);
-        Issue issue = IssueDatabase.get(id);
+        issueID = bundle.getInt(PARAM_ISSUE_ID);
+        Log.i(TAG, "Responding to Issue " + issueID);
+        Issue issue = IssueDatabase.get(issueID);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
-
 
         issueAddressText = (TextView) findViewById(R.id.issue_address_text);
         issueAddressText.setText(issue_address);
@@ -70,16 +71,12 @@ public class ResponseActivity extends Activity {
                 // TODO: actually post the response to the server
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
-                startService(loggerServiceIntent);
-                Log.i(TAG, "Response to Issue " + id + ": Resolved");
+                Intent logIntent = LoggerService.intentOf(ResponseActivity.this,issueID,LoggerService.ACTION_SURVEY_RESPONSE);
+                startService(logIntent);
+                Log.i(TAG, "Response to Issue " + issueID + ": Resolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
-                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, id);
+                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, issueID);
                 startActivity(intent);
             }
         });
@@ -93,16 +90,12 @@ public class ResponseActivity extends Activity {
                 // TODO: actually post the response to the server
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(ResponseActivity.this, LoggerService.class);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_SURVEY_RESPONSE);
-                startService(loggerServiceIntent);
-                Log.i(TAG, "Response to Issue " + id + ": Unresolved");
+                Intent logIntent = LoggerService.intentOf(ResponseActivity.this,issueID,LoggerService.ACTION_SURVEY_RESPONSE);
+                startService(logIntent);
+                Log.i(TAG, "Response to Issue " + issueID + ": Unresolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
-                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, id);
+                intent.putExtra(AfterActionActivity.EXTRA_ISSUE_ID, issueID);
                 startActivity(intent);
             }
         });

@@ -72,13 +72,9 @@ public class MainActivity extends Activity{
         super.onCreate(savedInstanceState);
         Log.i(TAG,"onCreate");
         if(!Installation.hasId()){
-            // CREATE AN ACTION LOG
-            Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
-            loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-            loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(this)));
-            loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
-            loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_INSTALLED_APP);
-            startService(loggerServiceIntent);
+            // Create an Action Log for new installation
+            Intent logIntent = LoggerService.intentOf(MainActivity.this,LoggerService.NO_ISSUE,LoggerService.ACTION_INSTALLED_APP);
+            startService(logIntent);
         }
         // create the issue database
         issueDB = IssueDatabase.getInstance();
@@ -94,12 +90,11 @@ public class MainActivity extends Activity{
         }
 
         updateGeofences = (Button) findViewById(R.id.update);
-        final Context appContext = this.getApplicationContext();
         updateGeofences.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent logIntent = LoggerService.intentOf(appContext,LoggerService.NO_ISSUE,LoggerService.ACTION_LOADED_LATEST_ISSUES);
+                Intent logIntent = LoggerService.intentOf(MainActivity.this,LoggerService.NO_ISSUE,LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(logIntent);
                 Log.d(TAG, "load new issues");
                 IssueDatabase.getInstance().loadNewIssues();
@@ -147,7 +142,7 @@ public class MainActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueID, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
-                Log.d(TAG,"NewsfeedClick AlertTest");
+                Log.d(TAG,"NewsfeedClick Logged");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();

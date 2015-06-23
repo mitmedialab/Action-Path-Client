@@ -23,21 +23,18 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         sendNotification(strings[0]);
 
         // CREATE AN ACTION LOG
-        Intent loggerServiceIntent = new Intent(GeofencingReceiver.this,LoggerService.class);
-        loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-        loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(this)));
-        loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(strings[0]));
-        loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_ENTERED_GEOFENCE);
-        startService(loggerServiceIntent);
-        
-        //change so it takes in a list of strings
+        Intent logIntent = LoggerService.intentOf(GeofencingReceiver.this,Integer.valueOf(strings[0]),LoggerService.ACTION_ENTERED_GEOFENCE);
+        startService(logIntent);
+
+        //TODO: change so it takes in a list of strings
         //ex: String[] main where
         //main[0] is latitude
         //main[1] is longitude
         //main[2] is Name of main
         //main[3] is a short description of the main
         //main[4] is a picture url??
-//        openAlert(strings);
+
+        //openAlert(strings);
     }
 
 

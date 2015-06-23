@@ -19,7 +19,7 @@ public class AfterActionActivity extends Activity{
 
     private Button unfollowBtn;
     private Button homeBtn;
-    int id = 0;
+    int issueID = 0;
 
 
     @Override
@@ -28,8 +28,8 @@ public class AfterActionActivity extends Activity{
         setContentView(R.layout.after_action);
 
         Bundle bundle = getIntent().getExtras();
-        id = bundle.getInt(EXTRA_ISSUE_ID);
-        Log.d(TAG, "issue id from AfterAction: " + id);
+        issueID = bundle.getInt(EXTRA_ISSUE_ID);
+        Log.d(TAG, "issue id from AfterAction: " + issueID);
 
 
 
@@ -40,16 +40,12 @@ public class AfterActionActivity extends Activity{
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE,LoggerService.PARAM_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_INSTALL_ID, String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_THANKS_DISMISSED);
-                startService(loggerServiceIntent);
-                Log.i(TAG,"Thanks Dismissed");
+                Intent logIntent = LoggerService.intentOf(AfterActionActivity.this,issueID,LoggerService.ACTION_THANKS_DISMISSED);
+                startService(logIntent);
+                Log.i(TAG,"Thanks Dismissed on Issue #"+ issueID);
 
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
-                intent.putExtra("followThisID", id);
+                intent.putExtra("followThisID", issueID);
                 startActivity(intent);
             }
         });
@@ -62,13 +58,10 @@ public class AfterActionActivity extends Activity{
             public void onClick(View v) {
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
-                loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(Installation.id(appContext)));
-                loggerServiceIntent.putExtra("issueID", String.valueOf(id));
-                loggerServiceIntent.putExtra("action", "UnfollowedIssue");
-                startService(loggerServiceIntent);
-                Log.i(TAG,"Unfollowed Issue");
+                Intent logIntent = LoggerService.intentOf(AfterActionActivity.this,issueID,LoggerService.ACTION_UNFOLLOWED_ISSUE);
+                startService(logIntent);
+                Log.i(TAG,"Unfollowed Issue #" + issueID);
+
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
                 startActivity(intent);
             }

@@ -50,6 +50,7 @@ public class LoggerService extends IntentService implements
     public static final String ACTION_NOTIFICATION_RESPOND_CLICK = "NotificationRespondClick";
     public static final String ACTION_SURVEY_RESPONSE = "SurveyResponse";
     public static final String ACTION_THANKS_DISMISSED = "ThanksDismissed";
+    public static final String ACTION_UNFOLLOWED_ISSUE = "UnfollowedIssue";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
