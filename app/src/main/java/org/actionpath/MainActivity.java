@@ -21,6 +21,7 @@ import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
+import org.actionpath.util.Installation;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -68,6 +69,15 @@ public class MainActivity extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG,"onCreate");
+        if(!Installation.hasId()){
+            // CREATE AN ACTION LOG
+            Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
+            loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
+            loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(this)));
+            loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
+            loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_INSTALLED_APP);
+            startService(loggerServiceIntent);
+        }
         // create the issue database
         issueDB = IssueDatabase.getInstance();
         // create an image loader instance
@@ -82,6 +92,7 @@ public class MainActivity extends Activity{
         }
 
         updateGeofences = (Button) findViewById(R.id.update);
+        final Context appContext = this.getApplicationContext();
         updateGeofences.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -90,9 +101,9 @@ public class MainActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(MainActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "n/a");
-                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, "LoadedLatestIssues");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(appContext)));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, "");
+                loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION,LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(loggerServiceIntent);
                 Log.d(TAG,"LoadedLatestActions AlertTest");
                 Log.d(TAG, "load new issues");
@@ -265,11 +276,6 @@ public class MainActivity extends Activity{
 
     }
 
-
-
-
-
-
     // creates a geofence at given location of given radius
     // TODO: keep track of each geofence's summary, address, etc.
     public void buildGeofence(double latitude, double longitude, float radius, int id){
@@ -297,9 +303,5 @@ public class MainActivity extends Activity{
 
     }
 
-
-    public static int getUserID(){
-        return userID;
-    }
 }
 

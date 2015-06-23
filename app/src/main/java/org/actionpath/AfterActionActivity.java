@@ -1,6 +1,7 @@
 package org.actionpath;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 
 import org.actionpath.logging.LoggerService;
+import org.actionpath.util.Installation;
 
 public class AfterActionActivity extends Activity{
 
@@ -32,6 +34,7 @@ public class AfterActionActivity extends Activity{
 
 
         homeBtn = (Button) findViewById(R.id.home_btn);
+        final Context appContext = this.getApplicationContext();
         homeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -39,7 +42,7 @@ public class AfterActionActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE,LoggerService.PARAM_ACTION);
-                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(id));
                 loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_THANKS_DISMISSED);
                 startService(loggerServiceIntent);
@@ -61,7 +64,7 @@ public class AfterActionActivity extends Activity{
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = new Intent(AfterActionActivity.this,LoggerService.class);
                 loggerServiceIntent.putExtra("logType", "action");
-                loggerServiceIntent.putExtra("userID", String.valueOf(MainActivity.getUserID()));
+                loggerServiceIntent.putExtra("userID", String.valueOf(Installation.id(appContext)));
                 loggerServiceIntent.putExtra("issueID", String.valueOf(id));
                 loggerServiceIntent.putExtra("action", "UnfollowedIssue");
                 startService(loggerServiceIntent);

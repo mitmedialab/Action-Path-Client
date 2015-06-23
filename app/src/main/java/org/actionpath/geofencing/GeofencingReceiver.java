@@ -13,6 +13,7 @@ import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.R;
+import org.actionpath.util.Installation;
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
@@ -25,7 +26,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         // CREATE AN ACTION LOG
         Intent loggerServiceIntent = new Intent(GeofencingReceiver.this,LoggerService.class);
         loggerServiceIntent.putExtra(LoggerService.PARAM_LOG_TYPE, LoggerService.LOG_TYPE_ACTION);
-        loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(MainActivity.getUserID()));
+        loggerServiceIntent.putExtra(LoggerService.PARAM_USER_ID, String.valueOf(Installation.id(this)));
         loggerServiceIntent.putExtra(LoggerService.PARAM_ISSUE_ID, String.valueOf(strings[0]));
         loggerServiceIntent.putExtra(LoggerService.PARAM_ACTION, LoggerService.ACTION_ENTERED_GEOFENCE);
         startService(loggerServiceIntent);

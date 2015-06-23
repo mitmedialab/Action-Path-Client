@@ -48,6 +48,8 @@ public class LoggerService extends IntentService implements
     public static final String ACTION_SURVEY_RESPONSE = "SurveyResponse";
     public static final String ACTION_THANKS_DISMISSED = "ThanksDismissed";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
+    public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
+    public static final String ACTION_INSTALLED_APP = "InstalledApp";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
