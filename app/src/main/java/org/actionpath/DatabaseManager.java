@@ -29,7 +29,7 @@ public class DatabaseManager {
     public static final String LOGS_TABLE_NAME = "logs";
     public static final String ISSUES_TABLE_NAME = "issues";
 
-    private static final String ISSUE_COL_NAMES = "id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id";
+    private static final String ISSUE_COL_NAMES = "id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at,place_id";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
@@ -96,9 +96,9 @@ public class DatabaseManager {
         Log.i(TAG, "Creating Issues Table");
         this.db.execSQL("CREATE TABLE IF NOT EXISTS "
                 + ISSUES_TABLE_NAME
-                + " (id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, " +
-                  " address VARCHAR, imageUrl VARCHAR, created_at INTEGER, updated_at INTEGER, place_id INT, " +
-                  " favorited INTEGER DEFAULT 0, geofence_created INTEGER DEFAULT 0);");
+                + " (id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, "
+                + "address VARCHAR, imageUrl VARCHAR, created_at INTEGER, updated_at INTEGER, place_id INT, "
+                + "favorited INTEGER DEFAULT 0, geofence_created INTEGER DEFAULT 0);");
     }
 
     public void insertIssue(Issue i){

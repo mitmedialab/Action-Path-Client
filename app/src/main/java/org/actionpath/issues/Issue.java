@@ -103,14 +103,14 @@ public class Issue {
         return new Issue(cursor.getInt(0),       // id
                 cursor.getString(1),    // status
                 cursor.getString(2),    // summary
-                cursor.getString(2),    // description
-                cursor.getDouble(3),     // latitude
-                cursor.getDouble(4),     // longitude
-                cursor.getString(5),    // address
-                cursor.getString(6),    // imageUrl
-                new Date(cursor.getInt(7) * 1000),    // createdAt
-                new Date(cursor.getInt(8) * 1000),    // updatedAt
-                cursor.getInt(9)    // placeId
+                cursor.getString(3),    // description
+                cursor.getDouble(4),     // latitude
+                cursor.getDouble(5),     // longitude
+                cursor.getString(6),    // address
+                cursor.getString(7),    // imageUrl
+                new Date(cursor.getInt(8) * 1000),    // createdAt
+                new Date(cursor.getInt(9) * 1000),    // updatedAt
+                cursor.getInt(10)    // placeId
         );
     }
 

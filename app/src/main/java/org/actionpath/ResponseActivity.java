@@ -44,9 +44,9 @@ public class ResponseActivity extends BaseActivity {
         issueID = bundle.getInt(PARAM_ISSUE_ID);
         Log.i(TAG, "Responding to issue " + issueID);
         Issue issue = IssueDatabase.getById(issueID);
-        Log.i(TAG, "  description"+issue.getIssueDescription());
+        Log.i(TAG, "Description: "+issue.getIssueDescription());
         String issue_description = issue.getIssueDescription();
-        Log.i(TAG, "  address"+issue.getIssueAddress());
+        Log.i(TAG, "Address: "+issue.getIssueAddress());
         String issue_address = issue.getIssueAddress();
 
         issueAddressText = (TextView) findViewById(R.id.issue_address_text);
