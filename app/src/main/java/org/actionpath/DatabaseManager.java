@@ -17,6 +17,8 @@ import java.util.Date;
  */
 public class DatabaseManager {
 
+    public static DatabaseManager instance;
+
     public String TAG = this.getClass().getName();
 
     public static final int VERSION = 2;
@@ -162,11 +164,17 @@ public class DatabaseManager {
     }
 
     public static DatabaseManager getInstance(Context context){
-        return new DatabaseManager(context);
+        if(instance==null){
+            instance = new DatabaseManager(context);
+        }
+        return instance;
     }
 
     public static DatabaseManager getInstance(){
-        return new DatabaseManager(null);
+        if(instance==null){
+            instance = new DatabaseManager(null);
+        }
+        return instance;
     }
 
     public void updateIssueFavorited(int issueId, boolean isFavorited) {

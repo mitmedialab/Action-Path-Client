@@ -49,7 +49,6 @@ public class IssueDatabase {
         Log.d(TAG,"Adding issue "+issue.id);
         DatabaseManager db = DatabaseManager.getInstance();
         db.insertIssue(issue);
-        db.close();
     }
 
     public void add(ArrayList<Issue> issueList) {
@@ -57,20 +56,17 @@ public class IssueDatabase {
         for(Issue i:issueList){
             db.insertIssue(i);
         }
-        db.close();
     }
 
     public static ArrayList<Issue> getAll(){
         DatabaseManager db = DatabaseManager.getInstance();
         ArrayList<Issue> issues = db.getAllIssues();
-        db.close();
         return issues;
     }
 
     public static Issue getById(int id){
         DatabaseManager db = DatabaseManager.getInstance();
         Issue issue = db.getIssue(id);
-        db.close();
         return issue;
     }
 

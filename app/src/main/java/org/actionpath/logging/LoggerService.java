@@ -207,7 +207,6 @@ public class LoggerService extends IntentService implements
             }
             db.insertLog(splitAction,latitude,longitude);
         } // TODO: are the locations actually being saved?
-        db.close();
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
         // and now try to sync to server
         Intent logSyncServiceIntent = new Intent(LoggerService.this, LogSyncService.class);

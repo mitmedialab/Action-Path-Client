@@ -173,7 +173,6 @@ public class MainActivity extends Activity{
         db.insertIssue(testIssue2);
         db.updateIssueFavorited(2345, true);
         int issueCount = db.getIssueCount();
-        db.close();
         Log.i(TAG, issueCount + " issues in the db");
     }
 

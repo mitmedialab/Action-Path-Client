@@ -72,14 +72,12 @@ public class LogSyncService extends IntentService{
         }
         cursor.close();
         if(logIds.size()==0){   // if not logs to sync, don't send to server
-            db.close();
             return resultSet;
         }
         // update the issues saying we are trying to sync
         for(int logId:logIds){
             db.updateLogStatus(logId, DatabaseManager.LOG_STATUS_SYNCING);
         }
-        db.close();
         Log.d("LogSyncService", "JSON TO UPLOAD: "+resultSet.toString());
         return resultSet;
     }
@@ -113,7 +111,6 @@ public class LogSyncService extends IntentService{
                 for(int logId:logIds){
                     db.deleteLog(logId);
                 }
-                db.close();
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
@@ -123,7 +120,6 @@ public class LogSyncService extends IntentService{
                 for(int logId:logIds){
                     db.updateLogStatus(logId,DatabaseManager.LOG_STATUS_DID_NOT_SYNC);
                 }
-                db.close();
             }
         });
     }
