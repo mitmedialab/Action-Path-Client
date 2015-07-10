@@ -1,6 +1,5 @@
 package org.actionpath;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,23 +21,15 @@ import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends AbstractBaseActivity {
 
     public static final String PREF_INSTALL_ID = "installationId";
     public static final int DEFAULT_INSTALL_ID = 0;

@@ -1,6 +1,5 @@
 package org.actionpath;
 
-import android.app.Activity;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -10,7 +9,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 
-public class RouteActivity extends BaseActivity{
+public class RouteActivity extends AbstractBaseActivity {
 
 
     @Override

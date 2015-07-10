@@ -1,6 +1,5 @@
 package org.actionpath;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,9 +8,8 @@ import android.view.View;
 import android.widget.Button;
 
 import org.actionpath.logging.LoggerService;
-import org.actionpath.util.Installation;
 
-public class AfterActionActivity extends BaseActivity{
+public class AfterActionActivity extends AbstractBaseActivity {
 
     public static String EXTRA_ISSUE_ID = "issueID";
 

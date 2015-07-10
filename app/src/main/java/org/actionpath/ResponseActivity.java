@@ -1,6 +1,5 @@
 package org.actionpath;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,10 +15,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
-import org.actionpath.util.Installation;
 
 
-public class ResponseActivity extends BaseActivity {
+public class ResponseActivity extends AbstractBaseActivity {
 
     public final String PARAM_ISSUE_ID = "issueID";
 
