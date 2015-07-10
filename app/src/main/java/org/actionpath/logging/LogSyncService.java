@@ -10,6 +10,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.actionpath.DatabaseManager;
 import org.actionpath.MainActivity;
 import org.actionpath.util.Installation;
 import org.apache.http.Header;
@@ -41,10 +42,8 @@ public class LogSyncService extends IntentService{
     }
 
     private JSONArray getResults(){
-        SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
-        String searchQuery = "SELECT  * FROM " + LoggerService.DB_TABLE_NAME +
-                " where status="+LoggerService.LOG_STATUS_NEW+" OR status="+LoggerService.LOG_STATUS_DID_NOT_SYNC;
-        Cursor cursor = logDB.rawQuery(searchQuery, null );
+        DatabaseManager db = new DatabaseManager();
+        Cursor cursor = db.getLogsToSyncCursor();
         JSONArray resultSet = new JSONArray();
         ArrayList<Integer> logIds = new ArrayList<Integer>();
         cursor.moveToFirst();
@@ -77,11 +76,9 @@ public class LogSyncService extends IntentService{
         }
         // update the issues saying we are trying to sync
         for(int logId:logIds){
-            String updateSql = "UPDATE "+LoggerService.DB_TABLE_NAME+
-                    " SET status="+LoggerService.LOG_STATUS_SYNCING+" WHERE id="+logId;
-            logDB.execSQL(updateSql);
+            db.updateLogStatus(logId, DatabaseManager.LOG_STATUS_SYNCING);
         }
-        logDB.close();
+        db.close();
         Log.d("LogSyncService", "JSON TO UPLOAD: "+resultSet.toString());
         return resultSet;
     }
@@ -110,25 +107,21 @@ public class LogSyncService extends IntentService{
                 Log.d(TAG, "Sent all loggable actions to " + MainActivity.SERVER_BASE_URL);
                 Log.i(TAG, "Response from server: " + responseBody);
                 // delete sync'ed log items
-                SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
+                DatabaseManager db = DatabaseManager.getInstance();
                 for(int logId:logIds){
-                    String updateSql = "DELETE FROM "+LoggerService.DB_TABLE_NAME+
-                            " WHERE id="+logId;
-                    logDB.execSQL(updateSql);
+                    db.deleteLog(logId);
                 }
-                logDB.close();
+                db.close();
             }
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
                 // mark that we were not able to sync them
-                SQLiteDatabase logDB = SQLiteDatabase.openDatabase(LoggerService.DATABASE_PATH, null, SQLiteDatabase.OPEN_READWRITE);
+                DatabaseManager db = DatabaseManager.getInstance();
                 for(int logId:logIds){
-                    String updateSql = "UPDATE "+LoggerService.DB_TABLE_NAME+
-                            " SET status="+LoggerService.LOG_STATUS_DID_NOT_SYNC+" WHERE id="+logId;
-                    logDB.execSQL(updateSql);
+                    db.updateLogStatus(logId,DatabaseManager.LOG_STATUS_DID_NOT_SYNC);
                 }
-                logDB.close();
+                db.close();
             }
         });
     }
