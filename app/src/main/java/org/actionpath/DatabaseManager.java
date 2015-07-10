@@ -31,7 +31,6 @@ public class DatabaseManager {
     private SQLiteDatabase db;
 
     public DatabaseManager(){
-        Log.d(TAG,"Opening DB");
         this.db = SQLiteDatabase.openOrCreateDatabase(DATABASE_PATH, null, null);
         createVersionTable();
         if(getVersion()<VERSION) {
