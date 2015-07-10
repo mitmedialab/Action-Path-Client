@@ -158,8 +158,8 @@ public class LoggerService extends IntentService implements
         a.add(0,now.toString());
         a.add(1,installID);
         a.add(2,issueID);
-        a.add(3, action);
-        Log.i(TAG, action);
+        a.add(3,action);
+        Log.i(TAG, "action added to queue: " + action);
         queuedActionLogs.push(a);
         writeLogQueueToDatabase();//log them even though you didn't get lat/lng
     }

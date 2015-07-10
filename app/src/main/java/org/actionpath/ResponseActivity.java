@@ -39,11 +39,10 @@ public class ResponseActivity extends Activity {
         setContentView(R.layout.short_response);
 
         Bundle bundle = getIntent().getExtras();
-        Log.d(TAG, "IssueID = " + bundle.getString(PARAM_ISSUE_ID));
 
         // TODO: handle case where issueID is unknown or badly formed
         issueID = bundle.getInt(PARAM_ISSUE_ID);
-        Log.i(TAG, "Responding to Issue " + issueID);
+        Log.i(TAG, "Responding to issue " + issueID);
         Issue issue = IssueDatabase.get(issueID);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
@@ -55,6 +54,7 @@ public class ResponseActivity extends Activity {
         issueDescriptionText.setText(issue_description);
 
         if(issue.hasImageUrl()){
+            // TODO: Catch ImageLoader already initialized so not re-initing every time
             issueImage = (ImageView) findViewById(R.id.issue_image);
             ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
