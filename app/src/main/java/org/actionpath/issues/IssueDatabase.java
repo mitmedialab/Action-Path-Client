@@ -10,8 +10,11 @@ import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.InvalidObjectException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -47,10 +50,10 @@ public class IssueDatabase {
         final float Cambridge_rad = 1601;
         final double Cambridge_lat2 = 42.359255;
         final double Cambridge_long2 = -71.093666;
-        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "null", null, null, 9841);
+        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", null, null, null, 9841);
         testIssue1.setTest(true);
         add(testIssue1);
-        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "null", null, null, 9841);
+        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", null, null, null, 9841);
         testIssue2.setTest(true);
         add(testIssue2);
         Log.d(CLASS_NAME, "added test issues");
@@ -86,19 +89,21 @@ public class IssueDatabase {
     public void loadNewIssues(){
         Thread thread = new Thread(new Runnable(){
             @Override
-            public void run(){
+            public void run() {
                 try {
                     URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
                     InputStream in = u.openStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
                     StringBuilder result = new StringBuilder();
                     String line;
-                    while((line = reader.readLine()) != null) {
+                    while ((line = reader.readLine()) != null) {
                         result.append(line);
                     }
                     parseResult(result.toString());
                     Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
-                } catch (Exception ex) {
+                } catch (MalformedURLException ex) {
+                    Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
+                } catch (IOException ex){
                     Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
                 }
             }
@@ -123,6 +128,7 @@ public class IssueDatabase {
             double longitude = Double.parseDouble(contents.get(5).replace("\"", ""));
             String address = contents.get(6).replace("\"", "");
             String picture = contents.get(7).replace("\"", "");
+            if(picture==null) { picture = null; };
             String dtCreate = contents.get(8).replace("\"", "");
             String dtUpdate = contents.get(9).replace("\"", "");
             // TODO: STRING --> DATE DOESN'T WORK -- do we need to convert these to dateformat? -EG
@@ -133,7 +139,7 @@ public class IssueDatabase {
             this.add(newIssue);
             Log.d(TAG, "  AddedIssue " + newIssue);
             newIssueCount++;
-            //db.insertIssue(newIssue);
+            db.insertIssue(newIssue);
         }
         db.close();
         Log.d(TAG, "Added " + newIssueCount + " geofence");

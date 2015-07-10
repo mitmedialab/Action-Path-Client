@@ -72,6 +72,7 @@ public class LogSyncService extends IntentService{
         }
         cursor.close();
         if(logIds.size()==0){   // if not logs to sync, don't send to server
+            db.close();
             return resultSet;
         }
         // update the issues saying we are trying to sync

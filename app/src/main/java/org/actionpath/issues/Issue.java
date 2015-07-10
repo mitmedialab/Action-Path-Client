@@ -77,7 +77,7 @@ public class Issue {
 
     public String getImageUrl() {return imageUrl; }
 
-    public boolean hasImageUrl() {return (imageUrl.length()>0) && (!imageUrl.equals("null")); }
+    public boolean hasImageUrl() {return (null!=imageUrl) && (imageUrl.length()>0); }
 
     public String getStatus() { return status; }
 

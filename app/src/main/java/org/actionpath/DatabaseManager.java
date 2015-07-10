@@ -86,12 +86,14 @@ public class DatabaseManager {
     }
 
     public void insertIssue(Issue i){
+        Long createdTime = (i.getCreatedAt()!=null) ? i.getCreatedAt().getTime() : null;
+        Long updatedTime= (i.getUpdatedAt()!=null) ? i.getUpdatedAt().getTime() : null;
         this.db.execSQL("INSERT INTO " + ISSUES_TABLE_NAME
                 + "(id,status,summmary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id) "
                 + " VALUES (" + i.getId() + ",'" + i.getStatus() + "','" + i.getIssueSummary()
                 + "','" + i.getIssueDescription()+ "'," + i.getLatitude() + "," + i.getLongitude() + ", '"
                 + i.getIssueAddress() + "','"+i.getImageUrl()+ "',"
-                +i.getCreatedAt().getTime()+","+i.getUpdatedAt().getTime()+","+i.getPlaceId()+")");
+                + createdTime +","+updatedTime+","+i.getPlaceId()+")");
     }
 
     private void createLogsTable(){
