@@ -63,7 +63,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.d(TAG,"sending notification for issueId"+issueID);
 
         int id = Integer.parseInt(issueID);
-        Issue issue = IssueDatabase.get(id);
+        Issue issue = IssueDatabase.getById(id);
         String summary = issue.getIssueSummary();
         //surveyKey="Chuckie Harris Park";
 
@@ -118,7 +118,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.v(TAG,"returning an intent for SurveyActivity.class");
 
         int id = Integer.parseInt(issueID);
-        Issue issue = IssueDatabase.get(id);
+        Issue issue = IssueDatabase.getById(id);
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, ResponseActivity.class)

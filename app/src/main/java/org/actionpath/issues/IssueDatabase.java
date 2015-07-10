@@ -35,32 +35,7 @@ public class IssueDatabase {
 
     public static IssueDatabase dbInstance = null;
 
-    public static HashMap<Integer, Issue> issues = new HashMap<Integer, Issue>();
-
-    private String CLASS_NAME = this.getClass().getName();
-
     private IssueDatabase(){
-        issues = new HashMap<Integer, Issue>();
-        addTestIssues();
-    }
-
-    private void addTestIssues(){
-        final double Cambridge_lat = 42.359254;
-        final double Cambridge_long = -71.093667;
-        final float Cambridge_rad = 1601;
-        final double Cambridge_lat2 = 42.359255;
-        final double Cambridge_long2 = -71.093666;
-        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", null, null, null, 9841);
-        testIssue1.setTest(true);
-        add(testIssue1);
-        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", null, null, null, 9841);
-        testIssue2.setTest(true);
-        add(testIssue2);
-        Log.d(CLASS_NAME, "added test issues");
-        DatabaseManager db = DatabaseManager.getInstance();
-        db.updateIssueFavorited(1234,true);
-        db.updateIssueFavorited(2345,true);
-        db.close();
     }
 
     public static final IssueDatabase getInstance(){
@@ -71,7 +46,7 @@ public class IssueDatabase {
     }
 
     public void add(Issue issue) {
-        issues.put(issue.getId(), issue);
+        Log.d(TAG,"Adding issue "+issue.id);
         DatabaseManager db = DatabaseManager.getInstance();
         db.insertIssue(issue);
         db.close();
@@ -80,26 +55,23 @@ public class IssueDatabase {
     public void add(ArrayList<Issue> issueList) {
         DatabaseManager db = DatabaseManager.getInstance();
         for(Issue i:issueList){
-            issues.put(i.getId(), i);
             db.insertIssue(i);
         }
         db.close();
     }
 
-    public Issue getById(int id){
-        Issue issue = issues.get(id);
-        if(issue==null){
-            Log.e(TAG,"request for issue that doesn't exist: "+id);
-        }
+    public static ArrayList<Issue> getAll(){
+        DatabaseManager db = DatabaseManager.getInstance();
+        ArrayList<Issue> issues = db.getAllIssues();
+        db.close();
+        return issues;
+    }
+
+    public static Issue getById(int id){
+        DatabaseManager db = DatabaseManager.getInstance();
+        Issue issue = db.getIssue(id);
+        db.close();
         return issue;
-    }
-
-    public static Issue get(int id){
-        return getInstance().getById(id);
-    }
-
-    public Collection<Issue> getAll(){
-        return issues.values();
     }
 
     public void loadNewIssues(){
@@ -144,7 +116,7 @@ public class IssueDatabase {
             double longitude = Double.parseDouble(contents.get(5).replace("\"", ""));
             String address = contents.get(6).replace("\"", "");
             String picture = contents.get(7).replace("\"", "");
-            if(picture==null) { picture = null; };
+            if( (picture==null) || (picture.equals("null")) ) { picture = ""; };
             String dtCreate = contents.get(8).replace("\"", "");
             String dtUpdate = contents.get(9).replace("\"", "");
             // TODO: STRING --> DATE DOESN'T WORK -- do we need to convert these to dateformat? -EG

@@ -1,5 +1,7 @@
 package org.actionpath.issues;
 
+import android.database.Cursor;
+
 import java.util.Date;
 
 
@@ -20,6 +22,10 @@ public class Issue {
     int placeId;
     int radiusMeters = DEFAULT_RADIUS;
     boolean test = false;
+
+    public Issue(){
+
+    }
 
     public Issue(int id,
             String status,
@@ -91,6 +97,21 @@ public class Issue {
 
     public int getPlaceId(){
         return placeId;
+    }
+
+    public static Issue fromCursor(Cursor cursor){
+        return new Issue(cursor.getInt(0),       // id
+                cursor.getString(1),    // status
+                cursor.getString(2),    // summary
+                cursor.getString(2),    // description
+                cursor.getDouble(3),     // latitude
+                cursor.getDouble(4),     // longitude
+                cursor.getString(5),    // address
+                cursor.getString(6),    // imageUrl
+                new Date(cursor.getInt(7) * 1000),    // createdAt
+                new Date(cursor.getInt(8) * 1000),    // updatedAt
+                cursor.getInt(9)    // placeId
+        );
     }
 
 }

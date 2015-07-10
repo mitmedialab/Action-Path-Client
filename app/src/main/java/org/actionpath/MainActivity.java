@@ -78,6 +78,7 @@ public class MainActivity extends Activity{
         }
         // create the issue database
         issueDB = IssueDatabase.getInstance();
+        addTestIssues();
         // create an image loader instance
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
         ImageLoader.getInstance().init(config);
@@ -104,7 +105,7 @@ public class MainActivity extends Activity{
 
         // follow the test issue by default
         int testIssueId = 1234;
-        Issue testIssue = issueDB.get(testIssueId);
+        Issue testIssue = issueDB.getById(testIssueId);
         if(testIssue!=null){
             String testIssueSummary = testIssue.getIssueSummary();
             newsfeedList.add(testIssueSummary);
@@ -118,7 +119,7 @@ public class MainActivity extends Activity{
             Log.d(TAG, nums.get(0));
             for (String num: nums){
                 Integer old_id = Integer.getInteger(num);
-                Issue issue = issueDB.get(old_id);
+                Issue issue = issueDB.getById(old_id);
                 String issue_summary = issue.getIssueSummary();
                 newsfeedList.add(issue_summary);
                 newsfeedIDs.add(old_id);
@@ -153,6 +154,27 @@ public class MainActivity extends Activity{
 
         });
 
+    }
+
+    private void addTestIssues(){
+        final double Cambridge_lat = 42.359254;
+        final double Cambridge_long = -71.093667;
+        final float Cambridge_rad = 1601;
+        final double Cambridge_lat2 = 42.359255;
+        final double Cambridge_long2 = -71.093666;
+        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "", null, null, 9841);
+        testIssue1.setTest(true);
+        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null, 9841);
+        testIssue2.setTest(true);
+        Log.d(TAG, "added test issues");
+        DatabaseManager db = DatabaseManager.getInstance(this);
+        db.insertIssue(testIssue1);
+        db.updateIssueFavorited(1234, true);
+        db.insertIssue(testIssue2);
+        db.updateIssueFavorited(2345, true);
+        int issueCount = db.getIssueCount();
+        db.close();
+        Log.i(TAG, issueCount + " issues in the db");
     }
 
     public void onStop() {

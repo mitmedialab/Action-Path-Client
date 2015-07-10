@@ -43,7 +43,7 @@ public class ResponseActivity extends Activity {
         // TODO: handle case where issueID is unknown or badly formed
         issueID = bundle.getInt(PARAM_ISSUE_ID);
         Log.i(TAG, "Responding to issue " + issueID);
-        Issue issue = IssueDatabase.get(issueID);
+        Issue issue = IssueDatabase.getById(issueID);
         String issue_description = issue.getIssueDescription();
         String issue_address = issue.getIssueAddress();
 

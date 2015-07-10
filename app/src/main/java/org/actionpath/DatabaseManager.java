@@ -3,13 +3,14 @@ package org.actionpath;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import org.actionpath.issues.Issue;
-import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by rahulb on 7/10/15.
@@ -25,6 +26,8 @@ public class DatabaseManager {
     public static final String VERSION_TABLE_NAME = "version";
     public static final String LOGS_TABLE_NAME = "logs";
     public static final String ISSUES_TABLE_NAME = "issues";
+
+    private static final String ISSUE_COL_NAMES = "id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
@@ -59,7 +62,6 @@ public class DatabaseManager {
     private int getVersion() {
         String searchQuery = "SELECT  * FROM " + VERSION_TABLE_NAME;
         Cursor cursor = this.db.rawQuery(searchQuery, null);
-        JSONArray resultSet = new JSONArray();
         ArrayList<Integer> logIds = new ArrayList<Integer>();
         cursor.moveToFirst();
         int versionInDb;
@@ -73,13 +75,23 @@ public class DatabaseManager {
         return versionInDb;
     }
 
+    public int getIssueCount() {
+        String searchQuery = "SELECT  count(*) FROM " + ISSUES_TABLE_NAME;
+        Cursor cursor = this.db.rawQuery(searchQuery, null);
+        ArrayList<Integer> logIds = new ArrayList<Integer>();
+        cursor.moveToFirst();
+        int count = cursor.getInt(0);
+        cursor.close();
+        return count;
+    }
+
     private void dropAllTables(){
         this.db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
         this.db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
     }
 
     private void createIssueTable(){
-        Log.i(TAG,"Creating Issues Table");
+        Log.i(TAG, "Creating Issues Table");
         this.db.execSQL("CREATE TABLE IF NOT EXISTS "
                 + ISSUES_TABLE_NAME
                 + " (id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, " +
@@ -90,12 +102,16 @@ public class DatabaseManager {
     public void insertIssue(Issue i){
         Long createdTime = (i.getCreatedAt()!=null) ? i.getCreatedAt().getTime() : null;
         Long updatedTime= (i.getUpdatedAt()!=null) ? i.getUpdatedAt().getTime() : null;
-        this.db.execSQL("INSERT INTO " + ISSUES_TABLE_NAME
-                + "(id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id) "
-                + " VALUES (" + i.getId() + ",'" + i.getStatus() + "','" + i.getIssueSummary()
-                + "','" + i.getIssueDescription()+ "'," + i.getLatitude() + "," + i.getLongitude() + ", '"
-                + i.getIssueAddress() + "','"+i.getImageUrl()+ "',"
-                + createdTime +","+updatedTime+","+i.getPlaceId()+")");
+        this.db.execSQL("INSERT OR REPLACE INTO " + ISSUES_TABLE_NAME
+                + "("+ISSUE_COL_NAMES+") "
+                + "VALUES (" + i.getId() + ","
+                + DatabaseUtils.sqlEscapeString(i.getStatus()) + ","
+                + DatabaseUtils.sqlEscapeString(i.getIssueSummary()) + ","
+                + DatabaseUtils.sqlEscapeString(i.getIssueDescription())+ ","
+                + i.getLatitude() + "," + i.getLongitude() + ", "
+                + DatabaseUtils.sqlEscapeString(i.getIssueAddress()) + ","
+                + DatabaseUtils.sqlEscapeString(i.getImageUrl()) + ","
+                + createdTime + "," + updatedTime + "," + i.getPlaceId() + ")");
     }
 
     private void createLogsTable(){
@@ -109,9 +125,14 @@ public class DatabaseManager {
     public void insertLog(ArrayList<String> splitAction, String latitude, String longitude) {
         this.db.execSQL("INSERT INTO "
                 + LOGS_TABLE_NAME + "(timestamp, installID, issueID, lat, long, actionType, status) "
-                + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) +
-                "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "', " +
-                LOG_STATUS_NEW + ");");
+                + " VALUES ("
+                + DatabaseUtils.sqlEscapeString(splitAction.get(0)) + ","
+                + DatabaseUtils.sqlEscapeString(splitAction.get(1)) + ","
+                + DatabaseUtils.sqlEscapeString(splitAction.get(2)) + ","
+                + DatabaseUtils.sqlEscapeString(latitude) + ","
+                + DatabaseUtils.sqlEscapeString(longitude) + ","
+                + DatabaseUtils.sqlEscapeString(splitAction.get(3)) + ","
+                + LOG_STATUS_NEW + ");");
     }
 
     public Cursor getLogsToSyncCursor(){
@@ -153,4 +174,37 @@ public class DatabaseManager {
                 " SET favorited="+(isFavorited?1:0)+" WHERE id="+issueId;
         this.db.execSQL(updateSql);
     }
+
+    public Issue getIssue(int id) {
+        String searchQuery = "SELECT "+ISSUE_COL_NAMES+" FROM " + ISSUES_TABLE_NAME +" WHERE id="+id;
+        Cursor cursor = this.db.rawQuery(searchQuery, null);
+        ArrayList<Integer> logIds = new ArrayList<Integer>();
+        cursor.moveToFirst();
+        Issue issue = new Issue();
+        try {
+            //(id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id)
+            issue = Issue.fromCursor(cursor);
+            cursor.close();
+        } catch(CursorIndexOutOfBoundsException e){
+            cursor.close();
+            Log.w(TAG,"No issue "+id+" in database");
+            issue = null;
+        }
+        return issue;
+    }
+
+    public ArrayList<Issue> getAllIssues() {
+        String searchQuery = "SELECT "+ISSUE_COL_NAMES+" FROM " + ISSUES_TABLE_NAME;
+        Cursor cursor = this.db.rawQuery(searchQuery, null);
+        ArrayList<Issue> issues = new ArrayList<Issue>();
+        cursor.moveToFirst();
+        while (cursor.isAfterLast() == false) {
+            Issue issue = Issue.fromCursor(cursor);
+            issues.add(issue);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return issues;
+    }
+
 }
