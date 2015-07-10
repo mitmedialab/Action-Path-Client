@@ -1,13 +1,13 @@
 package org.actionpath;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import org.actionpath.logging.LoggerService;
+import org.actionpath.issues.Issue;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -19,10 +19,11 @@ public class DatabaseManager {
     public String TAG = this.getClass().getName();
 
     public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/actionpath.db";
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
     private static final int INVALID_VERSION = -1;
     public static final String VERSION_TABLE_NAME = "version";
-    public static final String LOG_TABLE_NAME = "logs";
+    public static final String LOGS_TABLE_NAME = "logs";
+    public static final String ISSUES_TABLE_NAME = "issues";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
@@ -30,15 +31,24 @@ public class DatabaseManager {
 
     private SQLiteDatabase db;
 
-    public DatabaseManager(){
-        this.db = SQLiteDatabase.openOrCreateDatabase(DATABASE_PATH, null, null);
-        createVersionTable();
-        if(getVersion()<VERSION) {
-            updateVersion();
-            dropAllTables();
-            createLoggingTable();
+    public DatabaseManager(Context context){
+        if(context!=null) {
+            this.db = context.openOrCreateDatabase(DATABASE_PATH, context.MODE_PRIVATE, null);
+            createVersionTable();
+            if (getVersion() != VERSION) {
+                dropAllTables();
+                createAllTables();
+                updateVersion();
+            }
+            Log.d(TAG, "Opened DB (version " + getVersion() + ")");
+        } else {
+            this.db = SQLiteDatabase.openOrCreateDatabase(DATABASE_PATH, null, null);
         }
-        Log.d(TAG,"Opened DB (version "+getVersion()+")");
+    }
+
+    private void createAllTables(){
+        createLogsTable();
+        createIssueTable();
     }
 
     private void updateVersion(){
@@ -63,38 +73,56 @@ public class DatabaseManager {
     }
 
     private void dropAllTables(){
-        this.db.execSQL("DROP TABLE " + LOG_TABLE_NAME);
+        this.db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
+        this.db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
     }
 
-    private void createLoggingTable(){
+    private void createIssueTable(){
         this.db.execSQL("CREATE TABLE IF NOT EXISTS "
-                + LOG_TABLE_NAME
+                + ISSUES_TABLE_NAME
+                + " (id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, " +
+                  " address VARCHAR, imageUrl VARCHAR, created_at INTEGER, updated_at INTEGER, place_id INT, " +
+                  " favorited INTEGER DEFAULT 0, geofence_created INTEGER DEFAULT 0);");
+    }
+
+    public void insertIssue(Issue i){
+        this.db.execSQL("INSERT INTO " + ISSUES_TABLE_NAME
+                + "(id,status,summmary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id) "
+                + " VALUES (" + i.getId() + ",'" + i.getStatus() + "','" + i.getIssueSummary()
+                + "','" + i.getIssueDescription()+ "'," + i.getLatitude() + "," + i.getLongitude() + ", '"
+                + i.getIssueAddress() + "','"+i.getImageUrl()+ "',"
+                +i.getCreatedAt().getTime()+","+i.getUpdatedAt().getTime()+","+i.getPlaceId()+")");
+    }
+
+    private void createLogsTable(){
+        this.db.execSQL("CREATE TABLE IF NOT EXISTS "
+                + LOGS_TABLE_NAME
                 + " (timestamp VARCHAR, installID VARCHAR, issueID VARCHAR, lat VARCHAR, long VARCHAR, " +
                 "actionType VARCHAR, status INT,id integer primary key autoincrement);");
     }
 
     public void insertLog(ArrayList<String> splitAction, String latitude, String longitude) {
         this.db.execSQL("INSERT INTO "
-                + LOG_TABLE_NAME + "(timestamp, installID, issueID, lat, long, actionType, status) "
+                + LOGS_TABLE_NAME + "(timestamp, installID, issueID, lat, long, actionType, status) "
                 + " VALUES ('" + splitAction.get(0) + "','" + splitAction.get(1) + "','" + splitAction.get(2) +
                 "','" + latitude + "','" + longitude + "','" + splitAction.get(3) + "', " +
                 LOG_STATUS_NEW + ");");
     }
 
     public Cursor getLogsToSyncCursor(){
-        String searchQuery = "SELECT  * FROM " + LOG_TABLE_NAME +
+        String searchQuery = "SELECT  * FROM " + LOGS_TABLE_NAME +
                 " where status="+LOG_STATUS_NEW+" OR status="+LOG_STATUS_DID_NOT_SYNC;
         return this.db.rawQuery(searchQuery, null);
     }
 
     public void updateLogStatus(int logId, Integer logStatusSyncing) {
-        String updateSql = "UPDATE "+ LOG_TABLE_NAME +
+        String updateSql = "UPDATE "+ LOGS_TABLE_NAME +
                 " SET status="+logStatusSyncing+" WHERE id="+logId;
         this.db.execSQL(updateSql);
     }
 
     public void deleteLog(int logId) {
-        String updateSql = "DELETE FROM "+ LOG_TABLE_NAME + " WHERE id="+logId;
+        String updateSql = "DELETE FROM "+ LOGS_TABLE_NAME + " WHERE id="+logId;
         this.db.execSQL(updateSql);
     }
 
@@ -107,8 +135,12 @@ public class DatabaseManager {
         this.db.close();
     }
 
+    public static DatabaseManager getInstance(Context context){
+        return new DatabaseManager(context);
+    }
+
     public static DatabaseManager getInstance(){
-        return new DatabaseManager();
+        return new DatabaseManager(null);
     }
 
 }

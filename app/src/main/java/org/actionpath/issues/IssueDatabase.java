@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.actionpath.DatabaseManager;
 import org.actionpath.MainActivity;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
@@ -110,6 +111,7 @@ public class IssueDatabase {
         //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
+        DatabaseManager db = DatabaseManager.getInstance();
         for (int i=1; i< items.size(); i++){
             String single_issue = items.get(i);
             List<String> contents = Arrays.asList(single_issue.split(",\"(.*?)\":"));
@@ -131,7 +133,9 @@ public class IssueDatabase {
             this.add(newIssue);
             Log.d(TAG, "  AddedIssue " + newIssue);
             newIssueCount++;
+            //db.insertIssue(newIssue);
         }
+        db.close();
         Log.d(TAG, "Added " + newIssueCount + " geofence");
 
     }

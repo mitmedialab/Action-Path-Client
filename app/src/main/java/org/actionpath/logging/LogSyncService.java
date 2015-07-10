@@ -42,7 +42,7 @@ public class LogSyncService extends IntentService{
     }
 
     private JSONArray getResults(){
-        DatabaseManager db = new DatabaseManager();
+        DatabaseManager db = DatabaseManager.getInstance(this);
         Cursor cursor = db.getLogsToSyncCursor();
         JSONArray resultSet = new JSONArray();
         ArrayList<Integer> logIds = new ArrayList<Integer>();
@@ -101,6 +101,7 @@ public class LogSyncService extends IntentService{
         RequestParams params = new RequestParams();
         params.add("data",sendJSON.toString());
         params.add("install_id", Installation.id(this));
+        IntentService that = this;
         client.post(MainActivity.SERVER_BASE_URL + "/logs/sync", params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

@@ -191,7 +191,7 @@ public class LoggerService extends IntentService implements
     private void writeLogQueueToDatabase() {
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
-        DatabaseManager db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance(this);
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
         Log.i(TAG,"writing queue to db");
         while (it.hasNext()) {

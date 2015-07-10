@@ -15,9 +15,9 @@ public class Issue {
     double longitude;
     String address;
     String imageUrl;
-    Date created_at;
-    Date updated_at;
-    int place_id;
+    Date createdAt;
+    Date updatedAt;
+    int placeId;
     int radiusMeters = DEFAULT_RADIUS;
     boolean test = false;
 
@@ -40,9 +40,9 @@ public class Issue {
         this.longitude = longitude;
         this.address = address;
         this.imageUrl = imageUrl;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-        this.place_id = place_id;
+        this.createdAt = created_at;
+        this.updatedAt = updated_at;
+        this.placeId = place_id;
     }
 
     public String getIssueSummary(){
@@ -53,13 +53,7 @@ public class Issue {
         return this.description;
     }
 
-    public String getIssueAddress(){
-        return this.address;
-    }
-
-    public void setUniqueID(int id){
-        this.id = id;
-    }
+    public String getIssueAddress(){ return this.address; }
 
     public double getLatitude(){
         return this.latitude;
@@ -84,6 +78,20 @@ public class Issue {
     public String getImageUrl() {return imageUrl; }
 
     public boolean hasImageUrl() {return imageUrl.length()>0; }
+
+    public String getStatus() { return status; }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public int getPlaceId(){
+        return placeId;
+    }
 
 }
 
