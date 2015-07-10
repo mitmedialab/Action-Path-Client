@@ -57,6 +57,10 @@ public class IssueDatabase {
         testIssue2.setTest(true);
         add(testIssue2);
         Log.d(CLASS_NAME, "added test issues");
+        DatabaseManager db = DatabaseManager.getInstance();
+        db.updateIssueFavorited(1234,true);
+        db.updateIssueFavorited(2345,true);
+        db.close();
     }
 
     public static final IssueDatabase getInstance(){
@@ -68,6 +72,18 @@ public class IssueDatabase {
 
     public void add(Issue issue) {
         issues.put(issue.getId(), issue);
+        DatabaseManager db = DatabaseManager.getInstance();
+        db.insertIssue(issue);
+        db.close();
+    }
+
+    public void add(ArrayList<Issue> issueList) {
+        DatabaseManager db = DatabaseManager.getInstance();
+        for(Issue i:issueList){
+            issues.put(i.getId(), i);
+            db.insertIssue(i);
+        }
+        db.close();
     }
 
     public Issue getById(int id){
@@ -116,7 +132,7 @@ public class IssueDatabase {
         //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
-        DatabaseManager db = DatabaseManager.getInstance();
+        ArrayList<Issue> newIssues = new ArrayList<Issue>();
         for (int i=1; i< items.size(); i++){
             String single_issue = items.get(i);
             List<String> contents = Arrays.asList(single_issue.split(",\"(.*?)\":"));
@@ -136,12 +152,11 @@ public class IssueDatabase {
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
             Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
-            this.add(newIssue);
             Log.d(TAG, "  AddedIssue " + newIssue);
+            newIssues.add(newIssue);
             newIssueCount++;
-            db.insertIssue(newIssue);
         }
-        db.close();
+        this.add(newIssues);
         Log.d(TAG, "Added " + newIssueCount + " geofence");
 
     }

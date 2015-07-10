@@ -18,8 +18,9 @@ public class DatabaseManager {
 
     public String TAG = this.getClass().getName();
 
-    public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/actionpath.db";
     public static final int VERSION = 2;
+
+    public static final String DATABASE_PATH = "/data/data/org.actionpath/databases/actionpath.db";
     private static final int INVALID_VERSION = -1;
     public static final String VERSION_TABLE_NAME = "version";
     public static final String LOGS_TABLE_NAME = "logs";
@@ -78,6 +79,7 @@ public class DatabaseManager {
     }
 
     private void createIssueTable(){
+        Log.i(TAG,"Creating Issues Table");
         this.db.execSQL("CREATE TABLE IF NOT EXISTS "
                 + ISSUES_TABLE_NAME
                 + " (id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, " +
@@ -89,7 +91,7 @@ public class DatabaseManager {
         Long createdTime = (i.getCreatedAt()!=null) ? i.getCreatedAt().getTime() : null;
         Long updatedTime= (i.getUpdatedAt()!=null) ? i.getUpdatedAt().getTime() : null;
         this.db.execSQL("INSERT INTO " + ISSUES_TABLE_NAME
-                + "(id,status,summmary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id) "
+                + "(id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id) "
                 + " VALUES (" + i.getId() + ",'" + i.getStatus() + "','" + i.getIssueSummary()
                 + "','" + i.getIssueDescription()+ "'," + i.getLatitude() + "," + i.getLongitude() + ", '"
                 + i.getIssueAddress() + "','"+i.getImageUrl()+ "',"
@@ -97,6 +99,7 @@ public class DatabaseManager {
     }
 
     private void createLogsTable(){
+        Log.i(TAG,"Creating Logs Table");
         this.db.execSQL("CREATE TABLE IF NOT EXISTS "
                 + LOGS_TABLE_NAME
                 + " (timestamp VARCHAR, installID VARCHAR, issueID VARCHAR, lat VARCHAR, long VARCHAR, " +
@@ -145,4 +148,9 @@ public class DatabaseManager {
         return new DatabaseManager(null);
     }
 
+    public void updateIssueFavorited(int issueId, boolean isFavorited) {
+        String updateSql = "UPDATE "+ ISSUES_TABLE_NAME +
+                " SET favorited="+(isFavorited?1:0)+" WHERE id="+issueId;
+        this.db.execSQL(updateSql);
+    }
 }
