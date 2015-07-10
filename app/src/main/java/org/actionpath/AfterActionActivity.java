@@ -11,7 +11,7 @@ import android.widget.Button;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
-public class AfterActionActivity extends Activity{
+public class AfterActionActivity extends BaseActivity{
 
     public static String EXTRA_ISSUE_ID = "issueID";
 

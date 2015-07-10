@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends Activity{
+public class MainActivity extends BaseActivity{
 
     public static final String PREF_INSTALL_ID = "installationId";
     public static final int DEFAULT_INSTALL_ID = 0;

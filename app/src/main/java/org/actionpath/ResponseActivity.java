@@ -19,7 +19,7 @@ import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
 
-public class ResponseActivity extends Activity {
+public class ResponseActivity extends BaseActivity {
 
     public final String PARAM_ISSUE_ID = "issueID";
 
