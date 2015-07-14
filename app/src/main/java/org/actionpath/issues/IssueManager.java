@@ -1,68 +1,32 @@
 package org.actionpath.issues;
 
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import org.actionpath.DatabaseManager;
 import org.actionpath.MainActivity;
-import org.actionpath.logging.LoggerService;
-import org.actionpath.util.Installation;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.InvalidObjectException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Acts as a singleton wrapper around list of issues.  Call getInstance() to get one.
  * Created by rahulb on 5/26/15.
  */
-public class IssueDatabase {
+public class IssueManager {
 
-    public String TAG = IssueDatabase.class.getName();
+    public static String TAG = "IssueManager";
 
-    public static IssueDatabase dbInstance = null;
-
-    private IssueDatabase(){
-    }
-
-    public static final IssueDatabase getInstance(){
-        if(dbInstance==null){
-            dbInstance = new IssueDatabase();
-        }
-        return dbInstance;
-    }
-
-    public void add(Issue issue) {
-        Log.d(TAG,"Adding issue "+issue.id);
-        DatabaseManager db = DatabaseManager.getInstance();
-        db.insertIssue(issue);
-    }
-
-    public void add(ArrayList<Issue> issueList) {
-        DatabaseManager db = DatabaseManager.getInstance();
-        for(Issue i:issueList){
-            db.insertIssue(i);
-        }
-    }
-
-    public static ArrayList<Issue> getAll(){
-        DatabaseManager db = DatabaseManager.getInstance();
-        ArrayList<Issue> issues = db.getAllIssues();
-        return issues;
-    }
+    public static IssueManager dbInstance = null;
 
     public static Issue getById(int id){
         DatabaseManager db = DatabaseManager.getInstance();
@@ -70,7 +34,7 @@ public class IssueDatabase {
         return issue;
     }
 
-    public void loadNewIssues(){
+    public static void loadNewIssues(){
         try {
             URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
             InputStream in = u.openStream();
@@ -90,7 +54,7 @@ public class IssueDatabase {
     }
 
     // parse result from server and send info to create geofences
-    public void parseResult(String result){
+    private static void parseResult(String result){
         //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
@@ -118,13 +82,16 @@ public class IssueDatabase {
             newIssues.add(newIssue);
             newIssueCount++;
         }
-        this.add(newIssues);
+        DatabaseManager db = DatabaseManager.getInstance();
+        for(Issue i:newIssues){
+            db.insertIssue(i);
+        }
         Log.d(TAG, "Added " + newIssueCount + " geofence");
 
     }
 
     // TODO: stringToDate doesn't work
-    private Date stringToDate(String aDate,String aFormat) {
+    private static Date stringToDate(String aDate,String aFormat) {
 
         if(aDate==null) return null;
         ParsePosition pos = new ParsePosition(0);

@@ -1,6 +1,5 @@
 package org.actionpath;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -19,13 +17,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssueDatabase;
+import org.actionpath.issues.IssueManager;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 //TODO: create account page at start & send data
@@ -43,7 +39,7 @@ public class MainActivity extends AbstractBaseActivity {
 
     private String TAG = this.getClass().getName();
 
-    private IssueDatabase issueDB;
+    private IssueManager issueDB;
 
     public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
@@ -71,7 +67,6 @@ public class MainActivity extends AbstractBaseActivity {
             startService(logIntent);
         }
         // create the issue database
-        issueDB = IssueDatabase.getInstance();
         addTestIssues();
         // create an image loader instance
         if(!ImageLoader.getInstance().isInited()){
@@ -80,7 +75,7 @@ public class MainActivity extends AbstractBaseActivity {
         }
         setContentView(R.layout.home_page);
 
-        for (Issue issue : issueDB.getAll()) {
+        for (Issue issue : DatabaseManager.getInstance().getAllIssues()) {
             if (issue.isTest()) {
                 buildGeofence(issue.getId(),issue.getLatitude(), issue.getLongitude(), issue.getRadius());
             }
@@ -96,7 +91,7 @@ public class MainActivity extends AbstractBaseActivity {
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d(TAG, "Loading new issues");
-                        IssueDatabase.getInstance().loadNewIssues();
+                        IssueManager.loadNewIssues();
                         Log.d(TAG, "Building geofences");
                         buildGeofences();
                     }

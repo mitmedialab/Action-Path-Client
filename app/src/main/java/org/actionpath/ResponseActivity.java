@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssueDatabase;
+import org.actionpath.issues.IssueManager;
 import org.actionpath.logging.LoggerService;
 
 
@@ -42,7 +42,7 @@ public class ResponseActivity extends AbstractBaseActivity {
         // TODO: handle case where issueID is unknown or badly formed
         issueID = bundle.getInt(PARAM_ISSUE_ID);
         Log.i(TAG, "Responding to issue " + issueID);
-        Issue issue = IssueDatabase.getById(issueID);
+        Issue issue = IssueManager.getById(issueID);
         Log.i(TAG, "Description: " + issue.getIssueDescription());
         String issue_description = issue.getIssueDescription();
         Log.i(TAG, "Address: " + issue.getIssueAddress());
