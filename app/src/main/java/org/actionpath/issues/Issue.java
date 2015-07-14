@@ -23,8 +23,25 @@ public class Issue {
     int radiusMeters = DEFAULT_RADIUS;
     boolean test = false;
 
+    boolean favorited = false;
+    boolean geofenceCreated = false;
+
     public Issue(){
 
+    }
+
+    public Issue(int id,
+                 String status,
+                 String summary,
+                 String description,
+                 double latitude,
+                 double longitude,
+                 String address,
+                 String imageUrl,
+                 Date createdAt,
+                 Date updatedAt,
+                 int placeId){
+        this(id,status,summary,description,latitude,longitude,address,imageUrl,createdAt,updatedAt,placeId,false,false);
     }
 
     public Issue(int id,
@@ -35,9 +52,11 @@ public class Issue {
             double longitude,
             String address,
             String imageUrl,
-            Date created_at,
-            Date updated_at,
-            int place_id){
+            Date createdAt,
+            Date updatedAt,
+            int placeId,
+                 boolean favorited,
+                 boolean geofenceCreated){
         this.id = id;
         this.status = status;
         this.summary = summary;
@@ -46,9 +65,11 @@ public class Issue {
         this.longitude = longitude;
         this.address = address;
         this.imageUrl = imageUrl;
-        this.createdAt = created_at;
-        this.updatedAt = updated_at;
-        this.placeId = place_id;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.placeId = placeId;
+        this.favorited = favorited;
+        this.geofenceCreated = geofenceCreated;
     }
 
     public String getIssueSummary(){
@@ -110,9 +131,28 @@ public class Issue {
                 cursor.getString(7),    // imageUrl
                 new Date(cursor.getInt(8) * 1000),    // createdAt
                 new Date(cursor.getInt(9) * 1000),    // updatedAt
-                cursor.getInt(10)    // placeId
+                cursor.getInt(10),    // placeId
+                cursor.getInt(11)==1 ? true : false,   // favorited
+                cursor.getInt(12)==1  ? true : false    // geofenceCreated
         );
     }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    public boolean isGeofenceCreated() {
+        return geofenceCreated;
+    }
+
+    public void setGeofenceCreated(boolean geofenceCreated) {
+        this.geofenceCreated = geofenceCreated;
+    }
+
 
 }
 

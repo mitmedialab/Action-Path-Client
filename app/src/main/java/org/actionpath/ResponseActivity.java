@@ -19,7 +19,7 @@ import org.actionpath.logging.LoggerService;
 
 public class ResponseActivity extends AbstractBaseActivity {
 
-    public final String PARAM_ISSUE_ID = "issueID";
+    public static final String PARAM_ISSUE_ID = "issueID";
 
     public String TAG = this.getClass().getName();
 

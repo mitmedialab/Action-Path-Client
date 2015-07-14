@@ -3,6 +3,7 @@ package org.actionpath;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.location.Geofence;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,6 +49,7 @@ public class MainActivity extends AbstractBaseActivity {
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     ListView listview;
+    SimpleCursorAdapter dataAdapter;
     String mString = "";
 
 //
@@ -61,10 +64,10 @@ public class MainActivity extends AbstractBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.i(TAG,"onCreate");
-        if(!Installation.hasId()){
+        Log.i(TAG, "onCreate");
+        if (!Installation.hasId()) {
             // Create an Action Log for new installation
-            Intent logIntent = LoggerService.intentOf(MainActivity.this,LoggerService.NO_ISSUE,LoggerService.ACTION_INSTALLED_APP);
+            Intent logIntent = LoggerService.intentOf(MainActivity.this, LoggerService.NO_ISSUE, LoggerService.ACTION_INSTALLED_APP);
             startService(logIntent);
         }
         // create the issue database
@@ -75,8 +78,8 @@ public class MainActivity extends AbstractBaseActivity {
         ImageLoader.getInstance().init(config);
         setContentView(R.layout.home_page);
 
-        for(Issue issue : issueDB.getAll()){
-            if(issue.isTest()) {
+        for (Issue issue : issueDB.getAll()) {
+            if (issue.isTest()) {
                 buildGeofence(issue.getLatitude(), issue.getLongitude(), issue.getRadius(), issue.getId());
             }
         }
@@ -86,7 +89,7 @@ public class MainActivity extends AbstractBaseActivity {
 
             @Override
             public void onClick(View v) {
-                Intent logIntent = LoggerService.intentOf(MainActivity.this,LoggerService.NO_ISSUE,LoggerService.ACTION_LOADED_LATEST_ISSUES);
+                Intent logIntent = LoggerService.intentOf(MainActivity.this, LoggerService.NO_ISSUE, LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(logIntent);
                 Log.d(TAG, "load new issues");
                 IssueDatabase.getInstance().loadNewIssues();
@@ -97,49 +100,57 @@ public class MainActivity extends AbstractBaseActivity {
         // follow the test issue by default
         int testIssueId = 1234;
         Issue testIssue = issueDB.getById(testIssueId);
-        if(testIssue!=null){
+        if (testIssue != null) {
             String testIssueSummary = testIssue.getIssueSummary();
             newsfeedList.add(testIssueSummary);
             newsfeedIDs.add(testIssueId);
         }
 
+        displayFavoritedListView();
+
+    }
+
+    private void displayFavoritedListView(){
+
+        Log.i(TAG,"Favorited Issues: "+DatabaseManager.getInstance().countFavoritedIssues());
+
+        String[] fromColumns = new String[] { DatabaseManager.ISSUES_SUMMARY_COL,
+                DatabaseManager.ISSUES_DESCRIPTION_COL };
+
+        int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
+
         listview = (ListView) findViewById(R.id.newsfeed);
 
-        if (mString != ""){
-            List<String> nums = Arrays.asList(mString.split(","));
-            Log.d(TAG, nums.get(0));
-            for (String num: nums){
-                Integer old_id = Integer.getInteger(num);
-                Issue issue = issueDB.getById(old_id);
-                String issue_summary = issue.getIssueSummary();
-                newsfeedList.add(issue_summary);
-                newsfeedIDs.add(old_id);
-            }
-        }
+        dataAdapter = new SimpleCursorAdapter(
+                this, R.layout.issue_list_item,
+                DatabaseManager.getInstance().getFavoritedIssues(),
+                fromColumns,
+                toTextViews,
+                0);
 
-        final StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, newsfeedList);
-        listview.setAdapter(adapter);
+        listview.setAdapter(dataAdapter);
 
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view,
+            public void onItemClick(AdapterView<?> theListView, final View view,
                                     int position, long id) {
-                int issueID = newsfeedIDs.get(position);
-                Log.d(TAG, "YOU CLICKED ITEM with id: "+ issueID);
+                Cursor cursor = (Cursor) theListView.getItemAtPosition(position);
+                int issueId = cursor.getColumnIndexOrThrow(DatabaseManager.ISSUES_ID_COL);
+
+                Log.d(TAG, "YOU CLICKED ITEM with id: "+ issueId);
                 Log.d(TAG, "YOU CLICKED ITEM with position: "+ position);
                 Log.i("HelloListView", "You clicked Item: " + id);
 
                 // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueID, LoggerService.ACTION_NEWS_FEED_CLICK);
+                Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueId, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
                 Log.d(TAG,"NewsfeedClick Logged");
 
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, ResponseActivity.class);
-                intent.putExtra("issueID", issueID);
+                intent.putExtra(ResponseActivity.PARAM_ISSUE_ID, issueId);
                 startActivity(intent);
             }
 
@@ -178,11 +189,11 @@ public class MainActivity extends AbstractBaseActivity {
      */
     public void saveArray() {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        String string_ids = "";
+        String stringIds = "";
         for (Integer each: newsfeedIDs){
-            string_ids.concat(each.toString()+",");
+            stringIds.concat(each.toString()+",");
         }
-        editor.putString("newsfeedSaved", string_ids).commit();
+        editor.putString("newsfeedSaved", stringIds).commit();
         editor.commit();
     }
 
