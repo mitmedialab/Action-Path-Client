@@ -18,6 +18,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueManager;
+import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
@@ -109,6 +110,10 @@ public class MainActivity extends AbstractBaseActivity {
         }
 
         displayFavoritedListView();
+
+        Intent i= new Intent(this, LogSyncService.class);
+        i.putExtra(LogSyncService.PARAM_INSTALLATION_ID, Installation.id(this));
+        this.startService(i);
 
     }
 

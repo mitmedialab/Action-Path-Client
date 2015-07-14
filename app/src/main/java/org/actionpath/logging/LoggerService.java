@@ -31,7 +31,9 @@ import java.util.Stack;
 //        survey completed, or
 //        following page dismissed
 
-
+/**
+ * TODO: Why is this a service?
+ */
 public class LoggerService extends IntentService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
@@ -208,10 +210,6 @@ public class LoggerService extends IntentService implements
             db.insertLog(splitAction,latitude,longitude);
         } // TODO: are the locations actually being saved?
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
-        // and now try to sync to server
-        Intent logSyncServiceIntent = new Intent(LoggerService.this, LogSyncService.class);
-        logSyncServiceIntent.putExtra(LogSyncService.PARAM_SYNC_TYPE, LogSyncService.SYNC_TYPE_SEND);
-        startService(logSyncServiceIntent);
     }
 
     public static Intent intentOf(Context context, Integer issueId, String action){
