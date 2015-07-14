@@ -136,17 +136,12 @@ public class MainActivity extends AbstractBaseActivity {
             public void onItemClick(AdapterView<?> theListView, final View view,
                                     int position, long id) {
                 Cursor cursor = (Cursor) theListView.getItemAtPosition(position);
-                int issueId = cursor.getColumnIndexOrThrow(DatabaseManager.ISSUES_ID_COL);
-
-                Log.d(TAG, "YOU CLICKED ITEM with id: "+ issueId);
-                Log.d(TAG, "YOU CLICKED ITEM with position: "+ position);
-                Log.i("HelloListView", "You clicked Item: " + id);
-
+                int issueId = (int) id;
+                Log.d(TAG, "YOU CLICKED ITEM with id: "+ issueId + " @ position "+position);
                 // CREATE AN ACTION LOG
                 Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueId, LoggerService.ACTION_NEWS_FEED_CLICK);
                 startService(loggerServiceIntent);
                 Log.d(TAG,"NewsfeedClick Logged");
-
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, ResponseActivity.class);
