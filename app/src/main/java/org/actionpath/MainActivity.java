@@ -73,8 +73,10 @@ public class MainActivity extends AbstractBaseActivity {
         issueDB = IssueDatabase.getInstance();
         addTestIssues();
         // create an image loader instance
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-        ImageLoader.getInstance().init(config);
+        if(!ImageLoader.getInstance().isInited()){
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+            ImageLoader.getInstance().init(config);
+        }
         setContentView(R.layout.home_page);
 
         for (Issue issue : issueDB.getAll()) {

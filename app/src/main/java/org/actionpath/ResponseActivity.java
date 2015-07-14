@@ -28,6 +28,7 @@ public class ResponseActivity extends AbstractBaseActivity {
     private TextView issueAddressText;
     private TextView issueDescriptionText;
     private ImageView issueImage;
+    private ImageLoader imageLoader;
 
     int issueID = 0;
 
@@ -42,9 +43,9 @@ public class ResponseActivity extends AbstractBaseActivity {
         issueID = bundle.getInt(PARAM_ISSUE_ID);
         Log.i(TAG, "Responding to issue " + issueID);
         Issue issue = IssueDatabase.getById(issueID);
-        Log.i(TAG, "Description: "+issue.getIssueDescription());
+        Log.i(TAG, "Description: " + issue.getIssueDescription());
         String issue_description = issue.getIssueDescription();
-        Log.i(TAG, "Address: "+issue.getIssueAddress());
+        Log.i(TAG, "Address: " + issue.getIssueAddress());
         String issue_address = issue.getIssueAddress();
 
         issueAddressText = (TextView) findViewById(R.id.issue_address_text);
@@ -54,9 +55,10 @@ public class ResponseActivity extends AbstractBaseActivity {
         issueDescriptionText.setText(issue_description);
 
         if(issue.hasImageUrl()){
-            // TODO: Catch ImageLoader already initialized so not re-initing every time
+            if(!imageLoader.isInited()){
+                ImageLoader imageLoader = ImageLoader.getInstance();
+            }
             issueImage = (ImageView) findViewById(R.id.issue_image);
-            ImageLoader imageLoader = ImageLoader.getInstance();
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
         }
 
@@ -71,7 +73,7 @@ public class ResponseActivity extends AbstractBaseActivity {
                 // TODO: actually post the response to the server
 
                 // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(ResponseActivity.this,issueID,LoggerService.ACTION_SURVEY_RESPONSE);
+                Intent logIntent = LoggerService.intentOf(ResponseActivity.this, issueID, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(logIntent);
                 Log.i(TAG, "Response to Issue " + issueID + ": Resolved");
 
@@ -90,7 +92,7 @@ public class ResponseActivity extends AbstractBaseActivity {
                 // TODO: actually post the response to the server
 
                 // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(ResponseActivity.this,issueID,LoggerService.ACTION_SURVEY_RESPONSE);
+                Intent logIntent = LoggerService.intentOf(ResponseActivity.this, issueID, LoggerService.ACTION_SURVEY_RESPONSE);
                 startService(logIntent);
                 Log.i(TAG, "Response to Issue " + issueID + ": Unresolved");
 
