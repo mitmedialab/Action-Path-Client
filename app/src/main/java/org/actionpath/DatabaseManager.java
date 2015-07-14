@@ -33,6 +33,9 @@ public class DatabaseManager {
     public static final String ISSUES_FAVORITED_COL = "favorited";
     public static final String ISSUES_ID_COL = "_id";
     public static final String ISSUES_DESCRIPTION_COL = "description";
+    public static final String ISSUES_LATITUDE_COL= "latitude";
+    public static final String ISSUES_LONGITUDE_COL = "longitude";
+    public static final String ISSUES_GEOFENCE_CREATED_COL = "geofence_created";
 
     private static final String ISSUES_COL_NAMES = "_id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at,place_id,favorited,geofence_created";
 
@@ -158,6 +161,16 @@ public class DatabaseManager {
         return cursor;
     }
 
+    public Cursor getNonGeoFencedIssues(){
+        Cursor cursor = db.query(ISSUES_TABLE_NAME,
+                new String[] {ISSUES_ID_COL, ISSUES_LATITUDE_COL, ISSUES_LONGITUDE_COL},
+                ISSUES_GEOFENCE_CREATED_COL+"=0", null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
     public Cursor getLogsToSyncCursor(){
         // TODO: change this to use query
         String searchQuery = "SELECT  * FROM " + LOGS_TABLE_NAME +
@@ -202,6 +215,12 @@ public class DatabaseManager {
     public void updateIssueFavorited(int issueId, boolean isFavorited) {
         String updateSql = "UPDATE "+ ISSUES_TABLE_NAME +
                 " SET "+ISSUES_FAVORITED_COL+"="+(isFavorited?1:0)+" WHERE "+ISSUES_ID_COL+"="+issueId;
+        this.db.execSQL(updateSql);
+    }
+
+    public void updateIssueGeofenceCreated(int issueId, boolean isGeofenceCreated) {
+        String updateSql = "UPDATE "+ ISSUES_TABLE_NAME +
+                " SET "+ISSUES_GEOFENCE_CREATED_COL+"="+(isGeofenceCreated?1:0)+" WHERE "+ISSUES_ID_COL+"="+issueId;
         this.db.execSQL(updateSql);
     }
 
