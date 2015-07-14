@@ -71,28 +71,22 @@ public class IssueDatabase {
     }
 
     public void loadNewIssues(){
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
-                    InputStream in = u.openStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        result.append(line);
-                    }
-                    parseResult(result.toString());
-                    Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
-                } catch (MalformedURLException ex) {
-                    Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
-                } catch (IOException ex){
-                    Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
-                }
+        try {
+            URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
+            InputStream in = u.openStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
             }
-        });
-        thread.start();
+            parseResult(result.toString());
+            Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
+        } catch (MalformedURLException ex) {
+            Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
+        } catch (IOException ex){
+            Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
+        }
     }
 
     // parse result from server and send info to create geofences

@@ -22,6 +22,7 @@ import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssueDatabase;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class MainActivity extends AbstractBaseActivity {
 
         for (Issue issue : issueDB.getAll()) {
             if (issue.isTest()) {
-                buildGeofence(issue.getLatitude(), issue.getLongitude(), issue.getRadius(), issue.getId());
+                buildGeofence(issue.getId(),issue.getLatitude(), issue.getLongitude(), issue.getRadius());
             }
         }
 
@@ -92,9 +93,14 @@ public class MainActivity extends AbstractBaseActivity {
             public void onClick(View v) {
                 Intent logIntent = LoggerService.intentOf(MainActivity.this, LoggerService.NO_ISSUE, LoggerService.ACTION_LOADED_LATEST_ISSUES);
                 startService(logIntent);
-                Log.d(TAG, "load new issues");
-                IssueDatabase.getInstance().loadNewIssues();
-                buildGeofences();
+                new Thread(new Runnable() {
+                    public void run() {
+                        Log.d(TAG, "Loading new issues");
+                        IssueDatabase.getInstance().loadNewIssues();
+                        Log.d(TAG, "Building geofences");
+                        buildGeofences();
+                    }
+                }).start();
             }
         });
 
@@ -193,18 +199,23 @@ public class MainActivity extends AbstractBaseActivity {
     }
 
     /**
-     * Build geofences for all the issues in the database
+     * Build geofences for all non-geofenced issues in the database
      * TODO: consider filtering for closed issues, and remember we can only do 100 total
      */
     private void buildGeofences(){
-        for(Issue issue : IssueDatabase.getInstance().getAll()) {
-            buildGeofence(issue.getLatitude(), issue.getLongitude(), Issue.DEFAULT_RADIUS, issue.getId());
-            Intent loggerServiceIntent = LoggerService.intentOf(this,issue.getId(),LoggerService.ACTION_ADDED_GEOFENCE);
+        Cursor cursor = DatabaseManager.getInstance().getNonGeoFencedIssues();
+        while (cursor.isAfterLast() == false) {
+            int issueId = cursor.getInt(0);
+            buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), Issue.DEFAULT_RADIUS);
+            DatabaseManager.getInstance().updateIssueGeofenceCreated(issueId,true);
+            Intent loggerServiceIntent = LoggerService.intentOf(this,issueId,LoggerService.ACTION_ADDED_GEOFENCE);
             startService(loggerServiceIntent);
+            cursor.moveToNext();
         }
+        cursor.close();
     }
 
-    private void buildGeofence(double latitude, double longitude, float radius, int issueId){
+    private void buildGeofence(int issueId, double latitude, double longitude, float radius){
         List<Geofence> newGeoFences = new ArrayList<>();
         Geofence.Builder geofenceBuilder = new Geofence.Builder();
         geofenceBuilder.setRequestId((new Integer(issueId)).toString());
