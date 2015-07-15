@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Created by rahulb on 7/14/15.
+ * Information about the issues table
  */
 public class IssuesDbHelper extends SQLiteOpenHelper {
 
@@ -14,9 +14,6 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "issues.db";
     private static final int DATABASE_VERSION = 1;
-
-    public static final String ISSUES_COL_NAMES = "_id,status,summary,description,latitude,longitude," +
-            "address,imageUrl,created_at,updated_at,place_id,favorited,geofence_created";
 
     // DB Table consts
     public static final String ISSUES_TABLE_NAME = "issues";
@@ -36,7 +33,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
 
     public static String[] ISSUES_COLUMN_NAMES;
 
-    {
+    static {
         ISSUES_COLUMN_NAMES = new String[]
                 {ISSUES_ID_COL,ISSUES_STATUS_COL,ISSUES_SUMMARY_COL,ISSUES_DESCRIPTION_COL,
                         ISSUES_ADDRESS_COL,ISSUES_LATITUDE_COL,ISSUES_LONGITUDE_COL,ISSUES_IMAGE_URL_COL,

@@ -118,6 +118,24 @@ public class Issue implements Serializable {
         return placeId;
     }
 
+    public boolean isFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+
+    }
+
+    public boolean isGeofenceCreated() {
+
+        return geofenceCreated;
+    }
+
+    public void setGeofenceCreated(boolean geofenceCreated) {
+        this.geofenceCreated = geofenceCreated;
+    }
+
     public static Issue fromCursor(Cursor cursor){
         return new Issue(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),       // id
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL)),    // status
@@ -155,21 +173,6 @@ public class Issue implements Serializable {
         return cv;
     }
 
-    public boolean isFavorited() {
-        return favorited;
-    }
-
-    public void setFavorited(boolean favorited) {
-        this.favorited = favorited;
-    }
-
-    public boolean isGeofenceCreated() {
-        return geofenceCreated;
-    }
-
-    public void setGeofenceCreated(boolean geofenceCreated) {
-        this.geofenceCreated = geofenceCreated;
-    }
 
 }
 

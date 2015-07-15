@@ -6,14 +6,13 @@ import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.Log;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
- * Created by rahulb on 7/14/15.
+ * Use this as a singleton to access the issues database.  MainActivity should create this for the
+ * first time.
  */
 public class IssuesDataSource {
 
