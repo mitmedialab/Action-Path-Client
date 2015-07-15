@@ -7,13 +7,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import org.actionpath.ActionPathServer;
 import org.actionpath.DatabaseManager;
-import org.actionpath.MainActivity;
 import org.actionpath.util.Installation;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -64,10 +63,10 @@ public class LogSyncService extends Service{
                 RequestParams params = new RequestParams();
                 params.add("data",sendJSON.toString());
                 params.add("install_id", getInstallationId());
-                client.post(MainActivity.SERVER_BASE_URL + "/logs/sync", params, new AsyncHttpResponseHandler() {
+                client.post(ActionPathServer.BASE_URL + "/logs/sync", params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Log.d(TAG, "Sent all loggable actions to " + MainActivity.SERVER_BASE_URL);
+                        Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
                         Log.i(TAG, "Response from server: " + responseBody);
                         // delete sync'ed log items
                         DatabaseManager db = DatabaseManager.getInstance();

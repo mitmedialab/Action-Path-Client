@@ -1,11 +1,13 @@
 package org.actionpath.issues;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class Issue {
+public class Issue implements Serializable {
 
     public static final int DEFAULT_RADIUS = 500;
 
@@ -25,10 +27,6 @@ public class Issue {
 
     boolean favorited = false;
     boolean geofenceCreated = false;
-
-    public Issue(){
-
-    }
 
     public Issue(int id,
                  String status,
@@ -121,20 +119,40 @@ public class Issue {
     }
 
     public static Issue fromCursor(Cursor cursor){
-        return new Issue(cursor.getInt(0),       // id
-                cursor.getString(1),    // status
-                cursor.getString(2),    // summary
-                cursor.getString(3),    // description
-                cursor.getDouble(4),     // latitude
-                cursor.getDouble(5),     // longitude
-                cursor.getString(6),    // address
-                cursor.getString(7),    // imageUrl
-                new Date(cursor.getInt(8) * 1000),    // createdAt
-                new Date(cursor.getInt(9) * 1000),    // updatedAt
-                cursor.getInt(10),    // placeId
-                cursor.getInt(11)==1 ? true : false,   // favorited
-                cursor.getInt(12)==1  ? true : false    // geofenceCreated
+        return new Issue(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),       // id
+                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL)),    // status
+                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL)),    // summary
+                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL)),    // description
+                cursor.getDouble(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)),     // latitude
+                cursor.getDouble(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)),     // longitude
+                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ADDRESS_COL)),    // address
+                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_IMAGE_URL_COL)),    // imageUrl
+                new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000),    // createdAt
+                new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000),    // updatedAt
+                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL)),    // placeId
+                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FAVORITED_COL))==1,   // favorited
+                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1 // geofenceCreated
         );
+    }
+
+    public ContentValues getContentValues(){
+        ContentValues cv = new ContentValues();
+        cv.put(IssuesDbHelper.ISSUES_ID_COL,id);
+        cv.put(IssuesDbHelper.ISSUES_STATUS_COL,status);
+        cv.put(IssuesDbHelper.ISSUES_SUMMARY_COL,summary);
+        cv.put(IssuesDbHelper.ISSUES_DESCRIPTION_COL,description);
+        cv.put(IssuesDbHelper.ISSUES_LATITUDE_COL,latitude);
+        cv.put(IssuesDbHelper.ISSUES_LONGITUDE_COL,longitude);
+        cv.put(IssuesDbHelper.ISSUES_ADDRESS_COL,address);
+        cv.put(IssuesDbHelper.ISSUES_IMAGE_URL_COL,imageUrl);
+        long createdAtSecs = (createdAt!=null) ? createdAt.getTime()/1000 : 0;
+        cv.put(IssuesDbHelper.ISSUES_CREATED_AT_COL,createdAtSecs);
+        long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
+        cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
+        cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
+        cv.put(IssuesDbHelper.ISSUES_FAVORITED_COL,favorited==true?1:0);
+        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL,geofenceCreated==true?1:0);
+        return cv;
     }
 
     public boolean isFavorited() {
@@ -152,7 +170,6 @@ public class Issue {
     public void setGeofenceCreated(boolean geofenceCreated) {
         this.geofenceCreated = geofenceCreated;
     }
-
 
 }
 

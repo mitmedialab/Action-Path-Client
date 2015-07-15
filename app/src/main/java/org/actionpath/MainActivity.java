@@ -17,7 +17,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssueManager;
+import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
@@ -33,21 +34,15 @@ public class MainActivity extends AbstractBaseActivity {
     public static final String PREF_INSTALL_ID = "installationId";
     public static final int DEFAULT_INSTALL_ID = 0;
 
-    //public static final String SERVER_BASE_URL = "https://api.dev.actionpath.org";
-    public static final String SERVER_BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
-
-    private Button updateGeofences;
+    private Button updateIssues;
 
     private String TAG = this.getClass().getName();
-
-    private IssueManager issueDB;
 
     public static final String MY_PREFS_NAME = "PREFIDS";
     final ArrayList<String> newsfeedList = new ArrayList<>();
     final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
     ListView favoritedIssueList;
     SimpleCursorAdapter favoritedIssueDataAdaptor;
-    String mString = "";
 
 //
 //    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -76,14 +71,10 @@ public class MainActivity extends AbstractBaseActivity {
         }
         setContentView(R.layout.home_page);
 
-        for (Issue issue : DatabaseManager.getInstance().getAllIssues()) {
-            if (issue.isTest()) {
-                buildGeofence(issue.getId(),issue.getLatitude(), issue.getLongitude(), issue.getRadius());
-            }
-        }
+        buildGeofences();   // add in geofences for any new issues
 
-        updateGeofences = (Button) findViewById(R.id.update);
-        updateGeofences.setOnClickListener(new View.OnClickListener() {
+        updateIssues = (Button) findViewById(R.id.update);
+        updateIssues.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -92,22 +83,17 @@ public class MainActivity extends AbstractBaseActivity {
                 new Thread(new Runnable() {
                     public void run() {
                         Log.d(TAG, "Loading new issues");
-                        IssueManager.loadNewIssues();
-                        Log.d(TAG, "Building geofences");
+                        ArrayList<Issue> newIssues = ActionPathServer.getNewIssues();
+                        IssuesDataSource dataSource = IssuesDataSource.getInstance();
+                        for(Issue i:newIssues){
+                            dataSource.insertIssue(i);
+                        }
+                        Log.d(TAG, "Pulled " + newIssues.size() + " new issues from the server");
                         buildGeofences();
                     }
                 }).start();
             }
         });
-
-        // follow the test issue by default
-        int testIssueId = 1234;
-        Issue testIssue = issueDB.getById(testIssueId);
-        if (testIssue != null) {
-            String testIssueSummary = testIssue.getIssueSummary();
-            newsfeedList.add(testIssueSummary);
-            newsfeedIDs.add(testIssueId);
-        }
 
         displayFavoritedListView();
 
@@ -119,10 +105,10 @@ public class MainActivity extends AbstractBaseActivity {
 
     private void displayFavoritedListView(){
 
-        Log.i(TAG,"Favorited Issues: "+DatabaseManager.getInstance().countFavoritedIssues());
+        Log.i(TAG,"Favorited Issues: "+ IssuesDataSource.getInstance(this).countFavoritedIssues());
 
-        String[] fromColumns = new String[] { DatabaseManager.ISSUES_SUMMARY_COL,
-                DatabaseManager.ISSUES_DESCRIPTION_COL };
+        String[] fromColumns = new String[] { IssuesDbHelper.ISSUES_SUMMARY_COL,
+                IssuesDbHelper.ISSUES_DESCRIPTION_COL };
 
         int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
 
@@ -130,7 +116,7 @@ public class MainActivity extends AbstractBaseActivity {
 
         favoritedIssueDataAdaptor = new SimpleCursorAdapter(
                 this, R.layout.issue_list_item,
-                DatabaseManager.getInstance().getFavoritedIssues(),
+                IssuesDataSource.getInstance(this).getFavoritedIssuesCursor(),
                 fromColumns,
                 toTextViews,
                 0);
@@ -170,12 +156,12 @@ public class MainActivity extends AbstractBaseActivity {
         Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null, 9841);
         testIssue2.setTest(true);
         Log.d(TAG, "added test issues");
-        DatabaseManager db = DatabaseManager.getInstance(this);
-        db.insertIssue(testIssue1);
-        db.updateIssueFavorited(1234, true);
-        db.insertIssue(testIssue2);
-        db.updateIssueFavorited(2345, true);
-        int issueCount = db.getIssueCount();
+        IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
+        dataSource.insertIssue(testIssue1);
+        dataSource.updateIssueFavorited(1234, true);
+        dataSource.insertIssue(testIssue2);
+        dataSource.updateIssueFavorited(2345, true);
+        long issueCount = dataSource.getIssueCount();
         Log.i(TAG, issueCount + " issues in the db");
     }
 
@@ -203,11 +189,12 @@ public class MainActivity extends AbstractBaseActivity {
      * TODO: consider filtering for closed issues, and remember we can only do 100 total
      */
     private void buildGeofences(){
-        Cursor cursor = DatabaseManager.getInstance().getNonGeoFencedIssues();
+        Log.d(TAG, "Building geofences");
+        Cursor cursor = IssuesDataSource.getInstance(this).getNonGeoFencedIssuesCursor();
         while (cursor.isAfterLast() == false) {
             int issueId = cursor.getInt(0);
             buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), Issue.DEFAULT_RADIUS);
-            DatabaseManager.getInstance().updateIssueGeofenceCreated(issueId,true);
+            IssuesDataSource.getInstance(this).updateIssueGeofenceCreated(issueId,true);
             Intent loggerServiceIntent = LoggerService.intentOf(this,issueId,LoggerService.ACTION_ADDED_GEOFENCE);
             startService(loggerServiceIntent);
             cursor.moveToNext();

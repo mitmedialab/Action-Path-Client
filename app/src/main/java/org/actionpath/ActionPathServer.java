@@ -1,9 +1,9 @@
-package org.actionpath.issues;
+package org.actionpath;
 
 import android.util.Log;
 
-import org.actionpath.DatabaseManager;
-import org.actionpath.MainActivity;
+import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssuesDataSource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,24 +19,19 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Acts as a singleton wrapper around list of issues.  Call getInstance() to get one.
- * Created by rahulb on 5/26/15.
+ * Created by rahulb on 7/15/15.
  */
-public class IssueManager {
+public class ActionPathServer {
 
-    public static String TAG = "IssueManager";
+    public static final String LOG_TAG = ActionPathServer.class.getName();
 
-    public static IssueManager dbInstance = null;
+    //public static final String SERVER_BASE_URL = "https://api.dev.actionpath.org";
+    public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
 
-    public static Issue getById(int id){
-        DatabaseManager db = DatabaseManager.getInstance();
-        Issue issue = db.getIssue(id);
-        return issue;
-    }
-
-    public static void loadNewIssues(){
+    public static ArrayList<Issue> getNewIssues(){
+        ArrayList<Issue> newIssues = new ArrayList<Issue>();
         try {
-            URL u = new URL(MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
+            URL u = new URL(BASE_URL + "/places/9841/issues/");
             InputStream in = u.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder result = new StringBuilder();
@@ -44,17 +39,18 @@ public class IssueManager {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
-            parseResult(result.toString());
-            Log.i(TAG, "Successfully pulled new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/");
+            newIssues = parseResult(result.toString());
+            Log.i(LOG_TAG, "Successfully pulled new issues from " + BASE_URL + "/places/9841/issues/");
         } catch (MalformedURLException ex) {
-            Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
+            Log.e(LOG_TAG, "Failed to pull new issues from " + BASE_URL + "/places/9841/issues/ | " + ex.toString());
         } catch (IOException ex){
-            Log.e(TAG, "Failed to pull new issues from " + MainActivity.SERVER_BASE_URL + "/places/9841/issues/ | " + ex.toString());
+            Log.e(LOG_TAG, "Failed to pull new issues from " + BASE_URL + "/places/9841/issues/ | " + ex.toString());
         }
+        return newIssues;
     }
 
     // parse result from server and send info to create geofences
-    private static void parseResult(String result){
+    private static ArrayList<Issue> parseResult(String result){
         //TODO: replace with a real JSON parser (http://stackoverflow.com/questions/9605913/how-to-parse-json-in-android)
         int newIssueCount = 0;
         List<String> items = Arrays.asList(result.split("\\{"));
@@ -78,16 +74,11 @@ public class IssueManager {
             Date updated_at = stringToDate(dtUpdate,"yyyy-MM-dd'T'HH:mm:ss'Z'");
             int place_id = Integer.parseInt(contents.get(10).substring(0, contents.get(10).length() - 2));
             Issue newIssue = new Issue(id, status, summary, description, latitude, longitude, address, picture, created_at, updated_at, place_id);
-            Log.d(TAG, "  AddedIssue " + newIssue);
+            Log.d(LOG_TAG, "  AddedIssue " + newIssue);
             newIssues.add(newIssue);
             newIssueCount++;
         }
-        DatabaseManager db = DatabaseManager.getInstance();
-        for(Issue i:newIssues){
-            db.insertIssue(i);
-        }
-        Log.d(TAG, "Added " + newIssueCount + " geofence");
-
+        return newIssues;
     }
 
     // TODO: stringToDate doesn't work
@@ -100,6 +91,5 @@ public class IssueManager {
         return stringDate;
 
     }
-
 
 }

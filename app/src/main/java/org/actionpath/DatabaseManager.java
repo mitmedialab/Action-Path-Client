@@ -27,17 +27,6 @@ public class DatabaseManager {
     private static final int INVALID_VERSION = -1;
     public static final String VERSION_TABLE_NAME = "version";
     public static final String LOGS_TABLE_NAME = "logs";
-    public static final String ISSUES_TABLE_NAME = "issues";
-
-    public static final String ISSUES_SUMMARY_COL = "summary";
-    public static final String ISSUES_FAVORITED_COL = "favorited";
-    public static final String ISSUES_ID_COL = "_id";
-    public static final String ISSUES_DESCRIPTION_COL = "description";
-    public static final String ISSUES_LATITUDE_COL= "latitude";
-    public static final String ISSUES_LONGITUDE_COL = "longitude";
-    public static final String ISSUES_GEOFENCE_CREATED_COL = "geofence_created";
-
-    private static final String ISSUES_COL_NAMES = "_id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at,place_id,favorited,geofence_created";
 
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
@@ -62,7 +51,6 @@ public class DatabaseManager {
 
     private void createAllTables(){
         createLogsTable();
-        createIssueTable();
     }
 
     private void updateVersion(){
@@ -85,44 +73,8 @@ public class DatabaseManager {
         return versionInDb;
     }
 
-    public int getIssueCount() {
-        String searchQuery = "SELECT  count(*) FROM " + ISSUES_TABLE_NAME;
-        Cursor cursor = this.db.rawQuery(searchQuery, null);
-        ArrayList<Integer> logIds = new ArrayList<Integer>();
-        cursor.moveToFirst();
-        int count = cursor.getInt(0);
-        cursor.close();
-        return count;
-    }
-
     private void dropAllTables(){
         this.db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
-        this.db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
-    }
-
-    private void createIssueTable(){
-        Log.i(TAG, "Creating Issues Table");
-        this.db.execSQL("CREATE TABLE IF NOT EXISTS "
-                + ISSUES_TABLE_NAME
-                + " (_id INT PRIMARY KEY, status VARCHAR, summary VARCHAR, description VARCHAR, latitude DOUBLE, longitude DOUBLE, "
-                + "address VARCHAR, imageUrl VARCHAR, created_at INTEGER, updated_at INTEGER, place_id INT, "
-                + "favorited INTEGER DEFAULT 0, geofence_created INTEGER DEFAULT 0);");
-    }
-
-    public void insertIssue(Issue i){
-        Long createdTime = (i.getCreatedAt()!=null) ? i.getCreatedAt().getTime() : null;
-        Long updatedTime= (i.getUpdatedAt()!=null) ? i.getUpdatedAt().getTime() : null;
-        this.db.execSQL("INSERT OR REPLACE INTO " + ISSUES_TABLE_NAME
-                + "("+ISSUES_COL_NAMES+") "
-                + "VALUES (" + i.getId() + ","
-                + DatabaseUtils.sqlEscapeString(i.getStatus()) + ","
-                + DatabaseUtils.sqlEscapeString(i.getIssueSummary()) + ","
-                + DatabaseUtils.sqlEscapeString(i.getIssueDescription())+ ","
-                + i.getLatitude() + "," + i.getLongitude() + ", "
-                + DatabaseUtils.sqlEscapeString(i.getIssueAddress()) + ","
-                + DatabaseUtils.sqlEscapeString(i.getImageUrl()) + ","
-                + createdTime + "," + updatedTime + "," + i.getPlaceId() + ","
-                + (i.isFavorited() ? 1:0) + "," + (i.isGeofenceCreated() ? 1:0) + ")");
     }
 
     private void createLogsTable(){
@@ -146,30 +98,6 @@ public class DatabaseManager {
                 + LOG_STATUS_NEW + ");");
     }
 
-    public long countFavoritedIssues(){
-        return DatabaseUtils.queryNumEntries(db, ISSUES_TABLE_NAME,
-                ISSUES_FAVORITED_COL+"=?", new String[] {"1"});
-    }
-
-    public Cursor getFavoritedIssues(){
-        Cursor cursor = db.query(ISSUES_TABLE_NAME,
-                new String[] {ISSUES_ID_COL, ISSUES_SUMMARY_COL, ISSUES_DESCRIPTION_COL},
-                ISSUES_FAVORITED_COL+"=1", null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
-    }
-
-    public Cursor getNonGeoFencedIssues(){
-        Cursor cursor = db.query(ISSUES_TABLE_NAME,
-                new String[] {ISSUES_ID_COL, ISSUES_LATITUDE_COL, ISSUES_LONGITUDE_COL},
-                ISSUES_GEOFENCE_CREATED_COL+"=0", null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-        }
-        return cursor;
-    }
 
     public Cursor getLogsToSyncCursor(){
         // TODO: change this to use query
@@ -210,51 +138,6 @@ public class DatabaseManager {
             instance = new DatabaseManager(null);
         }
         return instance;
-    }
-
-    public void updateIssueFavorited(int issueId, boolean isFavorited) {
-        String updateSql = "UPDATE "+ ISSUES_TABLE_NAME +
-                " SET "+ISSUES_FAVORITED_COL+"="+(isFavorited?1:0)+" WHERE "+ISSUES_ID_COL+"="+issueId;
-        this.db.execSQL(updateSql);
-    }
-
-    public void updateIssueGeofenceCreated(int issueId, boolean isGeofenceCreated) {
-        String updateSql = "UPDATE "+ ISSUES_TABLE_NAME +
-                " SET "+ISSUES_GEOFENCE_CREATED_COL+"="+(isGeofenceCreated?1:0)+" WHERE "+ISSUES_ID_COL+"="+issueId;
-        this.db.execSQL(updateSql);
-    }
-
-    public Issue getIssue(int id) {
-        // TODO: change to use query method
-        String searchQuery = "SELECT "+ISSUES_COL_NAMES+" FROM " + ISSUES_TABLE_NAME +" WHERE "+ISSUES_ID_COL+"="+id;
-        Cursor cursor = this.db.rawQuery(searchQuery, null);
-        ArrayList<Integer> logIds = new ArrayList<Integer>();
-        cursor.moveToFirst();
-        Issue issue = new Issue();
-        try {
-            //(id,status,summary,description,latitude,longitude,address,imageUrl,created_at,updated_at, place_id)
-            issue = Issue.fromCursor(cursor);
-            cursor.close();
-        } catch(CursorIndexOutOfBoundsException e){
-            cursor.close();
-            Log.w(TAG,"No issue "+id+" in database");
-            issue = null;
-        }
-        return issue;
-    }
-
-    public ArrayList<Issue> getAllIssues() {
-        String searchQuery = "SELECT "+ISSUES_COL_NAMES+" FROM " + ISSUES_TABLE_NAME;
-        Cursor cursor = this.db.rawQuery(searchQuery, null);
-        ArrayList<Issue> issues = new ArrayList<Issue>();
-        cursor.moveToFirst();
-        while (cursor.isAfterLast() == false) {
-            Issue issue = Issue.fromCursor(cursor);
-            issues.add(issue);
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return issues;
     }
 
 }
