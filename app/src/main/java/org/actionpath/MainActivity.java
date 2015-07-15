@@ -31,9 +31,6 @@ import java.util.List;
 
 public class MainActivity extends AbstractBaseActivity {
 
-    public static final String PREF_INSTALL_ID = "installationId";
-    public static final int DEFAULT_INSTALL_ID = 0;
-
     private Button updateIssues;
 
     private String TAG = this.getClass().getName();
@@ -86,7 +83,7 @@ public class MainActivity extends AbstractBaseActivity {
                         ArrayList<Issue> newIssues = ActionPathServer.getNewIssues();
                         IssuesDataSource dataSource = IssuesDataSource.getInstance();
                         for(Issue i:newIssues){
-                            dataSource.insertIssue(i);
+                            dataSource.insertOrUpdateIssue(i);
                         }
                         Log.d(TAG, "Pulled " + newIssues.size() + " new issues from the server");
                         buildGeofences();
@@ -98,14 +95,13 @@ public class MainActivity extends AbstractBaseActivity {
         displayFavoritedListView();
 
         Intent i= new Intent(this, LogSyncService.class);
-        i.putExtra(LogSyncService.PARAM_INSTALLATION_ID, Installation.id(this));
         this.startService(i);
 
     }
 
     private void displayFavoritedListView(){
 
-        Log.i(TAG,"Favorited Issues: "+ IssuesDataSource.getInstance(this).countFavoritedIssues());
+        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance(this).countFavoritedIssues());
 
         String[] fromColumns = new String[] { IssuesDbHelper.ISSUES_SUMMARY_COL,
                 IssuesDbHelper.ISSUES_DESCRIPTION_COL };
@@ -152,36 +148,23 @@ public class MainActivity extends AbstractBaseActivity {
         final double Cambridge_lat2 = 42.359255;
         final double Cambridge_long2 = -71.093666;
         Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "", null, null, 9841);
+        testIssue1.setRadius(Cambridge_rad);
         testIssue1.setTest(true);
-        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat, Cambridge_long, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null, 9841);
+        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat2, Cambridge_long2, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null, 9841);
+        testIssue2.setRadius(Cambridge_rad);
         testIssue2.setTest(true);
         Log.d(TAG, "added test issues");
         IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
-        dataSource.insertIssue(testIssue1);
+        dataSource.insertOrUpdateIssue(testIssue1);
         dataSource.updateIssueFavorited(1234, true);
-        dataSource.insertIssue(testIssue2);
+        dataSource.insertOrUpdateIssue(testIssue2);
         dataSource.updateIssueFavorited(2345, true);
         long issueCount = dataSource.getIssueCount();
         Log.i(TAG, issueCount + " issues in the db");
     }
 
     public void onStop() {
-        saveArray();
         super.onStop();
-    }
-
-    /**
-     * Save all the issues that you've followed to a local prefs file so we don't have to ask the
-     * server for them each time (?)
-     */
-    public void saveArray() {
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        String stringIds = "";
-        for (Integer each: newsfeedIDs){
-            stringIds.concat(each.toString()+",");
-        }
-        editor.putString("newsfeedSaved", stringIds).commit();
-        editor.commit();
     }
 
     /**
@@ -191,9 +174,10 @@ public class MainActivity extends AbstractBaseActivity {
     private void buildGeofences(){
         Log.d(TAG, "Building geofences");
         Cursor cursor = IssuesDataSource.getInstance(this).getNonGeoFencedIssuesCursor();
-        while (cursor.isAfterLast() == false) {
+        while (!cursor.isAfterLast()) {
             int issueId = cursor.getInt(0);
-            buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), Issue.DEFAULT_RADIUS);
+            Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
+            buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
             IssuesDataSource.getInstance(this).updateIssueGeofenceCreated(issueId,true);
             Intent loggerServiceIntent = LoggerService.intentOf(this,issueId,LoggerService.ACTION_ADDED_GEOFENCE);
             startService(loggerServiceIntent);

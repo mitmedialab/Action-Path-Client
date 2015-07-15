@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
 import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -121,12 +122,36 @@ public class IssuesDataSource {
         return issue;
     }
 
-    public void insertIssue(Issue i) {
+    private boolean issueExists(int issueId){
+        Issue issue = getIssue(issueId);
+        return issue!=null;
+    }
+
+    public void insertIssue(Issue i){
+        insertOrUpdateIssue(i,false);
+    }
+
+    public void insertOrUpdateIssue(Issue i){
+        insertOrUpdateIssue(i,true);
+    }
+
+    public void insertOrUpdateIssue(Issue i, boolean orUpdate) {
         if(i==null){
             Log.e(LOG_TAG,"trying to insert a null issue - ignoring to fail gracefully");
             return;
         }
-        db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
+        try {
+            if(issueExists(i.getId()) && orUpdate) {
+                Log.v(LOG_TAG,"Updating "+i.toString());
+                db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
+                        IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
+            } else {
+                Log.v(LOG_TAG,"Inserting "+i.toString());
+                db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
+            }
+        } catch (SQLiteConstraintException ce){
+            Log.w(LOG_TAG,"Ignoring issue "+i.toString()+" because it already exists and you said not to update");
+        }
     }
 
 }

@@ -22,7 +22,7 @@ public class Issue implements Serializable {
     Date createdAt;
     Date updatedAt;
     int placeId;
-    int radiusMeters = DEFAULT_RADIUS;
+    float radius = DEFAULT_RADIUS;    // in meters
     boolean test = false;
 
     boolean favorited = false;
@@ -94,7 +94,7 @@ public class Issue implements Serializable {
 
     public int getId(){ return id; }
 
-    public int getRadius() { return radiusMeters; }
+    public float getRadius() { return radius; }
 
     public void setTest(boolean isATestIssue){ test = isATestIssue; }
 
@@ -125,6 +125,10 @@ public class Issue implements Serializable {
     public void setFavorited(boolean favorited) {
         this.favorited = favorited;
 
+    }
+
+    public void setRadius(float radius) {
+        this.radius = radius;
     }
 
     public boolean isGeofenceCreated() {
@@ -172,6 +176,23 @@ public class Issue implements Serializable {
         cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL,geofenceCreated==true?1:0);
         return cv;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Issue issue = (Issue) o;
+        if (id != issue.id) return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (id+placeId+"").hashCode();
+        return result;
+    }
+
 
 
 }

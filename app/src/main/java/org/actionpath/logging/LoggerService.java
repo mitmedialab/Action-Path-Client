@@ -3,7 +3,6 @@ package org.actionpath.logging;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +11,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.actionpath.DatabaseManager;
 import org.actionpath.util.Installation;
 
 import java.sql.Timestamp;
@@ -193,7 +191,6 @@ public class LoggerService extends IntentService implements
     private void writeLogQueueToDatabase() {
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
-        DatabaseManager db = DatabaseManager.getInstance(this);
         Iterator<ArrayList<String>> it = queuedActionLogs.iterator();
         Log.i(TAG,"writing queue to db");
         while (it.hasNext()) {
@@ -207,7 +204,7 @@ public class LoggerService extends IntentService implements
             } else {
                 Log.w(TAG,"lastLocation is null");
             }
-            db.insertLog(splitAction,latitude,longitude);
+            LogsDataSource.getInstance(this).insertLog(splitAction, latitude, longitude);
         } // TODO: are the locations actually being saved?
         queuedActionLogs.clear(); // TODO: could be a garbage collection issue
     }

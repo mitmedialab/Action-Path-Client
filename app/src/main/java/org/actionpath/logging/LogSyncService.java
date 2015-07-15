@@ -3,7 +3,6 @@ package org.actionpath.logging;
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -12,7 +11,6 @@ import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.actionpath.ActionPathServer;
-import org.actionpath.DatabaseManager;
 import org.actionpath.util.Installation;
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -20,38 +18,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LogSyncService extends Service{
 
-    public static String PARAM_INSTALLATION_ID = "installationId";
-
     public String TAG = this.getClass().getName();
-    private Timer timer;
-
-    private String installationId = "";
 
     public LogSyncService() {
         super();
+        LogsDataSource.getInstance(this);   // to set up the database correctly
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent,flags,startId);
-        Bundle extras = intent.getExtras();
-        String installationId = (String) extras.get(PARAM_INSTALLATION_ID);
-        timer = new Timer();
+        Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
                 Log.d(TAG,"Timer says we should sync logs now!");
                 SyncHttpClient client = new SyncHttpClient();
                 JSONArray sendJSON = getUnsyncedLogsAsJson();
-                final ArrayList<Integer> logIds = new ArrayList<Integer>();
+                final ArrayList<Integer> logIds = new ArrayList<>();
                 try {
                     for (int i = 0; i < sendJSON.length(); i++) {
                         JSONObject row = sendJSON.getJSONObject(i);
-                        logIds.add(row.getInt("id"));
+                        logIds.add(row.getInt(LogsDbHelper.LOGS_ID_COL));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -67,20 +60,18 @@ public class LogSyncService extends Service{
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
-                        Log.i(TAG, "Response from server: " + responseBody);
+                        Log.i(TAG, "Response from server: " + Arrays.toString(responseBody));
                         // delete sync'ed log items
-                        DatabaseManager db = DatabaseManager.getInstance();
                         for(int logId:logIds){
-                            db.deleteLog(logId);
+                            LogsDataSource.getInstance().deleteLog(logId);
                         }
                     }
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                         Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
                         // mark that we were not able to sync them
-                        DatabaseManager db = DatabaseManager.getInstance();
                         for(int logId:logIds){
-                            db.updateLogStatus(logId,DatabaseManager.LOG_STATUS_DID_NOT_SYNC);
+                            LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_DID_NOT_SYNC);
                         }
                     }
                 });
@@ -112,12 +103,11 @@ public class LogSyncService extends Service{
     }
 
     private JSONArray getUnsyncedLogsAsJson(){
-        DatabaseManager db = DatabaseManager.getInstance(this);
-        Cursor cursor = db.getLogsToSyncCursor();
+        Cursor cursor = LogsDataSource.getInstance().getLogsToSyncCursor();
         JSONArray resultSet = new JSONArray();
         ArrayList<Integer> logIds = new ArrayList<Integer>();
         cursor.moveToFirst();
-        while (cursor.isAfterLast() == false) {
+        while (!cursor.isAfterLast()) {
             int totalColumn = cursor.getColumnCount();
             JSONObject rowObject = new JSONObject();
             for( int i=0 ;  i< totalColumn ; i++ ){
@@ -146,7 +136,7 @@ public class LogSyncService extends Service{
         }
         // update the issues saying we are trying to sync
         for(int logId:logIds){
-            db.updateLogStatus(logId, DatabaseManager.LOG_STATUS_SYNCING);
+            LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_SYNCING);
         }
         Log.v("LogSyncService", "JSON TO UPLOAD: "+resultSet.toString());
         return resultSet;
