@@ -64,6 +64,11 @@ public class LogsDataSource {
         dbHelper.close();
     }
 
+    public void insertLog(LogMsg logMsg){
+        this.db.insert(LogsDbHelper.LOGS_TABLE_NAME, null, logMsg.getContentValues());
+    }
+
+    @Deprecated
     public void insertLog(ArrayList<String> splitAction, String latitude, String longitude) {
         this.db.execSQL("INSERT INTO "
                 + LogsDbHelper.LOGS_TABLE_NAME + "(timestamp, installID, issueID, lat, long, actionType, status) "
