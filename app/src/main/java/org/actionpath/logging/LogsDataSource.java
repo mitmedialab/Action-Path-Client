@@ -68,21 +68,6 @@ public class LogsDataSource {
         this.db.insert(LogsDbHelper.LOGS_TABLE_NAME, null, logMsg.getContentValues());
     }
 
-    @Deprecated
-    public void insertLog(ArrayList<String> splitAction, String latitude, String longitude) {
-        this.db.execSQL("INSERT INTO "
-                + LogsDbHelper.LOGS_TABLE_NAME + "(timestamp, installID, issueID, lat, long, actionType, status) "
-                + " VALUES ("
-                + DatabaseUtils.sqlEscapeString(splitAction.get(0)) + ","
-                + DatabaseUtils.sqlEscapeString(splitAction.get(1)) + ","
-                + DatabaseUtils.sqlEscapeString(splitAction.get(2)) + ","
-                + DatabaseUtils.sqlEscapeString(latitude) + ","
-                + DatabaseUtils.sqlEscapeString(longitude) + ","
-                + DatabaseUtils.sqlEscapeString(splitAction.get(3)) + ","
-                + LogMsg.LOG_STATUS_NEW + ");");
-    }
-
-
     public Cursor getLogsToSyncCursor(){
         // TODO: change this to use query
         String searchQuery = "SELECT  * FROM " + LogsDbHelper.LOGS_TABLE_NAME +
