@@ -71,6 +71,7 @@ public class Locator implements
         if(lastLocation==null){
             Log.w(LOG_TAG,"unable to get last location");
         } else {
+            // TODO: Update anything in database that doesn't have a location
             Log.d(LOG_TAG,"@ "+lastLocation.getLatitude()+","+lastLocation.getLongitude());
         }
     }

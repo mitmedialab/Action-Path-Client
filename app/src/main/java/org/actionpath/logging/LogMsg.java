@@ -12,6 +12,7 @@ public class LogMsg implements Serializable {
     public static final Integer LOG_STATUS_NEW = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
+    // TODO: New status for whether it needs geocode
 
     public static final String ACTION_NEWS_FEED_CLICK = "NewsfeedClick";
     public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";

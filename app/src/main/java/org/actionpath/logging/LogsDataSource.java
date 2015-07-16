@@ -65,6 +65,7 @@ public class LogsDataSource {
     }
 
     public void insertLog(LogMsg logMsg){
+        // TODO: check whether it has a latitude and longitude and change status whether it does or doesn't
         this.db.insert(LogsDbHelper.LOGS_TABLE_NAME, null, logMsg.getContentValues());
     }
 

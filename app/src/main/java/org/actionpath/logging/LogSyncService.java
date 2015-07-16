@@ -7,6 +7,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
@@ -56,19 +57,20 @@ public class LogSyncService extends Service{
                 RequestParams params = new RequestParams();
                 params.add("data",sendJSON.toString());
                 params.add("install_id", getInstallationId());
-                client.post(ActionPathServer.BASE_URL + "/logs/sync", params, new AsyncHttpResponseHandler() {
+                client.post(ActionPathServer.BASE_URL + "/logs/sync", params, new JsonHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
-                        Log.i(TAG, "Response from server: " + Arrays.toString(responseBody));
+                        Log.d(TAG, "Response from server: " + response.toString());
                         // delete sync'ed log items
                         for(int logId:logIds){
                             LogsDataSource.getInstance().deleteLog(logId);
                         }
                     }
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                    public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
                         Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
+                        Log.e(TAG, "Response from server: " + response.toString());
                         // mark that we were not able to sync them
                         for(int logId:logIds){
                             LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_DID_NOT_SYNC);
