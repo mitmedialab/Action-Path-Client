@@ -10,8 +10,9 @@ import android.util.Log;
 import org.actionpath.ResponseActivity;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LoggerService;
+import org.actionpath.logging.LogMsg;
 import org.actionpath.R;
+import org.actionpath.logging.LogsDataSource;
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
@@ -22,8 +23,8 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         sendNotification(strings[0]);
 
         // CREATE AN ACTION LOG
-        Intent logIntent = LoggerService.intentOf(GeofencingReceiver.this,Integer.valueOf(strings[0]),LoggerService.ACTION_ENTERED_GEOFENCE);
-        startService(logIntent);
+        LogsDataSource.getInstance(getApplicationContext()).insertLog(
+                getApplicationContext(), Integer.valueOf(strings[0]), LogMsg.ACTION_ENTERED_GEOFENCE);
 
         //TODO: change so it takes in a list of strings
         //ex: String[] main where
@@ -121,7 +122,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, ResponseActivity.class)
-                .putExtra("issueID", issueID)
+                .putExtra(ResponseActivity.PARAM_ISSUE_ID, issueID)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);

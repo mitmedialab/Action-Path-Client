@@ -14,7 +14,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LoggerService;
+import org.actionpath.logging.LogMsg;
 
 
 public class ResponseActivity extends AbstractBaseActivity {
@@ -71,10 +71,7 @@ public class ResponseActivity extends AbstractBaseActivity {
             public void onClick(View v) {
 
                 // TODO: actually post the response to the server
-
-                // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(ResponseActivity.this, issueID, LoggerService.ACTION_SURVEY_RESPONSE);
-                startService(logIntent);
+                logMsg(issueID, LogMsg.ACTION_SURVEY_RESPONSE);
                 Log.i(TAG, "Response to Issue " + issueID + ": Resolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);
@@ -91,9 +88,7 @@ public class ResponseActivity extends AbstractBaseActivity {
 
                 // TODO: actually post the response to the server
 
-                // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(ResponseActivity.this, issueID, LoggerService.ACTION_SURVEY_RESPONSE);
-                startService(logIntent);
+                logMsg(issueID, LogMsg.ACTION_SURVEY_RESPONSE);
                 Log.i(TAG, "Response to Issue " + issueID + ": Unresolved");
 
                 Intent intent = new Intent(ResponseActivity.this, AfterActionActivity.class);

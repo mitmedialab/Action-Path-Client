@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
-import org.actionpath.logging.LoggerService;
+import org.actionpath.logging.LogMsg;
 
 public class AfterActionActivity extends AbstractBaseActivity {
 
@@ -37,9 +37,7 @@ public class AfterActionActivity extends AbstractBaseActivity {
             @Override
             public void onClick(View v) {
 
-                // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(AfterActionActivity.this,issueID,LoggerService.ACTION_THANKS_DISMISSED);
-                startService(logIntent);
+                logMsg(issueID, LogMsg.ACTION_THANKS_DISMISSED);
                 Log.i(TAG,"Thanks Dismissed on Issue #"+ issueID);
 
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
@@ -55,9 +53,7 @@ public class AfterActionActivity extends AbstractBaseActivity {
             @Override
             public void onClick(View v) {
 
-                // CREATE AN ACTION LOG
-                Intent logIntent = LoggerService.intentOf(AfterActionActivity.this,issueID,LoggerService.ACTION_UNFOLLOWED_ISSUE);
-                startService(logIntent);
+                logMsg(issueID, LogMsg.ACTION_UNFOLLOWED_ISSUE);
                 Log.i(TAG,"Unfollowed Issue #" + issueID);
 
                 Intent intent = new Intent(AfterActionActivity.this, MainActivity.class);
@@ -66,6 +62,5 @@ public class AfterActionActivity extends AbstractBaseActivity {
         });
 
     }
-
 
 }

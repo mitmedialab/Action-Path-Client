@@ -1,7 +1,6 @@
 package org.actionpath;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,8 +18,8 @@ import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.issues.IssuesDbHelper;
+import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
-import org.actionpath.logging.LoggerService;
 import org.actionpath.util.Installation;
 
 import java.util.ArrayList;
@@ -54,11 +53,6 @@ public class MainActivity extends AbstractBaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
-        if (!Installation.hasId()) {
-            // Create an Action Log for new installation
-            Intent logIntent = LoggerService.intentOf(MainActivity.this, LoggerService.NO_ISSUE, LoggerService.ACTION_INSTALLED_APP);
-            startService(logIntent);
-        }
         // create the issue database
         addTestIssues();
         // create an image loader instance
@@ -68,17 +62,14 @@ public class MainActivity extends AbstractBaseActivity {
         }
         setContentView(R.layout.home_page);
 
-        buildGeofences();   // add in geofences for any new issues
-
         updateIssues = (Button) findViewById(R.id.update);
         updateIssues.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Intent logIntent = LoggerService.intentOf(MainActivity.this, LoggerService.NO_ISSUE, LoggerService.ACTION_LOADED_LATEST_ISSUES);
-                startService(logIntent);
                 new Thread(new Runnable() {
                     public void run() {
+                        logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
                         Log.d(TAG, "Loading new issues");
                         ArrayList<Issue> newIssues = ActionPathServer.getNewIssues();
                         IssuesDataSource dataSource = IssuesDataSource.getInstance();
@@ -96,6 +87,10 @@ public class MainActivity extends AbstractBaseActivity {
 
         Intent i= new Intent(this, LogSyncService.class);
         this.startService(i);
+
+        if (!Installation.hasId()) {
+            logMsg(LogMsg.ACTION_INSTALLED_APP);
+        }
 
     }
 
@@ -127,9 +122,7 @@ public class MainActivity extends AbstractBaseActivity {
                 Cursor cursor = (Cursor) theListView.getItemAtPosition(position);
                 int issueId = (int) id;
                 Log.d(TAG, "clicked item with id: " + issueId + " @ position " + position);
-                // CREATE AN ACTION LOG
-                Intent loggerServiceIntent = LoggerService.intentOf(MainActivity.this, issueId, LoggerService.ACTION_NEWS_FEED_CLICK);
-                startService(loggerServiceIntent);
+                logMsg(issueId, LogMsg.ACTION_NEWS_FEED_CLICK);
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, ResponseActivity.class);
@@ -178,9 +171,8 @@ public class MainActivity extends AbstractBaseActivity {
             int issueId = cursor.getInt(0);
             Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
             buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
-            IssuesDataSource.getInstance(this).updateIssueGeofenceCreated(issueId,true);
-            Intent loggerServiceIntent = LoggerService.intentOf(this,issueId,LoggerService.ACTION_ADDED_GEOFENCE);
-            startService(loggerServiceIntent);
+            IssuesDataSource.getInstance(this).updateIssueGeofenceCreated(issueId, true);
+            logMsg(issueId, LogMsg.ACTION_ADDED_GEOFENCE);
             cursor.moveToNext();
         }
         cursor.close();

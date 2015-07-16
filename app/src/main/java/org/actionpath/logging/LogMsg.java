@@ -13,21 +13,34 @@ public class LogMsg implements Serializable {
     public static final Integer LOG_STATUS_SYNCING = 1;
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
 
+    public static final String ACTION_NEWS_FEED_CLICK = "NewsfeedClick";
+    public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";
+    public static final String ACTION_NOTIFICATION_RESPOND_CLICK = "NotificationRespondClick";
+    public static final String ACTION_SURVEY_RESPONSE = "SurveyResponse";
+    public static final String ACTION_THANKS_DISMISSED = "ThanksDismissed";
+    public static final String ACTION_UNFOLLOWED_ISSUE = "UnfollowedIssue";
+    public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
+    public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
+    public static final String ACTION_INSTALLED_APP = "InstalledApp";
+    public static final String ACTION_ADDED_GEOFENCE = "AddedGeofence";
+
+    public static final Integer NO_ISSUE = -1;
+
     // Fields
     public int id = INVALID_ID;
     public String actionType;
     public String installationId;
     public int issueId;
-    public int timestamp;
-    public String latitude;
-    public String longitude;
+    public long timestamp;
+    public double latitude;
+    public double longitude;
     public int status;
 
-    public LogMsg(String actionType, String installationId, int issueId, int timestamp, String latitude, String longitude, int status) {
+    public LogMsg(String actionType, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
         this(INVALID_ID, actionType, installationId, issueId, timestamp, latitude, longitude, status);
     }
 
-    public LogMsg(int id, String actionType, String installationId, int issueId, int timestamp, String latitude, String longitude, int status) {
+    public LogMsg(int id, String actionType, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
         this.id = id;
         this.actionType = actionType;
         this.installationId = installationId;
@@ -55,9 +68,9 @@ public class LogMsg implements Serializable {
         String actionType = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_ACTION_TYPE_COL));
         String installationId = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_INSTALLATION_ID_COL));
         int issueId = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_ISSUE_ID_COL));
-        int timestamp = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_TIMESTAMP_COL));
-        String latitude = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_LATITUDE_COL));
-        String longitude = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_LONGITUDE_COL));
+        long timestamp = c.getLong(c.getColumnIndex(LogsDbHelper.LOGS_TIMESTAMP_COL));
+        Double latitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LOGS_LATITUDE_COL));
+        Double longitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LOGS_LONGITUDE_COL));
         int status = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_STATUS_COL));
 
         return new LogMsg(id,actionType,installationId,issueId,timestamp,latitude,longitude,status);

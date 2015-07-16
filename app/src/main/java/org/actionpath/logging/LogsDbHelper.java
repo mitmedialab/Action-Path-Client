@@ -13,7 +13,7 @@ public class LogsDbHelper extends SQLiteOpenHelper {
     private static String LOG_TAG = LogsDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "logs.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // DB Table consts
     public static final String LOGS_TABLE_NAME = "logs";
@@ -34,8 +34,8 @@ public class LogsDbHelper extends SQLiteOpenHelper {
             LOGS_INSTALLATION_ID_COL + " text, " +
             LOGS_ISSUE_ID_COL + " int, " +
             LOGS_TIMESTAMP_COL + " timestamp, " +
-            LOGS_LATITUDE_COL + " text, " +
-            LOGS_LONGITUDE_COL + " text, " +
+            LOGS_LATITUDE_COL + " double, " +
+            LOGS_LONGITUDE_COL + " double, " +
             LOGS_STATUS_COL + " int " +
             ");";
 

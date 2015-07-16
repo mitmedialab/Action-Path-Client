@@ -3,13 +3,13 @@ package org.actionpath.logging;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.util.Log;
 
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDbHelper;
+import org.actionpath.util.Installation;
+import org.actionpath.util.Locator;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -95,14 +95,33 @@ public class LogsDataSource {
         contentValues.put(LogsDbHelper.LOGS_STATUS_COL, logStatusSyncing);
         this.db.update(LogsDbHelper.LOGS_TABLE_NAME,
                 contentValues,
-                LogsDbHelper.LOGS_ID_COL+"=?",
-                new String[] {logId+""});
+                LogsDbHelper.LOGS_ID_COL + "=?",
+                new String[]{logId + ""});
     }
 
     public void deleteLog(int logId) {
         this.db.delete(LogsDbHelper.LOGS_TABLE_NAME,
                 LogsDbHelper.LOGS_ID_COL + "=?",
-                new String[]{logId+""});
+                new String[]{logId + ""});
+    }
+
+    public void insertLog(Context context, String action) {
+        insertLog(context, LogMsg.NO_ISSUE,action);
+    }
+
+    public void insertLog(Context context, int issueId, String action){
+        Location loc = Locator.getInstance(context).getLocation();
+        double latitude = 0;
+        double longitude = 0;
+        if(loc!=null) {
+            latitude = loc.getLatitude();
+            longitude = loc.getLongitude();
+        }
+        LogMsg logMsg = new LogMsg(action, Installation.id(context), issueId,
+                System.currentTimeMillis()/1000,
+                latitude, longitude,
+                LogMsg.LOG_STATUS_NEW);
+        insertLog(logMsg);
     }
 
 }
