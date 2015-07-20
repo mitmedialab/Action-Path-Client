@@ -9,10 +9,10 @@ public class LogMsg implements Serializable {
 
     public static final int INVALID_ID = -1;
 
-    public static final Integer LOG_STATUS_NEW = 0;
+    public static final Integer LOG_STATUS_READY_TO_SYNC = 0;
     public static final Integer LOG_STATUS_SYNCING = 1;
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
-    // TODO: New status for whether it needs geocode
+    public static final Integer LOG_STATUS_NEEDS_LOCATION = 3;
 
     public static final String ACTION_NEWS_FEED_CLICK = "NewsfeedClick";
     public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";

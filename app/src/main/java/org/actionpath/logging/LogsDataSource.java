@@ -8,11 +8,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
 
+import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.util.Installation;
 import org.actionpath.util.Locator;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * Use this as a singleton to access the issues database.  MainActivity should create this for the
@@ -65,15 +65,56 @@ public class LogsDataSource {
     }
 
     public void insertLog(LogMsg logMsg){
-        // TODO: check whether it has a latitude and longitude and change status whether it does or doesn't
         this.db.insert(LogsDbHelper.LOGS_TABLE_NAME, null, logMsg.getContentValues());
     }
 
+    public Cursor getLogsNeedingLocation(){
+        return this.db.query(LogsDbHelper.LOGS_TABLE_NAME, LogsDbHelper.LOGS_COLUMNS,
+                LogsDbHelper.LOGS_STATUS_COL + " = ?", new String[]{"" + LogMsg.LOG_STATUS_NEEDS_LOCATION},
+                null, null, null);
+    }
+
     public Cursor getLogsToSyncCursor(){
-        // TODO: change this to use query
-        String searchQuery = "SELECT  * FROM " + LogsDbHelper.LOGS_TABLE_NAME +
-                " where status="+LogMsg.LOG_STATUS_NEW+" OR status="+LogMsg.LOG_STATUS_DID_NOT_SYNC;
-        return this.db.rawQuery(searchQuery, null);
+        return this.db.query(LogsDbHelper.LOGS_TABLE_NAME, LogsDbHelper.LOGS_COLUMNS,
+                LogsDbHelper.LOGS_STATUS_COL + " = ? OR " + LogsDbHelper.LOGS_STATUS_COL + " = ?",
+                new String[]{"" + LogMsg.LOG_STATUS_READY_TO_SYNC, "" + LogMsg.LOG_STATUS_DID_NOT_SYNC},
+                null, null, null);
+    }
+
+    public long countLogsToSync(){
+        return DatabaseUtils.queryNumEntries(db, LogsDbHelper.LOGS_TABLE_NAME,
+                LogsDbHelper.LOGS_STATUS_COL + "=? OR "+LogsDbHelper.LOGS_STATUS_COL + "=?",
+                new String[]{LogMsg.LOG_STATUS_READY_TO_SYNC+"",""+LogMsg.LOG_STATUS_DID_NOT_SYNC});
+    }
+
+    public long countLogsNeedingLocation(){
+        return DatabaseUtils.queryNumEntries(db, LogsDbHelper.LOGS_TABLE_NAME,
+                LogsDbHelper.LOGS_STATUS_COL+"=?",
+                new String[] {""+LogMsg.LOG_STATUS_NEEDS_LOCATION});
+    }
+
+    public void updateAllLogsNeedingLocation(double latitude, double longitude){
+        // Update anything in database that doesn't have a location
+        Cursor cursor = getLogsNeedingLocation();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            LogMsg logMsg = LogMsg.fromCursor(cursor);
+            Log.d(LOG_TAG, "adding location to loc msg " + logMsg.id);
+            updateLogLocation(logMsg.id, latitude, longitude);
+            cursor.moveToNext();
+        }
+        cursor.close();
+    }
+
+    public void updateLogLocation(int logId, double latitude, double longitude){
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(LogsDbHelper.LOGS_STATUS_COL, LogMsg.LOG_STATUS_READY_TO_SYNC);
+        contentValues.put(LogsDbHelper.LOGS_LATITUDE_COL, latitude);
+        contentValues.put(LogsDbHelper.LOGS_LONGITUDE_COL, longitude);
+        this.db.update(LogsDbHelper.LOGS_TABLE_NAME,
+                contentValues,
+                LogsDbHelper.LOGS_ID_COL + "=?",
+                new String[]{logId + ""});
     }
 
     public void updateLogStatus(int logId, Integer logStatusSyncing) {
@@ -103,10 +144,11 @@ public class LogsDataSource {
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
         }
+        int status = (loc==null) ? LogMsg.LOG_STATUS_NEEDS_LOCATION : LogMsg.LOG_STATUS_READY_TO_SYNC;
         LogMsg logMsg = new LogMsg(action, Installation.id(context), issueId,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
-                LogMsg.LOG_STATUS_NEW);
+                status);
         insertLog(logMsg);
     }
 

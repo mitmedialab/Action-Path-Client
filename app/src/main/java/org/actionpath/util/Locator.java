@@ -1,6 +1,7 @@
 package org.actionpath.util;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,9 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
+import org.actionpath.logging.LogMsg;
+import org.actionpath.logging.LogsDataSource;
 
 /**
  * Wrapper that helps you get the phone's last location
@@ -20,6 +24,8 @@ public class Locator implements
 
     public static Locator instance;
 
+    private Context context;
+
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
 
@@ -31,7 +37,8 @@ public class Locator implements
     }
 
     private Locator(Context context){
-        googleApiClient = new GoogleApiClient.Builder(context)
+        this.context = context;
+        googleApiClient = new GoogleApiClient.Builder(this.context)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -71,8 +78,10 @@ public class Locator implements
         if(lastLocation==null){
             Log.w(LOG_TAG,"unable to get last location");
         } else {
-            // TODO: Update anything in database that doesn't have a location
-            Log.d(LOG_TAG,"@ "+lastLocation.getLatitude()+","+lastLocation.getLongitude());
+            Log.d(LOG_TAG, "gog location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
+            LogsDataSource.getInstance(this.context).updateAllLogsNeedingLocation(
+                    lastLocation.getLatitude(), lastLocation.getLongitude()
+            );
         }
     }
 

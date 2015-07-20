@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
@@ -19,13 +18,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LogSyncService extends Service{
 
-    public String TAG = this.getClass().getName();
+    public static String LOG_TAG = LogSyncService.class.getName();
 
     public LogSyncService() {
         super();
@@ -38,7 +36,10 @@ public class LogSyncService extends Service{
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             public void run() {
-                Log.d(TAG,"Timer says we should sync logs now!");
+                LogsDataSource dataSource = LogsDataSource.getInstance(getApplicationContext());
+                Log.d(LOG_TAG,"Timer says we should sync logs now!");
+                Log.d(LOG_TAG,"  "+dataSource.countLogsToSync()+" logs to sync");
+                Log.d(LOG_TAG,"  "+dataSource.countLogsNeedingLocation()+" logs needing location");
                 SyncHttpClient client = new SyncHttpClient();
                 JSONArray sendJSON = getUnsyncedLogsAsJson();
                 final ArrayList<Integer> logIds = new ArrayList<>();
@@ -50,7 +51,6 @@ public class LogSyncService extends Service{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG,"  "+logIds.size()+" logs to sync");
                 if(logIds.size()==0){   // if not logs to sync, don't send to server
                     return;
                 }
@@ -60,8 +60,8 @@ public class LogSyncService extends Service{
                 client.post(ActionPathServer.BASE_URL + "/logs/sync", params, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
-                        Log.d(TAG, "Response from server: " + response.toString());
+                        Log.d(LOG_TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
+                        Log.d(LOG_TAG, "Response from server: " + response.toString());
                         // delete sync'ed log items
                         for(int logId:logIds){
                             LogsDataSource.getInstance().deleteLog(logId);
@@ -69,8 +69,8 @@ public class LogSyncService extends Service{
                     }
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
-                        Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
-                        Log.e(TAG, "Response from server: " + response.toString());
+                        Log.e(LOG_TAG, "Failed to send SQL statusCode" + statusCode);
+                        Log.e(LOG_TAG, "Response from server: " + response.toString());
                         // mark that we were not able to sync them
                         for(int logId:logIds){
                             LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_DID_NOT_SYNC);
@@ -84,19 +84,19 @@ public class LogSyncService extends Service{
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.v(TAG, "in onBind");
+        Log.v(LOG_TAG, "in onBind");
         return null;
     }
 
     @Override
     public void onRebind(Intent intent) {
-        Log.v(TAG, "in onRebind");
+        Log.v(LOG_TAG, "in onRebind");
         super.onRebind(intent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.v(TAG, "in onUnbind");
+        Log.v(LOG_TAG, "in onUnbind");
         return true;
     }
 
@@ -110,11 +110,12 @@ public class LogSyncService extends Service{
         ArrayList<Integer> logIds = new ArrayList<Integer>();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
+            // TODO: move this into a LogMsg.getJson helper method that uses GSON to serialize itself
             int totalColumn = cursor.getColumnCount();
             JSONObject rowObject = new JSONObject();
             for( int i=0 ;  i< totalColumn ; i++ ){
                 if( cursor.getColumnName(i) != null ){
-                    if(cursor.getColumnName(i).equals("id")){
+                    if(cursor.getColumnName(i).equals(LogsDbHelper.LOGS_ID_COL)){
                         logIds.add(cursor.getInt(i));
                     }
                     try{

@@ -26,6 +26,15 @@ public class LogsDbHelper extends SQLiteOpenHelper {
     public static final String LOGS_LONGITUDE_COL = "long";
     public static final String LOGS_STATUS_COL = "status";
 
+    public static String[] LOGS_COLUMNS;
+
+    static {
+        LOGS_COLUMNS = new String [] {
+            LOGS_ID_COL, LOGS_ACTION_TYPE_COL, LOGS_INSTALLATION_ID_COL, LOGS_ISSUE_ID_COL,
+            LOGS_TIMESTAMP_COL, LOGS_LATITUDE_COL, LOGS_LONGITUDE_COL, LOGS_STATUS_COL
+        };
+    }
+
     // Database creation sql statement
     public static final String DATABASE_CREATE = "create table if not exists "
             + LOGS_TABLE_NAME + "(" +
