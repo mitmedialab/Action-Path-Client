@@ -71,7 +71,7 @@ public class MainActivity extends AbstractBaseActivity {
                     public void run() {
                         logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
                         Log.d(TAG, "Loading new issues");
-                        ArrayList<Issue> newIssues = ActionPathServer.getNewIssues();
+                        ArrayList<Issue> newIssues = ActionPathServer.getNewIssues(9841);
                         IssuesDataSource dataSource = IssuesDataSource.getInstance();
                         for(Issue i:newIssues){
                             dataSource.insertOrUpdateIssue(i);
