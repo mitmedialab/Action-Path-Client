@@ -13,7 +13,7 @@ public class LogsDbHelper extends SQLiteOpenHelper {
     private static String LOG_TAG = LogsDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "logs.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // DB Table consts
     public static final String LOGS_TABLE_NAME = "logs";
@@ -23,7 +23,7 @@ public class LogsDbHelper extends SQLiteOpenHelper {
     public static final String LOGS_ISSUE_ID_COL = "issueID";
     public static final String LOGS_TIMESTAMP_COL = "timestamp";
     public static final String LOGS_LATITUDE_COL = "lat";
-    public static final String LOGS_LONGITUDE_COL = "long";
+    public static final String LOGS_LONGITUDE_COL = "lng";
     public static final String LOGS_STATUS_COL = "status";
 
     public static String[] LOGS_COLUMNS;
@@ -64,7 +64,6 @@ public class LogsDbHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
-        onCreate(db);
     }
 
 }
