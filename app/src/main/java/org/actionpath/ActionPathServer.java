@@ -118,8 +118,7 @@ public class ActionPathServer {
         }
         // now parse it into Place objects
         try {
-            JSONObject object = new JSONObject(jsonStr);
-            JSONArray placesArray = object.getJSONArray("places");
+            JSONArray placesArray = new JSONArray(jsonStr);
             for (int i = 0; i < placesArray.length(); i++) {
                 JSONObject placesObject = placesArray.getJSONObject(i);
                 Place place = Place.fromJson(placesObject);
