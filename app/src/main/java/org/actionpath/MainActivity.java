@@ -1,6 +1,7 @@
 package org.actionpath;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,25 +35,26 @@ public class MainActivity extends AbstractBaseActivity {
 
     private String TAG = this.getClass().getName();
 
-    public static final String MY_PREFS_NAME = "PREFIDS";
-    final ArrayList<String> newsfeedList = new ArrayList<>();
-    final ArrayList<Integer> newsfeedIDs = new ArrayList<>();
+    public static final String PREFS_NAME = "ActionPathPrefs";
+    public static final String PREF_PLACE_ID = "placeId";
+    private static int INVALID_PLACE_ID = -1;
+
     ListView favoritedIssueList;
     SimpleCursorAdapter favoritedIssueDataAdaptor;
-
-//
-//    SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-//
-//    String restoredText = prefs.getString("text", null);
-
-//    if (prefs != null) {
-//        mString = prefs.getString("name", "No name defined");//"No name defined" is the default value.
-//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
+        // check that we have a place selected
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        int placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
+        if(placeId==INVALID_PLACE_ID){
+            Log.w(TAG,"No place set yet");
+            Intent intent = new Intent(this,PlaceSelectorActivity.class);
+            startActivity(intent);
+        }
+
         // create the issue database
         addTestIssues();
         // create an image loader instance

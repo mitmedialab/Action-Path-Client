@@ -29,6 +29,8 @@ public class Locator implements
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
 
+    public boolean hasLocation = false;
+
     public static synchronized Locator getInstance(Context context){
         if(instance==null){
             instance = new Locator(context);
@@ -75,10 +77,11 @@ public class Locator implements
         // also update last known location (current location)
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
+        hasLocation = true;
         if(lastLocation==null){
             Log.w(LOG_TAG,"unable to get last location");
         } else {
-            Log.d(LOG_TAG, "gog location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
+            Log.d(LOG_TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
             LogsDataSource.getInstance(this.context).updateAllLogsNeedingLocation(
                     lastLocation.getLatitude(), lastLocation.getLongitude()
             );
@@ -88,6 +91,10 @@ public class Locator implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.e(LOG_TAG, "connection to google services suspended");
+    }
+
+    public synchronized boolean hasLocation(){
+        return hasLocation;
     }
 
 }
