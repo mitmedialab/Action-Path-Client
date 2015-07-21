@@ -64,6 +64,7 @@ public class LogsDbHelper extends SQLiteOpenHelper {
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
+        onCreate(db);
     }
 
 }
