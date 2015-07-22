@@ -24,6 +24,7 @@ import org.actionpath.logging.LogSyncService;
 import org.actionpath.util.Installation;
 
 import java.util.ArrayList;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
 //TODO: create account page at start & send data
@@ -42,13 +43,15 @@ public class MainActivity extends AbstractBaseActivity {
     ListView favoritedIssueList;
     SimpleCursorAdapter favoritedIssueDataAdaptor;
 
+    protected int placeId = INVALID_PLACE_ID;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
         // check that we have a place selected
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        int placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
+        placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
         if(placeId==INVALID_PLACE_ID){
             Log.w(TAG,"No place set yet");
             Intent intent = new Intent(this,PlaceSelectorActivity.class);
@@ -63,7 +66,6 @@ public class MainActivity extends AbstractBaseActivity {
             ImageLoader.getInstance().init(config);
         }
         setContentView(R.layout.home_page);
-
         updateIssues = (Button) findViewById(R.id.update);
         updateIssues.setOnClickListener(new View.OnClickListener() {
 
@@ -73,12 +75,12 @@ public class MainActivity extends AbstractBaseActivity {
                     public void run() {
                         logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
                         Log.d(TAG, "Loading new issues");
-                        ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(9841);
+                        ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
                         IssuesDataSource dataSource = IssuesDataSource.getInstance();
                         for(Issue i:newIssues){
                             dataSource.insertOrUpdateIssue(i);
                         }
-                        Log.d(TAG, "Pulled " + newIssues.size() + " new issues from the server");
+                        Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server");
                         buildGeofences();
                     }
                 }).start();

@@ -35,7 +35,7 @@ public class ActionPathServer {
     public static ArrayList<Issue> getLatestIssues(int placeId){
         ArrayList<Issue> newIssues = new ArrayList<Issue>();
         try {
-            URL u = new URL(BASE_URL + "/places/"+placeId+"/issues/");
+            URL u = new URL(BASE_URL + "/places/"+placeId+"/issues.json");
             InputStream in = u.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder result = new StringBuilder();
@@ -49,13 +49,13 @@ public class ActionPathServer {
                 Issue issue = Issue.fromJson(object);
                 newIssues.add(issue);
             }
-            Log.i(LOG_TAG, "Successfully pulled new issues from " + BASE_URL + "/places/9841/issues/");
+            Log.i(LOG_TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+placeId);
         } catch (MalformedURLException ex) {
-            Log.e(LOG_TAG, "Failed to pull new issues from " + BASE_URL + "/places/9841/issues/ | " + ex.toString());
+            Log.e(LOG_TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
         } catch (IOException ex){
-            Log.e(LOG_TAG, "Failed to pull new issues from " + BASE_URL + "/places/9841/issues/ | " + ex.toString());
+            Log.e(LOG_TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
         } catch (JSONException ex){
-            Log.e(LOG_TAG, "Failed to parse issues json from server "+ex);
+            Log.e(LOG_TAG, "Failed to parse issues json from server for "+placeId+" | "+ex);
         }
         return newIssues;
     }
@@ -65,7 +65,7 @@ public class ActionPathServer {
         // fetch json from server
         String jsonStr = null;
         try {
-            URL u = new URL(BASE_URL + "/places/near?lat="+lat+"&lng="+lng);
+            URL u = new URL(BASE_URL + "/places/near.json?lat="+lat+"&lng="+lng);
             InputStream in = u.openStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             StringBuilder result = new StringBuilder();

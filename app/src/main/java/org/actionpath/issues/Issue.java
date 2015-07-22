@@ -3,7 +3,6 @@ package org.actionpath.issues;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,6 +15,10 @@ import java.util.Date;
 public class Issue implements Serializable {
 
     public static final int DEFAULT_RADIUS = 500;
+
+    // used for parsing date in json from server
+    private static ParsePosition zeroParsePosition = new ParsePosition(0);
+    private static SimpleDateFormat serverJsonDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
     int id;
     String status;
@@ -177,10 +180,8 @@ public class Issue implements Serializable {
         i.longitude = Double.parseDouble(object.getString("lng"));
         i.address = object.getString("address");
         i.imageUrl = object.getString("image_full");
-        ParsePosition pos = new ParsePosition(0);
-        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        i.createdAt = simpledateformat.parse(object.getString("created_at"), pos);
-        i.updatedAt  = simpledateformat.parse(object.getString("updated_at"), pos);
+        i.createdAt = serverJsonDateFormat.parse(object.getString("created_at"), zeroParsePosition);
+        i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");
         return i;
     }
