@@ -3,7 +3,13 @@ package org.actionpath.issues;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.Serializable;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -27,6 +33,10 @@ public class Issue implements Serializable {
 
     boolean favorited = false;
     boolean geofenceCreated = false;
+
+    public Issue(){
+
+    }
 
     public Issue(int id,
                  String status,
@@ -89,7 +99,7 @@ public class Issue implements Serializable {
     }
 
     public String toString(){
-        return "issue"+this.id;
+        return "issue "+this.id;
     }
 
     public int getId(){ return id; }
@@ -155,6 +165,24 @@ public class Issue implements Serializable {
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FAVORITED_COL))==1,   // favorited
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1 // geofenceCreated
         );
+    }
+
+    public static Issue fromJson(JSONObject object) throws JSONException{
+        Issue i = new Issue();
+        i.id = object.getInt("id");
+        i.status = object.getString("status");
+        i.summary = object.getString("summary");
+        i.description = object.getString("description");
+        i.latitude = Double.parseDouble(object.getString("lat"));
+        i.longitude = Double.parseDouble(object.getString("lng"));
+        i.address = object.getString("address");
+        i.imageUrl = object.getString("image_full");
+        ParsePosition pos = new ParsePosition(0);
+        SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        i.createdAt = simpledateformat.parse(object.getString("created_at"), pos);
+        i.updatedAt  = simpledateformat.parse(object.getString("updated_at"), pos);
+        i.placeId = object.getInt("place_id");
+        return i;
     }
 
     public ContentValues getContentValues(){
