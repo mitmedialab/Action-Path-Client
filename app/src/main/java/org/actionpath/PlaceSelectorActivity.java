@@ -1,30 +1,21 @@
 package org.actionpath;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.issues.IssuesDbHelper;
-import org.actionpath.logging.LogMsg;
+
 import org.actionpath.places.Place;
 import org.actionpath.util.Locator;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by erhardt on 7/21/15.
@@ -39,7 +30,7 @@ public class PlaceSelectorActivity extends AbstractBaseActivity {
     final ArrayList<String> placesList = new ArrayList<>();
     final ArrayList<Integer> placeIDs = new ArrayList<>();
     ListView placesListView;
-    ArrayAdapter placesArrayAdaptor;
+    ArrayAdapter<Place> placesArrayAdaptor;
 
     int placeID = 0;
 
@@ -88,6 +79,10 @@ public class PlaceSelectorActivity extends AbstractBaseActivity {
                 this, R.layout.places_list_item, places);
 
         placesListView.setAdapter(placesArrayAdaptor);
+
+        // Add Header to the List so that it scrolls with the item
+        TextView list_header = (TextView)getLayoutInflater().inflate(R.layout.places_list_header, null);
+        placesListView.addHeaderView(list_header);
 
         placesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
