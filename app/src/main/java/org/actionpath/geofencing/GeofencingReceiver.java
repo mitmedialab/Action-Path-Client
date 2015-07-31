@@ -60,7 +60,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      */
     private void sendNotification(String issueID) {
 
-        Log.d(TAG,"sending notification for issueId"+issueID);
+        Log.d(TAG,"sending notification for issueId: "+issueID);
 
         int id = Integer.parseInt(issueID);
         Issue issue = IssuesDataSource.getInstance(this).getIssue(id);
@@ -90,7 +90,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     			R.drawable.ic_stat_snooze,
     			"Snooze", pi); // TODO: Make this an actual snooze button*/
 
-        notificationBuilder.setContentIntent(pi);
+        //notificationBuilder.setContentIntent(pi);
 
         Notification notification = notificationBuilder.build();
 
@@ -115,14 +115,14 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     //creates a PendingIntent for bigPicture notifications
     //TODO: Build a bigPicture Notification with issue info and respond/ignore buttons
     public PendingIntent getPendingIntent(String issueID) {
-        Log.v(TAG,"returning an intent for SurveyActivity.class");
+        Log.v(TAG,"returning an intent for ResponseActivity.class");
 
         int id = Integer.parseInt(issueID);
         Issue issue = IssuesDataSource.getInstance(this).getIssue(id);
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, ResponseActivity.class)
-                .putExtra(ResponseActivity.PARAM_ISSUE_ID, issueID)
+                .putExtra(ResponseActivity.PARAM_ISSUE_ID, id)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
