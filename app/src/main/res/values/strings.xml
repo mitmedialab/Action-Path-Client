@@ -4,7 +4,7 @@
     <string name="app_name">ActionPath</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="places_list_header">Choose Your City</string>
+    <string name="places_list_header">Choose Your <City></City></string>
 
     <!--<string-array name="sections1">-->
         <!--<item >Pro Constructive</item>-->

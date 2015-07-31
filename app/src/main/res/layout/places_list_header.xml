@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
+    android:text="@string/places_list_header"
+    android:id="@+id/placeselect_text_header"
+    android:layout_marginTop="@dimen/abc_text_size_headline_material"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="@dimen/abc_text_size_headline_material"
+    android:gravity="left"
+    android:padding="@dimen/abc_text_size_large_material" />

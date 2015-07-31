@@ -23,25 +23,14 @@ import java.util.ArrayList;
 
 public class PlaceSelectorActivity extends AbstractBaseActivity {
 
-    public static final String PARAM_PLACE_ID = "placeID";
-
     private String TAG = this.getClass().getName();
-
-    final ArrayList<String> placesList = new ArrayList<>();
-    final ArrayList<Integer> placeIDs = new ArrayList<>();
-    ListView placesListView;
-    ArrayAdapter<Place> placesArrayAdaptor;
-
-    int placeID = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_selector);
 
-        Bundle bundle = getIntent().getExtras();
-
-        AsyncTask task = new AsyncTask() {
+        AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 Locator locator = Locator.getInstance(getApplicationContext());
@@ -65,6 +54,7 @@ public class PlaceSelectorActivity extends AbstractBaseActivity {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
+                @SuppressWarnings("unchecked")
                 ArrayList<Place> places = (ArrayList<Place>) o;
                 displayPlacesListView(places);
             }
@@ -73,9 +63,9 @@ public class PlaceSelectorActivity extends AbstractBaseActivity {
 
     private void displayPlacesListView(ArrayList<Place> places ){
 
-        placesListView = (ListView) findViewById(R.id.placeselect_list_places);
+        ListView placesListView = (ListView) findViewById(R.id.placeselect_list_places);
 
-        placesArrayAdaptor = new ArrayAdapter<Place>(
+        ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<Place>(
                 this, R.layout.places_list_item, places);
 
         placesListView.setAdapter(placesArrayAdaptor);
@@ -94,9 +84,9 @@ public class PlaceSelectorActivity extends AbstractBaseActivity {
                 // now save that we set the place
                 SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
                 SharedPreferences.Editor editor = settings.edit();
-                editor.putInt(MainActivity.PREF_PLACE_ID,place.id);
-                editor.commit();
-                Log.i(TAG,"Saved place "+place.id+" - "+place.name);
+                editor.putInt(MainActivity.PREF_PLACE_ID, place.id);
+                editor.apply();
+                Log.i(TAG, "Saved place " + place.id + " - " + place.name);
                 // Then you start a new Activity via Intent
                 Intent intent = new Intent();
                 intent.setClass(PlaceSelectorActivity.this, MainActivity.class);
