@@ -33,7 +33,8 @@ import java.util.List;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends AbstractBaseActivity implements IssuesFragmentList.OnIssueSelectedListener {
+public class MainActivity extends AbstractBaseActivity implements
+        IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener {
 
     private Button updateIssues;
     private Toolbar toolbar;
@@ -55,15 +56,6 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
-
-        // check that we have a place selected
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
-        if(placeId==INVALID_PLACE_ID){
-            Log.w(TAG,"No place set yet");
-            Intent intent = new Intent(this,PlaceSelectorActivity.class);
-            startActivity(intent);
-        }
 
         // create the issue database
         addTestIssues();
@@ -89,7 +81,6 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
 
-
                 //Checking if the item is in checked state or not, if not make it in checked state
                 if (menuItem.isChecked()) menuItem.setChecked(false);
                 else menuItem.setChecked(true);
@@ -99,9 +90,6 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
-
-
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.nav_home:
                     case R.id.nav_my_issues:
                         displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
@@ -112,13 +100,14 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
                     case R.id.nav_update_issues:
                         updateIssues();
                         return true;
-
-                    // For rest of the options we just show a toast on click
                     case R.id.nav_pick_place:
+                        displayPickPlaceFragment();
                         return true;
                     case R.id.nav_about:
+                        // TODO
                         return true;
                     default:
+                        Log.e(TAG,"Got an unknown selection from nav drawer menu :-(");
                         return true;
                 }
             }
@@ -146,31 +135,16 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
-
-/*        updateIssues = (Button) findViewById(R.id.update);
-        updateIssues.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    public void run() {
-                        logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
-                        Log.d(TAG, "Loading new issues");
-                        ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
-                        IssuesDataSource dataSource = IssuesDataSource.getInstance();
-                        for(Issue i:newIssues){
-                            dataSource.insertOrUpdateIssue(i);
-                        }
-                        Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server");
-                        buildGeofences();
-                    }
-                }).start();
-            }
-        });
-*/
-
         Intent i= new Intent(this, LogSyncService.class);
         this.startService(i);
+
+        // check that we have a place selected
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
+        if(placeId==INVALID_PLACE_ID){
+            Log.w(TAG,"No place set yet");
+            displayPickPlaceFragment();
+        }
 
         if (!Installation.hasId()) {
             logMsg(LogMsg.ACTION_INSTALLED_APP);
@@ -192,6 +166,13 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
                 buildGeofences();
             }
         }).start();
+    }
+
+    private void displayPickPlaceFragment(){
+        PickPlaceFragmentList fragment = PickPlaceFragmentList.newInstance();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_content, fragment);
+        fragmentTransaction.commit();
     }
 
     private void displayIssuesListFragment(int type){
@@ -219,7 +200,7 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
         dataSource.updateIssueFollowed(1234, true);
         dataSource.insertOrUpdateIssue(testIssue2);
         dataSource.updateIssueFollowed(2345, true);
-        long issueCount = dataSource.getIssueCount();
+        long issueCount = dataSource.getIssueCount(getPlaceId());
         Log.i(TAG, issueCount + " issues in the db");
     }
 
@@ -233,7 +214,7 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
      */
     private void buildGeofences(){
         Log.d(TAG, "Building geofences");
-        Cursor cursor = IssuesDataSource.getInstance(this).getNonGeoFencedIssuesCursor();
+        Cursor cursor = IssuesDataSource.getInstance(this).getNonGeoFencedIssuesCursor(getPlaceId());
         while (!cursor.isAfterLast()) {
             int issueId = cursor.getInt(0);
             Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
@@ -267,5 +248,24 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
         intent.putExtra(ResponseActivity.PARAM_ISSUE_ID, issueId);
         startActivity(intent);
     }
+
+    @Override
+    public void onPlaceSelected(int placeId) {
+        Log.d(TAG, "clicked place id: " + placeId);
+        // now save that we set the place
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(MainActivity.PREF_PLACE_ID, placeId);
+        editor.apply();
+        Log.i(TAG, "Saved place " + placeId);
+        // and jump back to the issue list
+        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+    }
+
+    public int getPlaceId(){
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        return settings.getInt(MainActivity.PREF_PLACE_ID,INVALID_PLACE_ID);
+    }
+
 }
 

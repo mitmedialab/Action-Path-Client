@@ -62,7 +62,7 @@ public class IssuesFragmentList extends ListFragment {
             type = getArguments().getInt(ARG_TYPE);
         }
 
-        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance().countFollowedIssues());
+        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance().countFollowedIssues(listener.getPlaceId()));
     }
 
     @Override
@@ -95,11 +95,11 @@ public class IssuesFragmentList extends ListFragment {
         switch(type){
             case ALL_ISSUES:
                 Log.d(TAG,"Showing All Issues Fragment");
-                cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor();
+                cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(listener.getPlaceId());
                 break;
             case FOLLOWED_ISSUES:
                 Log.d(TAG,"Showing Followed Issues Fragment");
-                cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor();
+                cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(listener.getPlaceId());
                 break;
         }
         adapter = new SimpleCursorAdapter(
@@ -141,6 +141,7 @@ public class IssuesFragmentList extends ListFragment {
 
     public interface OnIssueSelectedListener {
         public void onIssueSelected(int issueId);
+        public int getPlaceId();
     }
 
 }
