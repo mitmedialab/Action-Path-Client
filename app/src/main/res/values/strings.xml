@@ -14,5 +14,7 @@
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
 
+    <string name="drawer_close">Navigation View</string>
+    <string name="drawer_open">Navigation View Closed</string>
 
 </resources>

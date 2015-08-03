@@ -1,10 +1,11 @@
 package org.actionpath;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 
 import org.actionpath.logging.LogsDataSource;
 
-public abstract class AbstractBaseActivity extends Activity {
+public abstract class AbstractBaseActivity extends AppCompatActivity {
 
     protected void logMsg(String action){
         LogsDataSource.getInstance(getApplicationContext()).insertLog(

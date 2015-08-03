@@ -1,12 +1,17 @@
 package org.actionpath;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -32,6 +37,9 @@ import java.util.List;
 public class MainActivity extends AbstractBaseActivity implements FollowedIssuesFragmentList.OnIssueSelectedListener {
 
     private Button updateIssues;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
+    private DrawerLayout drawerLayout;
 
     private static String TAG = MainActivity.class.getName();
 
@@ -48,6 +56,7 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
+
         // check that we have a place selected
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
@@ -59,13 +68,85 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
 
         // create the issue database
         addTestIssues();
+
         // create an image loader instance
         if(!ImageLoader.getInstance().isInited()){
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
             ImageLoader.getInstance().init(config);
         }
         setContentView(R.layout.home_page);
-        updateIssues = (Button) findViewById(R.id.update);
+
+        // setup the UI
+        // @see http://www.android4devs.com/2015/06/navigation-view-material-design-support.html
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
+        //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+
+            // This method will trigger on item Click of navigation menu
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+
+                //Checking if the item is in checked state or not, if not make it in checked state
+                if (menuItem.isChecked()) menuItem.setChecked(false);
+                else menuItem.setChecked(true);
+
+                //Closing drawer on item click
+                drawerLayout.closeDrawers();
+
+                //Check to see which item was being clicked and perform appropriate action
+                switch (menuItem.getItemId()) {
+
+
+                    //Replacing the main content with ContentFragment Which is our Inbox View;
+                    case R.id.nav_home:
+                    case R.id.nav_my_issues:
+                        displayFavoritedListFragment();
+                        return true;
+
+                    // For rest of the options we just show a toast on click
+                    case R.id.nav_all_issues:
+                        return true;
+                    case R.id.nav_update_issues:
+                        return true;
+                    case R.id.nav_pick_place:
+                        return true;
+                    case R.id.nav_about:
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+        });
+
+        // Initializing Drawer Layout and ActionBarToggle
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.drawer_open, R.string.drawer_close){
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
+                super.onDrawerClosed(drawerView);
+            }
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
+
+                super.onDrawerOpened(drawerView);
+            }
+        };
+
+        //Setting the actionbarToggle to drawer layout
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
+        //calling sync state is necessay or else your hamburger icon wont show up
+        actionBarDrawerToggle.syncState();
+
+
+/*        updateIssues = (Button) findViewById(R.id.update);
         updateIssues.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -85,8 +166,7 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
                 }).start();
             }
         });
-
-        displayFavoritedListView();
+*/
 
         Intent i= new Intent(this, LogSyncService.class);
         this.startService(i);
@@ -97,11 +177,10 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
 
     }
 
-    private void displayFavoritedListView(){
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        FollowedIssuesFragmentList followedIssuesFragment = new FollowedIssuesFragmentList();
-        fragmentTransaction.add(R.id.main_content, followedIssuesFragment);
+    private void displayFavoritedListFragment(){
+        FollowedIssuesFragmentList fragment = new FollowedIssuesFragmentList();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_content, fragment);
         fragmentTransaction.commit();
     }
 
