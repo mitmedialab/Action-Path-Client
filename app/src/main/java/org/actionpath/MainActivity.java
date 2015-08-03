@@ -1,12 +1,13 @@
 package org.actionpath;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -18,23 +19,21 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.util.Installation;
 
 import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends AbstractBaseActivity {
+public class MainActivity extends AbstractBaseActivity implements FollowedIssuesFragmentList.OnIssueSelectedListener {
 
     private Button updateIssues;
 
-    private String TAG = this.getClass().getName();
+    private static String TAG = MainActivity.class.getName();
 
     public static final String PREFS_NAME = "ActionPathPrefs";
     public static final String PREF_PLACE_ID = "placeId";
@@ -99,43 +98,11 @@ public class MainActivity extends AbstractBaseActivity {
     }
 
     private void displayFavoritedListView(){
-
-        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance(this).countFavoritedIssues());
-
-        String[] fromColumns = new String[] { IssuesDbHelper.ISSUES_SUMMARY_COL,
-                IssuesDbHelper.ISSUES_DESCRIPTION_COL };
-
-        int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
-
-        favoritedIssueList = (ListView) findViewById(R.id.newsfeed);
-
-        favoritedIssueDataAdaptor = new SimpleCursorAdapter(
-                this, R.layout.issue_list_item,
-                IssuesDataSource.getInstance(this).getFavoritedIssuesCursor(),
-                fromColumns,
-                toTextViews,
-                0);
-
-        favoritedIssueList.setAdapter(favoritedIssueDataAdaptor);
-
-        favoritedIssueList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> theListView, final View view,
-                                    int position, long id) {
-                Cursor cursor = (Cursor) theListView.getItemAtPosition(position);
-                int issueId = (int) id;
-                Log.d(TAG, "clicked item with id: " + issueId + " @ position " + position);
-                logMsg(issueId, LogMsg.ACTION_NEWS_FEED_CLICK);
-                // Then you start a new Activity via Intent
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, ResponseActivity.class);
-                intent.putExtra(ResponseActivity.PARAM_ISSUE_ID, issueId);
-                startActivity(intent);
-            }
-
-        });
-
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FollowedIssuesFragmentList followedIssuesFragment = new FollowedIssuesFragmentList();
+        fragmentTransaction.add(R.id.main_content, followedIssuesFragment);
+        fragmentTransaction.commit();
     }
 
     private void addTestIssues(){
@@ -153,9 +120,9 @@ public class MainActivity extends AbstractBaseActivity {
         Log.d(TAG, "added test issues");
         IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
         dataSource.insertOrUpdateIssue(testIssue1);
-        dataSource.updateIssueFavorited(1234, true);
+        dataSource.updateIssueFollowed(1234, true);
         dataSource.insertOrUpdateIssue(testIssue2);
-        dataSource.updateIssueFavorited(2345, true);
+        dataSource.updateIssueFollowed(2345, true);
         long issueCount = dataSource.getIssueCount();
         Log.i(TAG, issueCount + " issues in the db");
     }
@@ -194,5 +161,15 @@ public class MainActivity extends AbstractBaseActivity {
         registerer.registerGeofences(newGeoFences);
     }
 
+    @Override
+    public void onIssueSelected(int issueId) {
+        Log.d(TAG, "clicked item with id: " + issueId);
+        logMsg(issueId, LogMsg.FOLLOWED_ISSUE_CLICK);
+        // Then you start a new Activity via Intent
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, ResponseActivity.class);
+        intent.putExtra(ResponseActivity.PARAM_ISSUE_ID, issueId);
+        startActivity(intent);
+    }
 }
 

@@ -25,7 +25,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public static final String ISSUES_LATITUDE_COL= "latitude";
     public static final String ISSUES_LONGITUDE_COL = "longitude";
     public static final String ISSUES_IMAGE_URL_COL = "image_url";
-    public static final String ISSUES_FAVORITED_COL = "favorited";
+    public static final String ISSUES_FOLLOWED_COL = "favorited";
     public static final String ISSUES_GEOFENCE_CREATED_COL = "geofence_created";
     public static final String ISSUES_PLACE_ID_COL = "place_id";
     public static final String ISSUES_CREATED_AT_COL = "created_at";
@@ -37,7 +37,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         ISSUES_COLUMN_NAMES = new String[]
                 {ISSUES_ID_COL,ISSUES_STATUS_COL,ISSUES_SUMMARY_COL,ISSUES_DESCRIPTION_COL,
                         ISSUES_ADDRESS_COL,ISSUES_LATITUDE_COL,ISSUES_LONGITUDE_COL,ISSUES_IMAGE_URL_COL,
-                        ISSUES_FAVORITED_COL,ISSUES_GEOFENCE_CREATED_COL,ISSUES_PLACE_ID_COL,
+                        ISSUES_FOLLOWED_COL,ISSUES_GEOFENCE_CREATED_COL,ISSUES_PLACE_ID_COL,
                         ISSUES_CREATED_AT_COL,ISSUES_UPDATED_AT_COL };
     }
 
@@ -52,7 +52,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_LATITUDE_COL + " double, " +
             ISSUES_LONGITUDE_COL + " double, " +
             ISSUES_IMAGE_URL_COL + " text, " +
-            ISSUES_FAVORITED_COL + " int, " +
+            ISSUES_FOLLOWED_COL + " int, " +
             ISSUES_GEOFENCE_CREATED_COL + " int, " +
             ISSUES_PLACE_ID_COL + " int, " +
             ISSUES_CREATED_AT_COL + " int, " +

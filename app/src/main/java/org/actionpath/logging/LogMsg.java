@@ -14,7 +14,7 @@ public class LogMsg implements Serializable {
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
     public static final Integer LOG_STATUS_NEEDS_LOCATION = 3;
 
-    public static final String ACTION_NEWS_FEED_CLICK = "NewsfeedClick";
+    public static final String FOLLOWED_ISSUE_CLICK = "FollowedIssueClick";
     public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";
     public static final String ACTION_NOTIFICATION_RESPOND_CLICK = "NotificationRespondClick";
     public static final String ACTION_SURVEY_RESPONSE = "SurveyResponse";

@@ -66,15 +66,15 @@ public class IssuesDataSource {
                 null, null);
     }
 
-    public long countFavoritedIssues(){
+    public long countFollowedIssues(){
         return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.ISSUES_TABLE_NAME,
-                IssuesDbHelper.ISSUES_FAVORITED_COL+"=?", new String[] {"1"});
+                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=?", new String[] {"1"});
     }
 
-    public Cursor getFavoritedIssuesCursor(){
+    public Cursor getFollowedIssuesCursor(){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_FAVORITED_COL+"=1", null, null, null, null);
+                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=1", null, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -92,9 +92,9 @@ public class IssuesDataSource {
     }
 
 
-    public void updateIssueFavorited(int issueId, boolean isFavorited) {
+    public void updateIssueFollowed(int issueId, boolean isFollowed) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(IssuesDbHelper.ISSUES_FAVORITED_COL, (isFavorited ? 1 : 0));
+        contentValues.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, (isFollowed ? 1 : 0));
         db.update(IssuesDbHelper.ISSUES_TABLE_NAME,
                 contentValues, IssuesDbHelper.ISSUES_ID_COL + "=" + issueId, null);
     }

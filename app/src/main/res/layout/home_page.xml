@@ -3,30 +3,11 @@
     android:layout_width="fill_parent" android:layout_height="fill_parent"
     android:id="@+id/home_layout">
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        android:fillViewport="true"
-        android:id="@+id/scrollView"
-        android:layout_centerHorizontal="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ListView
-                android:id="@+id/newsfeed"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ListView>
-
-
-        </LinearLayout>
-    </ScrollView>
+    <LinearLayout android:id="@+id/main_content"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
