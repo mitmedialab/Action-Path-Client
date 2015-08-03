@@ -170,6 +170,7 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void displayPickPlaceFragment(){
+        toolbar.setTitle(R.string.pick_place_header);
         PickPlaceFragmentList fragment = PickPlaceFragmentList.newInstance();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_content, fragment);
@@ -177,6 +178,14 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void displayIssuesListFragment(int type){
+        switch(type){
+            case IssuesFragmentList.ALL_ISSUES:
+                toolbar.setTitle(R.string.all_issues_header);
+                break;
+            case IssuesFragmentList.FOLLOWED_ISSUES:
+                toolbar.setTitle(R.string.followed_issues_header);
+                break;
+        }
         IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_content, fragment);

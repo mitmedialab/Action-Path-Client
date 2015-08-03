@@ -68,20 +68,7 @@ public class IssuesFragmentList extends ListFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_followed_issues, container, false);
-        // set up the header
-        TextView header = (TextView) view.findViewById(R.id.issue_list_header);
-        Resources res = getResources();
-        switch(type){
-            case ALL_ISSUES:
-                title = res.getString(R.string.all_issues_header);
-                break;
-            case FOLLOWED_ISSUES:
-                title = res.getString(R.string.followed_issues_header);
-                break;
-        }
-        header.setText(title);
-        Log.d(TAG,"Setting header to "+title+" ("+type+")");
+        View view = inflater.inflate(R.layout.fragment_issues_list, container, false);
         // set up the list
         setListAdapter(getDataAdapter(view.getContext()));
         return view;

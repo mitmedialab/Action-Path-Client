@@ -4,24 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="@style/Base.TextAppearance.AppCompat.Display1"
-        android:text="@string/places_list_header"
-        android:id="@+id/placeselect_text_header"
-        android:layout_marginTop="@dimen/abc_text_size_headline_material"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="@dimen/abc_text_size_headline_material"
-        android:gravity="left"
-        android:padding="@dimen/abc_text_size_large_material" />
-
     <ScrollView
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
         android:fillViewport="true"
         android:id="@+id/scrollView"
         android:layout_centerHorizontal="true">
@@ -33,8 +19,6 @@
 
             <ListView
                 android:id="@+id/android:list"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
             </ListView>
@@ -42,8 +26,8 @@
             <TextView android:id="@id/android:empty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FF0000"
-                android:text="No data"/>
+                android:padding="@dimen/abc_text_size_small_material"
+                android:text="@string/loading"/>
 
         </LinearLayout>
     </ScrollView>
