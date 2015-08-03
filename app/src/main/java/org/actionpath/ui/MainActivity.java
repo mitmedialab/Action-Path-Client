@@ -154,6 +154,7 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void updateIssues(){
+        toolbar.setTitle(R.string.update_issues_header);
         new Thread(new Runnable() {
             public void run() {
                 logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);

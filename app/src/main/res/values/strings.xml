@@ -17,10 +17,13 @@
     <string name="all_issues_header">All Issues</string>
     <string name="followed_issues_header">My Issues</string>
     <string name="pick_place_header">Choose Your City</string>
+    <string name="update_issues_header">Update Issues</string>
 
     <string name="drawer_close">Navigation View</string>
     <string name="drawer_open">Navigation View Closed</string>
 
     <string name="loading">Loading...</string>
+
+    <string name="no_issues_to_show">No issues to show</string>
 
 </resources>
