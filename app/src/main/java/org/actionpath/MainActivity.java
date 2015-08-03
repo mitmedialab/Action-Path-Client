@@ -73,7 +73,7 @@ public class MainActivity extends AbstractBaseActivity implements IssuesFragment
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
             ImageLoader.getInstance().init(config);
         }
-        setContentView(R.layout.home_page);
+        setContentView(R.layout.activity_main);
 
         // setup the UI
         // @see http://www.android4devs.com/2015/06/navigation-view-material-design-support.html
