@@ -115,7 +115,15 @@ public class Issue implements Serializable {
 
     public String getImageUrl() {return imageUrl; }
 
-    public boolean hasImageUrl() {return (null!=imageUrl) && (imageUrl.length()>0); }
+    public boolean hasImageUrl() {
+        if(null==imageUrl) {
+            return false;
+        }
+        if(imageUrl.equals("null")){
+            return false;
+        }
+        return imageUrl.length()>0;
+    }
 
     public String getStatus() { return status; }
 
@@ -180,6 +188,7 @@ public class Issue implements Serializable {
         i.longitude = Double.parseDouble(object.getString("lng"));
         i.address = object.getString("address");
         i.imageUrl = object.getString("image_full");
+        if(i.imageUrl.equals("null")) i.imageUrl = null;    // catch for server data inconsistency
         i.createdAt = serverJsonDateFormat.parse(object.getString("created_at"), zeroParsePosition);
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");

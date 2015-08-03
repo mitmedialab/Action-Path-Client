@@ -56,8 +56,9 @@ public class ResponseActivity extends AbstractBaseActivity {
         issueDescriptionText.setText(issue_description);
 
         if(issue.hasImageUrl()){
+            Log.d(TAG,"issue has an image: "+issue.getImageUrl());
             if(imageLoader==null || !imageLoader.isInited()){
-                ImageLoader imageLoader = ImageLoader.getInstance();
+                imageLoader = ImageLoader.getInstance();
             }
             issueImage = (ImageView) findViewById(R.id.issue_image);
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
