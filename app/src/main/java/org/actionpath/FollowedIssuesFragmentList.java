@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import org.actionpath.dummy.DummyContent;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.issues.IssuesDbHelper;
 

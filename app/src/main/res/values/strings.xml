@@ -2,32 +2,17 @@
 <resources>
 
     <string name="app_name">ActionPath</string>
-    <string name="hello_world">Hello world!</string>
+
     <string name="action_settings">Settings</string>
     <string name="places_list_header">Choose Your <City></City></string>
 
-    <!--<string-array name="sections1">-->
-        <!--<item >Pro Constructive</item>-->
-        <!--<item >Con Constructive</item>-->
-        <!--<item >1st Speaker Cross</item>-->
-        <!--<item >Pro Rebbutal</item>-->
-        <!--<item >Con Rebuttal</item>-->
-        <!--<item >2nd Speaker Cross</item>-->
-        <!--<item >Pro Summary</item>-->
-        <!--<item >Con Summary</item>-->
-        <!--<item >Grand Cross</item>-->
-        <!--<item >Pro Final Focus</item>-->
-        <!--<item >Con Final Focus</item>-->
-    <!--</string-array>-->
+    <!-- Items that show up in the main nav drawer menu -->
+    <string name="nav_home">Home</string>
+    <string name="nav_my_issues">My Issues</string>
+    <string name="nav_all_issues">All Issues</string>
+    <string name="nav_update_issues">Update Issues</string>
+    <string name="nav_pick_place">Pick a City</string>
+    <string name="nav_about">About</string>
 
-    <string-array name="city_array">
-        <item>Boston</item>
-        <item>Cambridge</item>
-        <item>Somerville</item>
-        <item>Top</item>
-        <item>Ten?</item>
-        <item>From</item>
-        <item>Current</item>
-        <item>Location</item>
-    </string-array>
+
 </resources>
