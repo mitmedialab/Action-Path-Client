@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.actionpath.R;
 import org.actionpath.logging.LogMsg;
 
 public class AfterActionActivity extends AbstractBaseActivity {

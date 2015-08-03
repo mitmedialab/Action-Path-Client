@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.actionpath.R;
 
 
 public class RouteActivity extends AbstractBaseActivity {

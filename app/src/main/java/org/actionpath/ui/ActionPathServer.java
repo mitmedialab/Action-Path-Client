@@ -1,9 +1,8 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.util.Log;
 
 import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.places.Place;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,12 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Created by rahulb on 7/15/15.

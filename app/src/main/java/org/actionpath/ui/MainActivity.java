@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import com.google.android.gms.location.Geofence;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.actionpath.R;
 import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;

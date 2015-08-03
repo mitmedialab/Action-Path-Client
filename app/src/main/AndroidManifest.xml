@@ -21,7 +21,7 @@
         android:screenOrientation="portrait" >
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             android:label="@string/app_name" >
             <intent-filter>
@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AfterActionActivity"
+            android:name=".ui.AfterActionActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -39,7 +39,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ResponseActivity"
+            android:name=".ui.ResponseActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>

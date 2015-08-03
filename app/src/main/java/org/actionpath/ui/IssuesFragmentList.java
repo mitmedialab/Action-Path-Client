@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import org.actionpath.R;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.issues.IssuesDbHelper;
 

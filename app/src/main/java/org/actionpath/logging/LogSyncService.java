@@ -10,7 +10,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.actionpath.ActionPathServer;
+import org.actionpath.ui.ActionPathServer;
 import org.actionpath.util.Installation;
 import org.apache.http.Header;
 import org.json.JSONArray;

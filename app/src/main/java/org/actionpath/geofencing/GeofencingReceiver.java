@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
 
-import org.actionpath.ResponseActivity;
+import org.actionpath.ui.ResponseActivity;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;

@@ -1,4 +1,4 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;

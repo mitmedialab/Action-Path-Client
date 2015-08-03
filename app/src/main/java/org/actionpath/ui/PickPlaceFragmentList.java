@@ -1,9 +1,6 @@
-package org.actionpath;
+package org.actionpath.ui;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.res.Resources;
-import android.database.Cursor;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,11 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.issues.IssuesDbHelper;
+import org.actionpath.R;
 import org.actionpath.places.Place;
 import org.actionpath.util.Development;
 import org.actionpath.util.Locator;
