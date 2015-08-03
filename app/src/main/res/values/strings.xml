@@ -8,11 +8,14 @@
 
     <!-- Items that show up in the main nav drawer menu -->
     <string name="nav_home">Home</string>
-    <string name="nav_my_issues">My Issues</string>
+    <string name="nav_followed_issues">My Issues</string>
     <string name="nav_all_issues">All Issues</string>
     <string name="nav_update_issues">Update Issues</string>
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
+
+    <string name="all_issues_header">All Issues</string>
+    <string name="followed_issues_header">My Issues</string>
 
     <string name="drawer_close">Navigation View</string>
     <string name="drawer_open">Navigation View Closed</string>

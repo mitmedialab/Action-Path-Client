@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,7 +33,7 @@ import java.util.List;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends AbstractBaseActivity implements FollowedIssuesFragmentList.OnIssueSelectedListener {
+public class MainActivity extends AbstractBaseActivity implements IssuesFragmentList.OnIssueSelectedListener {
 
     private Button updateIssues;
     private Toolbar toolbar;
@@ -105,14 +104,16 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
                     //Replacing the main content with ContentFragment Which is our Inbox View;
                     case R.id.nav_home:
                     case R.id.nav_my_issues:
-                        displayFavoritedListFragment();
+                        displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+                        return true;
+                    case R.id.nav_all_issues:
+                        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+                        return true;
+                    case R.id.nav_update_issues:
+                        updateIssues();
                         return true;
 
                     // For rest of the options we just show a toast on click
-                    case R.id.nav_all_issues:
-                        return true;
-                    case R.id.nav_update_issues:
-                        return true;
                     case R.id.nav_pick_place:
                         return true;
                     case R.id.nav_about:
@@ -177,8 +178,24 @@ public class MainActivity extends AbstractBaseActivity implements FollowedIssues
 
     }
 
-    private void displayFavoritedListFragment(){
-        FollowedIssuesFragmentList fragment = new FollowedIssuesFragmentList();
+    private void updateIssues(){
+        new Thread(new Runnable() {
+            public void run() {
+                logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
+                Log.d(TAG, "Loading new issues");
+                ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
+                IssuesDataSource dataSource = IssuesDataSource.getInstance();
+                for(Issue i:newIssues){
+                    dataSource.insertOrUpdateIssue(i);
+                }
+                Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server");
+                buildGeofences();
+            }
+        }).start();
+    }
+
+    private void displayIssuesListFragment(int type){
+        IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_content, fragment);
         fragmentTransaction.commit();

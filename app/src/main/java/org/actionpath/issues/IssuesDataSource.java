@@ -81,6 +81,16 @@ public class IssuesDataSource {
         return cursor;
     }
 
+    public Cursor getAllIssuesCursor(){
+        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
+                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
+                null, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
     public Cursor getNonGeoFencedIssuesCursor(){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_LATITUDE_COL, IssuesDbHelper.ISSUES_LONGITUDE_COL},
