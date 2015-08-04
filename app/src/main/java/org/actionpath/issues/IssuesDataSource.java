@@ -102,7 +102,7 @@ public class IssuesDataSource {
     }
 
 
-    public void updateIssueFollowed(int issueId, boolean isFollowed) {
+    public void updateIssueFavorited(int issueId, boolean isFollowed) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, (isFollowed ? 1 : 0));
         db.update(IssuesDbHelper.ISSUES_TABLE_NAME,

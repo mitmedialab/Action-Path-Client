@@ -208,9 +208,9 @@ public class MainActivity extends AbstractBaseActivity implements
         Log.d(TAG, "added test issues");
         IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
         dataSource.insertOrUpdateIssue(testIssue1);
-        dataSource.updateIssueFollowed(1234, true);
+        dataSource.updateIssueFavorited(1234, true);
         dataSource.insertOrUpdateIssue(testIssue2);
-        dataSource.updateIssueFollowed(2345, true);
+        dataSource.updateIssueFavorited(2345, true);
         long issueCount = dataSource.getIssueCount(getPlaceId());
         Log.i(TAG, issueCount + " issues in the db");
     }
@@ -255,8 +255,8 @@ public class MainActivity extends AbstractBaseActivity implements
         logMsg(issueId, LogMsg.FOLLOWED_ISSUE_CLICK);
         // Then you start a new Activity via Intent
         Intent intent = new Intent();
-        intent.setClass(MainActivity.this, ResponseActivity.class);
-        intent.putExtra(ResponseActivity.PARAM_ISSUE_ID, issueId);
+        intent.setClass(MainActivity.this, IssueDetailActivity.class);
+        intent.putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId);
         startActivity(intent);
     }
 

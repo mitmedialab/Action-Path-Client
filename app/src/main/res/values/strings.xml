@@ -19,6 +19,11 @@
     <string name="pick_place_header">Choose Your City</string>
     <string name="update_issues_header">Update Issues</string>
 
+    <string name="issue_detail_summary">Summary</string>
+    <string name="issue_detail_description">Description</string>
+    <string name="issue_detail_status">Status</string>
+    <string name="issue_detail_location">Location</string>
+
     <string name="drawer_close">Navigation View</string>
     <string name="drawer_open">Navigation View Closed</string>
 
