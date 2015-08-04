@@ -231,7 +231,9 @@ public class Issue implements Serializable {
         return result;
     }
 
-
+    public String getUrl(){
+        return "http://seeclickfix.com/issues/"+getId();
+    }
 
 }
 

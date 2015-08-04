@@ -23,9 +23,12 @@
     <string name="issue_detail_description">Description</string>
     <string name="issue_detail_status">Status</string>
     <string name="issue_detail_location">Location</string>
+    <string name="issue_detail_view_online">View Online</string>
 
     <string name="favorited_issue_feedback">Issue followed</string>
     <string name="unfavorited_issue_feedback">Issue unfollowed</string>
+
+    <string name="walk_there">Walk There Now</string>
 
     <string name="drawer_close">Navigation View</string>
     <string name="drawer_open">Navigation View Closed</string>

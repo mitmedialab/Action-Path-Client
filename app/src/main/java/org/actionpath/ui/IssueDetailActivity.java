@@ -1,12 +1,18 @@
 package org.actionpath.ui;
 
+import android.content.Intent;
+import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -57,6 +63,27 @@ public class IssueDetailActivity extends AbstractBaseActivity {
         TextView location = (TextView) findViewById(R.id.issue_detail_location);
         location.setText(issue.getIssueAddress());
 
+        Button walkThereButton = (Button) findViewById(R.id.issue_detail_walk_there_button);
+        walkThereButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri gmmIntentUri = Uri.parse("google.navigation:m=w&q=" + issue.getIssueAddress());
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        });
+
+        Button viewOnlineButton = (Button) findViewById(R.id.issue_detail_view_online);
+        viewOnlineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri intentUri = Uri.parse(issue.getUrl());
+                Intent urlIntent = new Intent(Intent.ACTION_VIEW, intentUri);
+                startActivity(urlIntent);
+            }
+        });
+        
         if(issue.hasImageUrl()){
             Log.d(TAG,"issue has an image: "+issue.getImageUrl());
             if(imageLoader==null || !imageLoader.isInited()){
