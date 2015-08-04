@@ -37,4 +37,9 @@
 
     <string name="no_issues_to_show">No issues to show</string>
 
+    <plurals name="updated_issues">
+        <item quantity="one">Updated %d issue.</item>
+        <item quantity="other">Updated %d issues.</item>
+    </plurals>
+
 </resources>

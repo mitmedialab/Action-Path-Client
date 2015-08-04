@@ -26,7 +26,7 @@
             <TextView android:id="@id/android:empty"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/abc_text_size_small_material"
+                android:padding="@dimen/activity_horizontal_margin"
                 android:text="@string/loading"/>
 
         </LinearLayout>

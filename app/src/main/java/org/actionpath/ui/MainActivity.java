@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,7 +38,8 @@ import java.util.List;
 // include: city following (account page where this can be edited), user_id
 
 public class MainActivity extends AbstractBaseActivity implements
-        IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener {
+        IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
+        UpdateIssuesFragment.OnIssuesUpdatedListener {
 
     private Button updateIssues;
     private Toolbar toolbar;
@@ -99,7 +102,7 @@ public class MainActivity extends AbstractBaseActivity implements
                         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
                         return true;
                     case R.id.nav_update_issues:
-                        updateIssues();
+                        displayUpdateIssuesFragment();
                         return true;
                     case R.id.nav_pick_place:
                         displayPickPlaceFragment();
@@ -151,30 +154,23 @@ public class MainActivity extends AbstractBaseActivity implements
 
     }
 
-    private void updateIssues(){
+    private void displayFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_content, fragment);
+        fragmentTransaction.commit();
+    }
+
+    private void displayUpdateIssuesFragment(){
         toolbar.setTitle(R.string.update_issues_header);
-        new Thread(new Runnable() {
-            public void run() {
-                logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
-                int placeId = getPlaceId();
-                Log.d(TAG, "Loading new issues for place "+placeId);
-                ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
-                IssuesDataSource dataSource = IssuesDataSource.getInstance();
-                for(Issue i:newIssues){
-                    dataSource.insertOrUpdateIssue(i);
-                }
-                Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place "+placeId);
-                buildGeofences();
-            }
-        }).start();
+        logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
+        UpdateIssuesFragment fragment = UpdateIssuesFragment.newInstance(getPlaceId());
+        displayFragment(fragment);
     }
 
     private void displayPickPlaceFragment(){
         toolbar.setTitle(R.string.pick_place_header);
         PickPlaceFragmentList fragment = PickPlaceFragmentList.newInstance();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment);
-        fragmentTransaction.commit();
+        displayFragment(fragment);
     }
 
     private void displayIssuesListFragment(int type){
@@ -190,9 +186,7 @@ public class MainActivity extends AbstractBaseActivity implements
                 break;
         }
         IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment);
-        fragmentTransaction.commit();
+        displayFragment(fragment);
     }
 
     private void addTestIssues(){
@@ -223,36 +217,6 @@ public class MainActivity extends AbstractBaseActivity implements
         super.onStop();
     }
 
-    /**
-     * Build geofences for all non-geofenced issues in the database
-     * TODO: consider filtering for closed issues, and remember we can only do 100 total
-     */
-    private void buildGeofences(){
-        Log.d(TAG, "Building geofences");
-        Cursor cursor = IssuesDataSource.getInstance(this).getNonGeoFencedIssuesCursor(getPlaceId());
-        while (!cursor.isAfterLast()) {
-            int issueId = cursor.getInt(0);
-            Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
-            buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
-            IssuesDataSource.getInstance(this).updateIssueGeofenceCreated(issueId, true);
-            logMsg(issueId, LogMsg.ACTION_ADDED_GEOFENCE);
-            cursor.moveToNext();
-        }
-        cursor.close();
-    }
-
-    private void buildGeofence(int issueId, double latitude, double longitude, float radius){
-        List<Geofence> newGeoFences = new ArrayList<>();
-        Geofence.Builder geofenceBuilder = new Geofence.Builder();
-        geofenceBuilder.setRequestId((new Integer(issueId)).toString());
-        geofenceBuilder.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
-        geofenceBuilder.setCircularRegion(latitude, longitude, radius);
-        geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);
-        GeofencingRegisterer registerer= new GeofencingRegisterer(this);
-        newGeoFences.add(geofenceBuilder.build());
-        registerer.registerGeofences(newGeoFences);
-    }
-
     @Override
     public void onIssueSelected(int issueId) {
         Log.d(TAG, "clicked item with id: " + issueId);
@@ -275,6 +239,13 @@ public class MainActivity extends AbstractBaseActivity implements
         editor.apply();
         Log.i(TAG, "Saved place " + placeId);
         // and jump back to the issue list
+        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+    }
+
+    @Override
+    public void onIssuesUpdated(int newIssueCount){
+        String feedback = getResources().getQuantityString(R.plurals.updated_issues,newIssueCount,newIssueCount);
+        Snackbar.make(findViewById(R.id.main_content), feedback, Snackbar.LENGTH_SHORT).show();
         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
     }
 
