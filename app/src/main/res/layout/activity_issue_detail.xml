@@ -75,7 +75,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/issue_detail_description" />
+                android:id="@+id/issue_detail_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
@@ -86,7 +87,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/issue_detail_status" />
+                android:id="@+id/issue_detail_status"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
@@ -97,7 +99,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/issue_detail_location" />
+                android:id="@+id/issue_detail_location"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
         </LinearLayout>
 
