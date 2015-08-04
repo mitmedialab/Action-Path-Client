@@ -142,16 +142,20 @@ public class MainActivity extends AbstractBaseActivity implements
         Intent i= new Intent(this, LogSyncService.class);
         this.startService(i);
 
+        if (!Installation.hasId()) {
+            logMsg(LogMsg.ACTION_INSTALLED_APP);
+        }
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
         // check that we have a place selected
         if(getPlaceId()==INVALID_PLACE_ID){
             Log.w(TAG,"No place set yet");
             displayPickPlaceFragment();
         }
-
-        if (!Installation.hasId()) {
-            logMsg(LogMsg.ACTION_INSTALLED_APP);
-        }
-
     }
 
     private void displayFragment(Fragment fragment){
