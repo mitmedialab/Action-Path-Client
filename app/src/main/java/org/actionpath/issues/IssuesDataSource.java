@@ -74,7 +74,9 @@ public class IssuesDataSource {
     public Cursor getFollowedIssuesCursor(int placeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?", new String[] {"1",placeId+""}, null, null, null);
+                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?",
+                new String[] {"1",placeId+""}, null, null,
+                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -84,7 +86,9 @@ public class IssuesDataSource {
     public Cursor getAllIssuesCursor(int placeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?", new String[] {placeId+""}, null, null, null);
+                IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?",
+                new String[] {placeId+""}, null, null,
+                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -100,7 +104,6 @@ public class IssuesDataSource {
         }
         return cursor;
     }
-
 
     public void updateIssueFavorited(int issueId, boolean isFollowed) {
         ContentValues contentValues = new ContentValues();
