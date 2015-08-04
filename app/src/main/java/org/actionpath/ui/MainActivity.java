@@ -26,6 +26,7 @@ import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
+import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
 
 import java.util.ArrayList;
@@ -46,12 +47,11 @@ public class MainActivity extends AbstractBaseActivity implements
 
     public static final String PREFS_NAME = "ActionPathPrefs";
     public static final String PREF_PLACE_ID = "placeId";
+    public static final String PREF_PLACE_NAME = "placeName";
     private static int INVALID_PLACE_ID = -1;
 
     ListView favoritedIssueList;
     SimpleCursorAdapter favoritedIssueDataAdaptor;
-
-    protected int placeId = INVALID_PLACE_ID;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class MainActivity extends AbstractBaseActivity implements
                         // TODO
                         return true;
                     default:
-                        Log.e(TAG,"Got an unknown selection from nav drawer menu :-(");
+                        Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
                         return true;
                 }
             }
@@ -140,9 +140,7 @@ public class MainActivity extends AbstractBaseActivity implements
         this.startService(i);
 
         // check that we have a place selected
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        placeId = settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
-        if(placeId==INVALID_PLACE_ID){
+        if(getPlaceId()==INVALID_PLACE_ID){
             Log.w(TAG,"No place set yet");
             displayPickPlaceFragment();
         }
@@ -158,13 +156,14 @@ public class MainActivity extends AbstractBaseActivity implements
         new Thread(new Runnable() {
             public void run() {
                 logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
-                Log.d(TAG, "Loading new issues");
+                int placeId = getPlaceId();
+                Log.d(TAG, "Loading new issues for place "+placeId);
                 ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
                 IssuesDataSource dataSource = IssuesDataSource.getInstance();
                 for(Issue i:newIssues){
                     dataSource.insertOrUpdateIssue(i);
                 }
-                Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server");
+                Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place "+placeId);
                 buildGeofences();
             }
         }).start();
@@ -179,12 +178,15 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void displayIssuesListFragment(int type){
+        String prefix;
         switch(type){
             case IssuesFragmentList.ALL_ISSUES:
-                toolbar.setTitle(R.string.all_issues_header);
+                prefix = getResources().getString(R.string.all_issues_header);
+                toolbar.setTitle(prefix+": "+getPlaceName());
                 break;
             case IssuesFragmentList.FOLLOWED_ISSUES:
-                toolbar.setTitle(R.string.followed_issues_header);
+                prefix = getResources().getString(R.string.followed_issues_header);
+                toolbar.setTitle(prefix+": "+getPlaceName());
                 break;
         }
         IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
@@ -199,10 +201,12 @@ public class MainActivity extends AbstractBaseActivity implements
         final float Cambridge_rad = 1601;
         final double Cambridge_lat2 = 42.359255;
         final double Cambridge_long2 = -71.093666;
-        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "", null, null, 9841);
+        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "", null, null,
+                Development.PLACE_ID_CAMBRIDGE);
         testIssue1.setRadius(Cambridge_rad);
         testIssue1.setTest(true);
-        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat2, Cambridge_long2, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null, 9841);
+        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat2, Cambridge_long2, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null,
+                Development.PLACE_ID_CAMBRIDGE);
         testIssue2.setRadius(Cambridge_rad);
         testIssue2.setTest(true);
         Log.d(TAG, "added test issues");
@@ -261,12 +265,13 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     @Override
-    public void onPlaceSelected(int placeId) {
+    public void onPlaceSelected(int placeId, String placeName) {
         Log.d(TAG, "clicked place id: " + placeId);
         // now save that we set the place
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(MainActivity.PREF_PLACE_ID, placeId);
+        editor.putString(MainActivity.PREF_PLACE_NAME, placeName);
         editor.apply();
         Log.i(TAG, "Saved place " + placeId);
         // and jump back to the issue list
@@ -274,8 +279,13 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     public int getPlaceId(){
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, 0);
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         return settings.getInt(MainActivity.PREF_PLACE_ID,INVALID_PLACE_ID);
+    }
+
+    public String getPlaceName(){
+        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        return settings.getString(MainActivity.PREF_PLACE_NAME, "Unknown City");
     }
 
 }

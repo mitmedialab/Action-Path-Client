@@ -121,12 +121,12 @@ public class PickPlaceFragmentList extends ListFragment {
             // fragment is attached to one) that an item has been selected.
             Place place = (Place) l.getItemAtPosition(position);
             Log.i(TAG,"Picked new place "+place.name+" ("+place.id+")");
-            listener.onPlaceSelected(place.id);
+            listener.onPlaceSelected(place.id,place.name);
         }
     }
 
     public interface OnPlaceSelectedListener {
-        public void onPlaceSelected(int placeId);
+        public void onPlaceSelected(int placeId,String placeName);
     }
 
 }

@@ -80,14 +80,15 @@ public class IssuesFragmentList extends ListFragment {
         int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
         SimpleCursorAdapter adapter;
         Cursor cursor = null;
+        int placeId = listener.getPlaceId();
         switch(type){
             case ALL_ISSUES:
-                Log.d(TAG,"Showing All Issues Fragment");
-                cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(listener.getPlaceId());
+                Log.d(TAG,"Showing All Issues Fragment for Place "+placeId);
+                cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId);
                 break;
             case FOLLOWED_ISSUES:
-                Log.d(TAG,"Showing Followed Issues Fragment");
-                cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(listener.getPlaceId());
+                Log.d(TAG,"Showing Followed Issues Fragment for Place "+placeId);
+                cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId);
                 break;
         }
         adapter = new SimpleCursorAdapter(

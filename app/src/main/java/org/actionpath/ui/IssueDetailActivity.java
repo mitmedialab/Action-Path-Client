@@ -83,7 +83,7 @@ public class IssueDetailActivity extends AbstractBaseActivity {
                 startActivity(urlIntent);
             }
         });
-        
+
         if(issue.hasImageUrl()){
             Log.d(TAG,"issue has an image: "+issue.getImageUrl());
             if(imageLoader==null || !imageLoader.isInited()){
