@@ -24,6 +24,9 @@
     <string name="issue_detail_status">Status</string>
     <string name="issue_detail_location">Location</string>
 
+    <string name="favorited_issue_feedback">Issue followed</string>
+    <string name="unfavorited_issue_feedback">Issue unfollowed</string>
+
     <string name="drawer_close">Navigation View</string>
     <string name="drawer_open">Navigation View Closed</string>
 

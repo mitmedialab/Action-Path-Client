@@ -3,6 +3,7 @@ package org.actionpath.ui;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -74,9 +75,20 @@ public class IssueDetailActivity extends AbstractBaseActivity {
                 issue.setFavorited(!issue.isFavorited());
                 IssuesDataSource.getInstance().updateIssueFavorited(issue.getId(), issue.isFavorited());
                 setFavoritedButtonIcon(issue.isFavorited());
+                showFavoritedFeedback(view, issue.isFavorited());
             }
         });
 
+    }
+
+    private void showFavoritedFeedback(View view, boolean favorited){
+        int feedbackStringId;
+        if(favorited){
+            feedbackStringId = R.string.favorited_issue_feedback;
+        } else {
+            feedbackStringId = R.string.unfavorited_issue_feedback;
+        }
+        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT).show();
     }
 
     private void setFavoritedButtonIcon(boolean favorited){
