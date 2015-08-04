@@ -120,8 +120,6 @@ public class IssueDetailActivity extends AbstractBaseActivity {
 
     }
 
-
-
     private void showFavoritedFeedback(View view, boolean favorited){
         int feedbackStringId;
         if(favorited){
@@ -133,7 +131,7 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             .setAction(R.string.undo_action, onFavoriteClickListener)
             .show();
     }
-    
+
     private void setFavoritedButtonIcon(boolean favorited){
         if (favorited) {
             favoriteButton.setImageResource(R.drawable.ic_favorite_black_24dp);
