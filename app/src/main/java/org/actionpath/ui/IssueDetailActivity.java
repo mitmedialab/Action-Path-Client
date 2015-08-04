@@ -1,5 +1,6 @@
 package org.actionpath.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
@@ -32,6 +33,8 @@ public class IssueDetailActivity extends AbstractBaseActivity {
     private Issue issue;
     private ImageView issueImage;
     private ImageLoader imageLoader;
+
+    private View.OnClickListener onFavoriteClickListener;
 
     private FloatingActionButton favoriteButton;
 
@@ -100,9 +103,7 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
         }
 
-        favoriteButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
-        setFavoritedButtonIcon(issue.isFavorited());
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
+        onFavoriteClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "Setting favorited on " + issue.getId() + " to " + !issue.isFavorited());
@@ -111,9 +112,15 @@ public class IssueDetailActivity extends AbstractBaseActivity {
                 setFavoritedButtonIcon(issue.isFavorited());
                 showFavoritedFeedback(view, issue.isFavorited());
             }
-        });
+        };
+
+        favoriteButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
+        setFavoritedButtonIcon(issue.isFavorited());
+        favoriteButton.setOnClickListener(onFavoriteClickListener);
 
     }
+
+
 
     private void showFavoritedFeedback(View view, boolean favorited){
         int feedbackStringId;
@@ -122,9 +129,11 @@ public class IssueDetailActivity extends AbstractBaseActivity {
         } else {
             feedbackStringId = R.string.unfavorited_issue_feedback;
         }
-        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT)
+            .setAction(R.string.undo_action, onFavoriteClickListener)
+            .show();
     }
-
+    
     private void setFavoritedButtonIcon(boolean favorited){
         if (favorited) {
             favoriteButton.setImageResource(R.drawable.ic_favorite_black_24dp);
