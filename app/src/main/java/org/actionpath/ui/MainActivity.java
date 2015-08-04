@@ -161,7 +161,7 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void displayUpdateIssuesFragment(){
-        toolbar.setTitle(R.string.update_issues_header);
+        toolbar.setTitle(String.format(getResources().getString(R.string.update_issues_header), getPlaceName()));
         logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
         UpdateIssuesFragment fragment = UpdateIssuesFragment.newInstance(getPlaceId());
         displayFragment(fragment);
@@ -177,12 +177,10 @@ public class MainActivity extends AbstractBaseActivity implements
         String prefix;
         switch(type){
             case IssuesFragmentList.ALL_ISSUES:
-                prefix = getResources().getString(R.string.all_issues_header);
-                toolbar.setTitle(prefix+": "+getPlaceName());
+                toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlaceName()));
                 break;
             case IssuesFragmentList.FOLLOWED_ISSUES:
-                prefix = getResources().getString(R.string.followed_issues_header);
-                toolbar.setTitle(prefix+": "+getPlaceName());
+                toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlaceName()));
                 break;
         }
         IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
@@ -238,8 +236,8 @@ public class MainActivity extends AbstractBaseActivity implements
         editor.putString(MainActivity.PREF_PLACE_NAME, placeName);
         editor.apply();
         Log.i(TAG, "Saved place " + placeId);
-        // and jump back to the issue list
-        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+        // and jump to update the issues
+        displayUpdateIssuesFragment();
     }
 
     @Override

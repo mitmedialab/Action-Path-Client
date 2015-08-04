@@ -14,10 +14,10 @@
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
 
-    <string name="all_issues_header">All Issues</string>
-    <string name="followed_issues_header">My Issues</string>
+    <string name="all_issues_header">All Issues in %s</string>
+    <string name="followed_issues_header">My Issues in %s</string>
     <string name="pick_place_header">Choose Your City</string>
-    <string name="update_issues_header">Update Issues</string>
+    <string name="update_issues_header">Update Issues in %s</string>
 
     <string name="issue_detail_summary">Summary</string>
     <string name="issue_detail_description">Description</string>
