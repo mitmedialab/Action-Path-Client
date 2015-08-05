@@ -7,7 +7,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.util.Log;
 
-import org.actionpath.ui.ResponseActivity;
+import org.actionpath.ui.IssueDetailActivity;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
@@ -121,8 +121,8 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(id);
         String summary = issue.getIssueSummary();
 
-        Intent surveyIntent = new Intent(this, ResponseActivity.class)
-                .putExtra(ResponseActivity.PARAM_ISSUE_ID, id)
+        Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, id)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
