@@ -1,6 +1,7 @@
 package org.actionpath.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,11 +11,13 @@ import java.util.UUID;
 
 /**
  * Acts as a singleton to store the unique installation id.
- * @see http://android-developers.blogspot.com/2011/03/identifying-app-installations.html
+ * http://android-developers.blogspot.com/2011/03/identifying-app-installations.html
  */
 public class Installation {
     private static String sID = null;
     private static final String INSTALLATION = "INSTALLATION";
+
+    public static String TAG = Installation.class.getName();
 
     public synchronized static boolean hasId(){
         return sID != null;
@@ -27,9 +30,12 @@ public class Installation {
                 if (!installation.exists())
                     writeInstallationFile(installation);
                 sID = readInstallationFile(installation);
+                Log.i(TAG, "New Installation id = " + sID);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            Log.i(TAG, "Existing Installation id = " + sID);
         }
         return sID;
     }

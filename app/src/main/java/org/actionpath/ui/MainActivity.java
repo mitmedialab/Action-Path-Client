@@ -58,11 +58,6 @@ public class MainActivity extends AbstractBaseActivity implements
         // create the issue database
         addTestIssues();
 
-        // create an image loader instance
-        if(!ImageLoader.getInstance().isInited()){
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
-            ImageLoader.getInstance().init(config);
-        }
         setContentView(R.layout.activity_main);
 
         // setup the UI
@@ -132,13 +127,6 @@ public class MainActivity extends AbstractBaseActivity implements
 
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
-
-        Intent i= new Intent(this, LogSyncService.class);
-        this.startService(i);
-
-        if (!Installation.hasId()) {
-            logMsg(LogMsg.ACTION_INSTALLED_APP);
-        }
 
     }
 

@@ -4,6 +4,14 @@ import android.util.Log;
 
 import org.actionpath.issues.Issue;
 import org.actionpath.places.Place;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,19 +23,29 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by rahulb on 7/15/15.
+ * Manage all communications to the server here
  */
 public class ActionPathServer {
 
-    public static final String LOG_TAG = ActionPathServer.class.getName();
+    public static final String TAG = ActionPathServer.class.getName();
 
     //public static final String SERVER_BASE_URL = "https://api.dev.actionpath.org";
     public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
 
+    private static final String RESPONSE_STATUS = "status";
+    private static final String RESPONSE_STATUS_OK = "ok";
+    private static final String RESPONSE_STATUS_ERROR = "error";
+
+    /**
+     * Ask tjava.lang.Stringhe server for the latest issues within the specified place
+     * @param placeId
+     * @return
+     */
     public static ArrayList<Issue> getLatestIssues(int placeId){
-        ArrayList<Issue> newIssues = new ArrayList<Issue>();
+        ArrayList<Issue> newIssues = new ArrayList<>();
         try {
             URL u = new URL(BASE_URL + "/places/"+placeId+"/issues.json");
             InputStream in = u.openStream();
@@ -43,19 +61,23 @@ public class ActionPathServer {
                 Issue issue = Issue.fromJson(object);
                 newIssues.add(issue);
             }
-            Log.i(LOG_TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+placeId);
-        } catch (MalformedURLException ex) {
-            Log.e(LOG_TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
+            Log.i(TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+placeId);
         } catch (IOException ex){
-            Log.e(LOG_TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
+            Log.e(TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
         } catch (JSONException ex){
-            Log.e(LOG_TAG, "Failed to parse issues json from server for "+placeId+" | "+ex);
+            Log.e(TAG, "Failed to parse issues json from server for "+placeId+" | "+ex);
         }
         return newIssues;
     }
 
-    public static ArrayList<Place> getPlacesNear(double lat, double lng){
-        ArrayList<Place> places = new ArrayList<Place>();
+    /**
+     * Ask the server for a list of places near the specific location
+     * @param lat
+     * @param lng
+     * @return
+     */
+    public static ArrayList<Place> getPlacesNear(double lat, double lng) {
+        ArrayList<Place> places = new ArrayList<>();
         // fetch json from server
         String jsonStr = null;
         try {
@@ -68,11 +90,9 @@ public class ActionPathServer {
                 result.append(line);
             }
             jsonStr = result.toString();
-            Log.i(LOG_TAG, "Successfully fetches places from " + BASE_URL);
-        } catch (MalformedURLException ex) {
-            Log.e(LOG_TAG, "Failed to fetch places near | " + ex.toString());
+            Log.i(TAG, "Successfully fetches places from " + BASE_URL);
         } catch (IOException ex){
-            Log.e(LOG_TAG, "Failed to fetch places near | " + ex.toString());
+            Log.e(TAG, "Failed to fetch places near | " + ex.toString());
         }
         // now parse it into Place objects
         try {
@@ -82,11 +102,58 @@ public class ActionPathServer {
                 Place place = Place.fromJson(placesObject);
                 places.add(place);
             }
-            Log.i(LOG_TAG,"Found "+places.size()+" places near "+lat+","+lng);
+            Log.i(TAG,"Found "+places.size()+" places near "+lat+","+lng);
         } catch (JSONException ex){
-            Log.e(LOG_TAG, "Failed to parse json in places near | " + ex.toString());
+            Log.e(TAG, "Failed to parse json in places near | " + ex.toString());
         }
         return places;
+    }
+
+    /**
+     * Tell the server that we have a new installation (ie. a new user)
+     * To test run:  wget http://action-path-server-rahulbot.c9.io/users --post-data='installId=1234'
+     * http://stackoverflow.com/questions/2938502/sending-post-data-in-android
+     * @param   installId
+     */
+    public static boolean createUser(String installId) {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(BASE_URL + "/users");
+        String responseStr = null;
+        try {
+            List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+            nameValuePairs.add(new BasicNameValuePair("installId", installId));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            InputStream inputStream = httpResponse.getEntity().getContent();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String bufferedStrChunk = null;
+            while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
+                stringBuilder.append(bufferedStrChunk);
+            }
+            responseStr = stringBuilder.toString();
+        } catch (ClientProtocolException e) {
+            Log.e(TAG, "Unable to createUser " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to createUser " + e.toString());
+        }
+        try{
+            if(responseStr!=null){
+                JSONObject jsonResponse = new JSONObject(responseStr);
+                if(jsonResponse.getString(RESPONSE_STATUS) == RESPONSE_STATUS_OK){
+                    Log.i(TAG,"Told the server to createUser "+installId);
+                    return true;
+                } else {
+                    Log.e(TAG,"Server said it failed to createUser " + installId);
+                    return false;
+                }
+            }
+        } catch (JSONException ex){
+            Log.e(TAG, "Failed to parse json in createUser | " + ex.toString());
+        }
+        return false;
     }
 
 }

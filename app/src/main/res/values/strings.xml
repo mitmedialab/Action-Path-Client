@@ -47,11 +47,11 @@
     <string name="action_unfollow">Unfollow</string>
 
     <plurals name="updated_issues">
-        <item quantity="one">Updated %d issue.</item>
-        <item quantity="other">Updated %d issues.</item>
+        <item quantity="one">Updated %d issue</item>
+        <item quantity="other">Updated %d issues</item>
     </plurals>
     <string name="title_activity_maps">Map</string>
 
-
+    <string name="created_new_user">Created a new user</string>
 
 </resources>
