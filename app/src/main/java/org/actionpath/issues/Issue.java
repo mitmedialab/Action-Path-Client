@@ -34,7 +34,7 @@ public class Issue implements Serializable {
     float radius = DEFAULT_RADIUS;    // in meters
     boolean test = false;
 
-    boolean favorited = false;
+    boolean followed = false;
     boolean geofenceCreated = false;
 
     public Issue(){
@@ -55,19 +55,10 @@ public class Issue implements Serializable {
         this(id,status,summary,description,latitude,longitude,address,imageUrl,createdAt,updatedAt,placeId,false,false);
     }
 
-    public Issue(int id,
-            String status,
-            String summary,
-            String description,
-            double latitude,
-            double longitude,
-            String address,
-            String imageUrl,
-            Date createdAt,
-            Date updatedAt,
-            int placeId,
-                 boolean favorited,
-                 boolean geofenceCreated){
+    public Issue(int id, String status, String summary,
+            String description,double latitude,double longitude,
+            String address, String imageUrl,Date createdAt,Date updatedAt,
+            int placeId, boolean followed, boolean geofenceCreated){
         this.id = id;
         this.status = status;
         this.summary = summary;
@@ -79,7 +70,7 @@ public class Issue implements Serializable {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.placeId = placeId;
-        this.favorited = favorited;
+        this.followed = followed;
         this.geofenceCreated = geofenceCreated;
     }
 
@@ -139,12 +130,12 @@ public class Issue implements Serializable {
         return placeId;
     }
 
-    public boolean isFavorited() {
-        return favorited;
+    public boolean isFollowed() {
+        return followed;
     }
 
-    public void setFavorited(boolean favorited) {
-        this.favorited = favorited;
+    public void setFollowed(boolean followed) {
+        this.followed = followed;
 
     }
 
@@ -173,7 +164,7 @@ public class Issue implements Serializable {
                 new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000),    // createdAt
                 new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000),    // updatedAt
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL)),    // placeId
-                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1,   // favorited
+                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1,   // followed
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1 // geofenceCreated
         );
     }
@@ -210,7 +201,7 @@ public class Issue implements Serializable {
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
         cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
-        cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL,favorited==true?1:0);
+        cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL,followed==true?1:0);
         cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL,geofenceCreated==true?1:0);
         return cv;
     }

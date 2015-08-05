@@ -2,7 +2,6 @@ package org.actionpath.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -18,21 +17,16 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-import com.google.android.gms.location.Geofence;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.R;
-import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -208,9 +202,9 @@ public class MainActivity extends AbstractBaseActivity implements
         Log.d(TAG, "added test issues");
         IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
         dataSource.insertOrUpdateIssue(testIssue1);
-        dataSource.updateIssueFavorited(1234, true);
+        dataSource.updateIssueFollowed(1234, true);
         dataSource.insertOrUpdateIssue(testIssue2);
-        dataSource.updateIssueFavorited(2345, true);
+        dataSource.updateIssueFollowed(2345, true);
         long issueCount = dataSource.getIssueCount(getPlaceId());
         Log.i(TAG, issueCount + " issues in the db");
     }

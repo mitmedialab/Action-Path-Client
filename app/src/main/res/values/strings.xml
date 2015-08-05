@@ -25,8 +25,8 @@
     <string name="issue_detail_location">Location</string>
     <string name="issue_detail_view_online">View Online</string>
 
-    <string name="favorited_issue_feedback">Issue followed</string>
-    <string name="unfavorited_issue_feedback">Issue unfollowed</string>
+    <string name="followed_issue_feedback">Issue followed</string>
+    <string name="unfollowed_issue_feedback">Issue unfollowed</string>
 
     <string name="walk_there">Walk There Now</string>
 
@@ -37,7 +37,9 @@
 
     <string name="no_issues_to_show">No issues to show</string>
 
-    <string name="undo_action">Undo</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_follow">Follow</string>
+    <string name="action_unfollow">Unfollow</string>
 
     <plurals name="updated_issues">
         <item quantity="one">Updated %d issue.</item>

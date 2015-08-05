@@ -1,17 +1,15 @@
 package org.actionpath.ui;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,9 +32,11 @@ public class IssueDetailActivity extends AbstractBaseActivity {
     private ImageView issueImage;
     private ImageLoader imageLoader;
 
-    private View.OnClickListener onFavoriteClickListener;
+    private View.OnClickListener onFollowClickListener;
 
-    private FloatingActionButton favoriteButton;
+    private FloatingActionButton followFloatingButton;
+    private Menu toolbarMenu;
+    private MenuItem followToolbarMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,41 +103,76 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
         }
 
-        onFavoriteClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Setting favorited on " + issue.getId() + " to " + !issue.isFavorited());
-                issue.setFavorited(!issue.isFavorited());
-                IssuesDataSource.getInstance().updateIssueFavorited(issue.getId(), issue.isFavorited());
-                setFavoritedButtonIcon(issue.isFavorited());
-                showFavoritedFeedback(view, issue.isFavorited());
-            }
+        onFollowClickListener = new View.OnClickListener() {
+            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
         };
 
-        favoriteButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
-        setFavoritedButtonIcon(issue.isFavorited());
-        favoriteButton.setOnClickListener(onFavoriteClickListener);
-
+        followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
+        followFloatingButton.setOnClickListener(onFollowClickListener);
     }
 
-    private void showFavoritedFeedback(View view, boolean favorited){
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateFollowedButtons(issue.isFollowed());
+    }
+
+    private void changeFollowedAndUpdateUI(View view){
+        Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
+        // update the issue first
+        issue.setFollowed(!issue.isFollowed());
+        IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
+        // update the icons
+        updateFollowedButtons(issue.isFollowed());
+        // show the snackbar feedback
         int feedbackStringId;
-        if(favorited){
-            feedbackStringId = R.string.favorited_issue_feedback;
+        if(issue.isFollowed()){
+            feedbackStringId = R.string.followed_issue_feedback;
         } else {
-            feedbackStringId = R.string.unfavorited_issue_feedback;
+            feedbackStringId = R.string.unfollowed_issue_feedback;
         }
         Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT)
-            .setAction(R.string.undo_action, onFavoriteClickListener)
-            .show();
+                .setAction(R.string.action_undo, onFollowClickListener)
+                .show();
     }
 
-    private void setFavoritedButtonIcon(boolean favorited){
-        if (favorited) {
-            favoriteButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+    private void updateFollowedButtons(boolean isFollowed){
+        // update the floating action bar and toolbar icon
+        int iconId;
+        int stringId;
+        if (issue.isFollowed()) {
+            iconId = R.drawable.ic_favorite_black_24dp;
+            stringId = R.string.action_unfollow;
         } else {
-            favoriteButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            iconId = R.drawable.ic_favorite_border_black_24dp;
+            stringId = R.string.action_follow;
         }
+        followFloatingButton.setImageResource(iconId);
+        //followToolbarMenuItem.setIcon(iconId);
+        //followToolbarMenuItem.setTitle(stringId);
     }
+
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_issue_detail, menu);
+        toolbarMenu = menu;
+        followToolbarMenuItem = (MenuItem) toolbarMenu.findItem(R.id.issue_detail_action_follow);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.issue_detail_action_follow) {
+            changeFollowedAndUpdateUI(findViewById(R.id.issue_detail_scroll_view));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+     */
 
 }
