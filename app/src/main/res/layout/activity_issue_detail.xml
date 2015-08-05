@@ -131,20 +131,18 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_marginTop="@dimen/button_margin"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                android:name="com.google.android.gms.maps.MapFragment"
-                android:id="@+id/issue_detail_map"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/embedded_map_height"
-                map:cameraZoom="13"
-                map:mapType="normal"
-                map:liteMode="true"/>
+                android:id="@+id/issue_detail_map_wrapper">
+                <!-- map will be inserted here by code -->
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_marginTop="@dimen/button_margin"
+                android:layout_marginBottom="@dimen/button_margin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 

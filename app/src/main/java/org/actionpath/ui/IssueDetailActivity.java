@@ -1,5 +1,6 @@
 package org.actionpath.ui;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +18,10 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,15 +32,13 @@ import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractBaseActivity
-    implements OnMapReadyCallback {
+public class IssueDetailActivity extends AbstractBaseActivity implements OnMapReadyCallback {
 
     public static final String PARAM_ISSUE_ID = "issueID";
 
     public String TAG = this.getClass().getName();
 
     private Issue issue;
-    private ImageView issueImage;
     private ImageLoader imageLoader;
 
     private View.OnClickListener onFollowClickListener;
@@ -104,25 +105,18 @@ public class IssueDetailActivity extends AbstractBaseActivity
 
         Button answerYes = (Button) findViewById(R.id.issue_detail_yes);
         answerYes.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { answerQuestion(v, true);}
+            @Override
+            public void onClick(View v) {
+                answerQuestion(v, true);
+            }
         });
         Button answerNo = (Button) findViewById(R.id.issue_detail_no);
         answerNo.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { answerQuestion(v,false);}
-        });
-
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.issue_detail_map);
-        mapFragment.getMapAsync(this);
-
-        if(issue.hasImageUrl()){
-            Log.d(TAG,"issue has an image: "+issue.getImageUrl());
-            if(imageLoader==null || !imageLoader.isInited()){
-                imageLoader = ImageLoader.getInstance();
+            @Override
+            public void onClick(View v) {
+                answerQuestion(v, false);
             }
-            issueImage = (ImageView) findViewById(R.id.issue_detail_backdrop);
-            imageLoader.displayImage(issue.getImageUrl(), issueImage);
-        }
+        });
 
         onFollowClickListener = new View.OnClickListener() {
             @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
@@ -130,6 +124,29 @@ public class IssueDetailActivity extends AbstractBaseActivity
 
         followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
         followFloatingButton.setOnClickListener(onFollowClickListener);
+
+        // create and add the map
+        LatLng issueLocation = new LatLng(issue.getLatitude(), issue.getLatitude());
+        GoogleMapOptions options = new GoogleMapOptions();
+        options.mapType(GoogleMap.MAP_TYPE_NORMAL)
+                .camera(CameraPosition.fromLatLngZoom(issueLocation, 13))
+                .liteMode(true);
+        MapFragment mapFragment = MapFragment.newInstance(options);
+        FragmentTransaction fragmentTransaction =
+                getFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.issue_detail_map_wrapper, mapFragment);
+        fragmentTransaction.commit();
+        mapFragment.getMapAsync(this);
+
+        if(issue.hasImageUrl()){
+            Log.d(TAG,"issue has an image: "+issue.getImageUrl());
+            if(imageLoader==null || !imageLoader.isInited()){
+                imageLoader = ImageLoader.getInstance();
+            }
+            ImageView issueImage = (ImageView) findViewById(R.id.issue_detail_backdrop);
+            imageLoader.displayImage(issue.getImageUrl(), issueImage);
+        }
+
     }
 
     @Override
@@ -165,7 +182,7 @@ public class IssueDetailActivity extends AbstractBaseActivity
         // update the floating action bar and toolbar icon
         int iconId;
         int stringId;
-        if (issue.isFollowed()) {
+        if (isFollowed) {
             iconId = R.drawable.ic_favorite_black_24dp;
             stringId = R.string.action_unfollow;
         } else {
@@ -206,7 +223,7 @@ public class IssueDetailActivity extends AbstractBaseActivity
         Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
         int feedbackStringId = R.string.issue_question_answered;
         logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
-        changeFollowedAndUpdateUI(view,true);
+        changeFollowedAndUpdateUI(view, true);
         Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_unfollow, new View.OnClickListener() {
                     @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false);}
@@ -215,16 +232,7 @@ public class IssueDetailActivity extends AbstractBaseActivity
     }
 
     @Override
-    public void onMapReady(GoogleMap map) {
-        Log.d(TAG,"Map is ready!");
-        LatLng issueLocation = new LatLng(issue.getLatitude(), issue.getLatitude());
-
-        map.setMyLocationEnabled(true);
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(issueLocation, 13));
-
-        map.addMarker(new MarkerOptions()
-                .title(issue.getIssueSummary())
-                .snippet(issue.getIssueDescription())
-                .position(issueLocation));
+    public void onMapReady(GoogleMap googleMap) {
+        Log.d(TAG,"Issue map is ready!");
     }
 }
