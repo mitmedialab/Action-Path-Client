@@ -41,5 +41,6 @@
         <item quantity="one">Updated %d issue.</item>
         <item quantity="other">Updated %d issues.</item>
     </plurals>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
