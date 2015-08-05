@@ -1,29 +1,36 @@
 package org.actionpath.ui;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.logging.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractBaseActivity {
+public class IssueDetailActivity extends AbstractBaseActivity
+    implements OnMapReadyCallback {
 
     public static final String PARAM_ISSUE_ID = "issueID";
 
@@ -33,7 +40,11 @@ public class IssueDetailActivity extends AbstractBaseActivity {
     private ImageView issueImage;
     private ImageLoader imageLoader;
 
-    private FloatingActionButton favoriteButton;
+    private View.OnClickListener onFollowClickListener;
+
+    private FloatingActionButton followFloatingButton;
+    private Menu toolbarMenu;
+    private MenuItem followToolbarMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,13 @@ public class IssueDetailActivity extends AbstractBaseActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // weird that I have to do this manually...
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
@@ -84,6 +102,19 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             }
         });
 
+        Button answerYes = (Button) findViewById(R.id.issue_detail_yes);
+        answerYes.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { answerQuestion(v, true);}
+        });
+        Button answerNo = (Button) findViewById(R.id.issue_detail_no);
+        answerNo.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { answerQuestion(v,false);}
+        });
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.issue_detail_map);
+        mapFragment.getMapAsync(this);
+
         if(issue.hasImageUrl()){
             Log.d(TAG,"issue has an image: "+issue.getImageUrl());
             if(imageLoader==null || !imageLoader.isInited()){
@@ -93,37 +124,107 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             imageLoader.displayImage(issue.getImageUrl(), issueImage);
         }
 
-        favoriteButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
-        setFavoritedButtonIcon(issue.isFavorited());
-        favoriteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Setting favorited on " + issue.getId() + " to " + !issue.isFavorited());
-                issue.setFavorited(!issue.isFavorited());
-                IssuesDataSource.getInstance().updateIssueFavorited(issue.getId(), issue.isFavorited());
-                setFavoritedButtonIcon(issue.isFavorited());
-                showFavoritedFeedback(view, issue.isFavorited());
-            }
-        });
+        onFollowClickListener = new View.OnClickListener() {
+            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
+        };
 
+        followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
+        followFloatingButton.setOnClickListener(onFollowClickListener);
     }
 
-    private void showFavoritedFeedback(View view, boolean favorited){
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateFollowedButtons(issue.isFollowed());
+    }
+
+    private void changeFollowedAndUpdateUI(View view) {
+        changeFollowedAndUpdateUI(view, !issue.isFollowed());
+    }
+
+    private void changeFollowedAndUpdateUI(View view,boolean follow){
+        Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
+        // update the issue first
+        issue.setFollowed(follow);
+        IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
+        // update the icons
+        updateFollowedButtons(issue.isFollowed());
+        // show the snackbar feedback
         int feedbackStringId;
-        if(favorited){
-            feedbackStringId = R.string.favorited_issue_feedback;
+        if(issue.isFollowed()){
+            feedbackStringId = R.string.followed_issue_feedback;
         } else {
-            feedbackStringId = R.string.unfavorited_issue_feedback;
+            feedbackStringId = R.string.unfollowed_issue_feedback;
         }
-        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT)
+                .setAction(R.string.action_undo, onFollowClickListener)
+                .show();
     }
 
-    private void setFavoritedButtonIcon(boolean favorited){
-        if (favorited) {
-            favoriteButton.setImageResource(R.drawable.ic_favorite_black_24dp);
+    private void updateFollowedButtons(boolean isFollowed){
+        // update the floating action bar and toolbar icon
+        int iconId;
+        int stringId;
+        if (issue.isFollowed()) {
+            iconId = R.drawable.ic_favorite_black_24dp;
+            stringId = R.string.action_unfollow;
         } else {
-            favoriteButton.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            iconId = R.drawable.ic_favorite_border_black_24dp;
+            stringId = R.string.action_follow;
         }
+        followFloatingButton.setImageResource(iconId);
+        //followToolbarMenuItem.setIcon(iconId);
+        //followToolbarMenuItem.setTitle(stringId);
     }
 
+/*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_issue_detail, menu);
+        toolbarMenu = menu;
+        followToolbarMenuItem = (MenuItem) toolbarMenu.findItem(R.id.issue_detail_action_follow);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.issue_detail_action_follow) {
+            changeFollowedAndUpdateUI(findViewById(R.id.issue_detail_scroll_view));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+     */
+
+    private void answerQuestion(View view, boolean answer){
+        // TODO: save answer to server
+        // show snackbar feedback
+        Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
+        int feedbackStringId = R.string.issue_question_answered;
+        logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
+        changeFollowedAndUpdateUI(view,true);
+        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_unfollow, new View.OnClickListener() {
+                    @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false);}
+                })
+                .show();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        Log.d(TAG,"Map is ready!");
+        LatLng issueLocation = new LatLng(issue.getLatitude(), issue.getLatitude());
+
+        map.setMyLocationEnabled(true);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(issueLocation, 13));
+
+        map.addMarker(new MarkerOptions()
+                .title(issue.getIssueSummary())
+                .snippet(issue.getIssueDescription())
+                .position(issueLocation));
+    }
 }

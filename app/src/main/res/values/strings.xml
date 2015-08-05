@@ -14,10 +14,10 @@
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
 
-    <string name="all_issues_header">All Issues</string>
-    <string name="followed_issues_header">My Issues</string>
+    <string name="all_issues_header">All Issues in %s</string>
+    <string name="followed_issues_header">My Issues in %s</string>
     <string name="pick_place_header">Choose Your City</string>
-    <string name="update_issues_header">Update Issues</string>
+    <string name="update_issues_header">Update Issues in %s</string>
 
     <string name="issue_detail_summary">Summary</string>
     <string name="issue_detail_description">Description</string>
@@ -25,8 +25,8 @@
     <string name="issue_detail_location">Location</string>
     <string name="issue_detail_view_online">View Online</string>
 
-    <string name="favorited_issue_feedback">Issue followed</string>
-    <string name="unfavorited_issue_feedback">Issue unfollowed</string>
+    <string name="followed_issue_feedback">Issue followed</string>
+    <string name="unfollowed_issue_feedback">Issue unfollowed</string>
 
     <string name="walk_there">Walk There Now</string>
 
@@ -37,10 +37,21 @@
 
     <string name="no_issues_to_show">No issues to show</string>
 
+    <string name="issue_question">Is this still a problem?</string>
+    <string name="issue_answer_yes">Yes</string>
+    <string name="issue_answer_no">No</string>
+    <string name="issue_question_answered">Saved your answer. Following this issue.</string>
+
+    <string name="action_undo">Undo</string>
+    <string name="action_follow">Follow</string>
+    <string name="action_unfollow">Unfollow</string>
+
     <plurals name="updated_issues">
         <item quantity="one">Updated %d issue.</item>
         <item quantity="other">Updated %d issues.</item>
     </plurals>
     <string name="title_activity_maps">Map</string>
+
+
 
 </resources>
