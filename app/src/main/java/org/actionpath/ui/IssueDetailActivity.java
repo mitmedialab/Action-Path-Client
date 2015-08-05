@@ -15,6 +15,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.R;
@@ -23,7 +29,8 @@ import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractBaseActivity {
+public class IssueDetailActivity extends AbstractBaseActivity
+    implements OnMapReadyCallback {
 
     public static final String PARAM_ISSUE_ID = "issueID";
 
@@ -97,12 +104,16 @@ public class IssueDetailActivity extends AbstractBaseActivity {
 
         Button answerYes = (Button) findViewById(R.id.issue_detail_yes);
         answerYes.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) { answerQuestion(v,true);}
+            @Override public void onClick(View v) { answerQuestion(v, true);}
         });
         Button answerNo = (Button) findViewById(R.id.issue_detail_no);
         answerNo.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) { answerQuestion(v,false);}
         });
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.issue_detail_map);
+        mapFragment.getMapAsync(this);
 
         if(issue.hasImageUrl()){
             Log.d(TAG,"issue has an image: "+issue.getImageUrl());
@@ -203,4 +214,17 @@ public class IssueDetailActivity extends AbstractBaseActivity {
                 .show();
     }
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        Log.d(TAG,"Map is ready!");
+        LatLng issueLocation = new LatLng(issue.getLatitude(), issue.getLatitude());
+
+        map.setMyLocationEnabled(true);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(issueLocation, 13));
+
+        map.addMarker(new MarkerOptions()
+                .title(issue.getIssueSummary())
+                .snippet(issue.getIssueDescription())
+                .position(issueLocation));
+    }
 }

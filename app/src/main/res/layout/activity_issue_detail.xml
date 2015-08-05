@@ -131,6 +131,16 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_marginTop="@dimen/button_margin"
+                xmlns:map="http://schemas.android.com/apk/res-auto"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:id="@+id/issue_detail_map"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/embedded_map_height"
+                map:cameraZoom="13"
+                map:mapType="normal"
+                map:liteMode="true"/>
 
             <LinearLayout
                 android:orientation="horizontal"
