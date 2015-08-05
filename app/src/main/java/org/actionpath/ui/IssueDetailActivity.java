@@ -20,6 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.logging.LogMsg;
 
 
 public class IssueDetailActivity extends AbstractBaseActivity {
@@ -94,6 +95,15 @@ public class IssueDetailActivity extends AbstractBaseActivity {
             }
         });
 
+        Button answerYes = (Button) findViewById(R.id.issue_detail_yes);
+        answerYes.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { answerQuestion(v,true);}
+        });
+        Button answerNo = (Button) findViewById(R.id.issue_detail_no);
+        answerNo.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) { answerQuestion(v,false);}
+        });
+
         if(issue.hasImageUrl()){
             Log.d(TAG,"issue has an image: "+issue.getImageUrl());
             if(imageLoader==null || !imageLoader.isInited()){
@@ -117,10 +127,14 @@ public class IssueDetailActivity extends AbstractBaseActivity {
         updateFollowedButtons(issue.isFollowed());
     }
 
-    private void changeFollowedAndUpdateUI(View view){
+    private void changeFollowedAndUpdateUI(View view) {
+        changeFollowedAndUpdateUI(view, !issue.isFollowed());
+    }
+
+    private void changeFollowedAndUpdateUI(View view,boolean follow){
         Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
         // update the issue first
-        issue.setFollowed(!issue.isFollowed());
+        issue.setFollowed(follow);
         IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
         // update the icons
         updateFollowedButtons(issue.isFollowed());
@@ -174,5 +188,19 @@ public class IssueDetailActivity extends AbstractBaseActivity {
         return super.onOptionsItemSelected(item);
     }
      */
+
+    private void answerQuestion(View view, boolean answer){
+        // TODO: save answer to server
+        // show snackbar feedback
+        Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
+        int feedbackStringId = R.string.issue_question_answered;
+        logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
+        changeFollowedAndUpdateUI(view,true);
+        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_unfollow, new View.OnClickListener() {
+                    @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false);}
+                })
+                .show();
+    }
 
 }

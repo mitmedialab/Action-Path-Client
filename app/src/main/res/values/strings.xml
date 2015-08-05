@@ -37,6 +37,11 @@
 
     <string name="no_issues_to_show">No issues to show</string>
 
+    <string name="issue_question">Is this still a problem?</string>
+    <string name="issue_answer_yes">Yes</string>
+    <string name="issue_answer_no">No</string>
+    <string name="issue_question_answered">Saved your answer. Following this issue.</string>
+
     <string name="action_undo">Undo</string>
     <string name="action_follow">Follow</string>
     <string name="action_unfollow">Unfollow</string>
