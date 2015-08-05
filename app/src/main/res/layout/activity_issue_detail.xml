@@ -103,21 +103,29 @@
                 android:id="@+id/issue_detail_location"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-            <Button style="@style/Widget.AppCompat.Button"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/button_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/walk_there"
-                android:id="@+id/issue_detail_walk_there_button"
-                android:enabled="true" />
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
 
-            <Button style="@style/Widget.AppCompat.Button"
-                android:layout_marginTop="@dimen/button_margin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/issue_detail_view_online"
-                android:id="@+id/issue_detail_view_online"
-                android:enabled="true" />
+                <Button style="@style/Widget.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/issue_detail_view_online"
+                    android:id="@+id/issue_detail_view_online"
+                    android:enabled="true"
+                    android:layout_weight="1.0" />
+
+                <Button style="@style/Widget.AppCompat.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/walk_there"
+                    android:id="@+id/issue_detail_walk_there_button"
+                    android:enabled="true"
+                    android:layout_weight="1.0" />
+                
+            </LinearLayout>
 
         </LinearLayout>
 
