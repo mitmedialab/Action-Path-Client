@@ -25,8 +25,6 @@ import java.util.ArrayList;
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
 
-    private String installId;
-
     /**
      * Do any config and setup that applies no matter how we enter the app here
      */
@@ -40,11 +38,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         }
         // generate a new installId user if we need to
         if (!Installation.hasId()) {
-            installId = Installation.id(this.getApplicationContext());
             AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
-                    boolean success = ActionPathServer.createUser(installId);
+                    logMsg(LogMsg.ACTION_INSTALLED_APP);
+                    boolean success = ActionPathServer.createUser(getInstallId());
                     return success;
                 }
                 @Override
@@ -56,7 +54,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
                     }
                 }
             }.execute();
-            logMsg(LogMsg.ACTION_INSTALLED_APP);
         }
         // create an image loader instance
         if(!ImageLoader.getInstance().isInited()){
@@ -74,5 +71,10 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         LogsDataSource.getInstance(getApplicationContext()).insertLog(
                 getApplicationContext(),issueId,action);
     }
+
+    protected String getInstallId(){
+        return Installation.id(this.getApplicationContext());
+    }
+
 
 }

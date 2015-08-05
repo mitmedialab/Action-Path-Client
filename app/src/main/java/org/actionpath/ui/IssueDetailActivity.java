@@ -3,6 +3,7 @@ package org.actionpath.ui;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -30,6 +31,7 @@ import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
+import org.actionpath.util.Installation;
 
 
 public class IssueDetailActivity extends AbstractBaseActivity implements OnMapReadyCallback {
@@ -107,14 +109,14 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
         answerYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                answerQuestion(v, true);
+                answerQuestion(v, "yes");
             }
         });
         Button answerNo = (Button) findViewById(R.id.issue_detail_no);
         answerNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                answerQuestion(v, false);
+                answerQuestion(v, "no");
             }
         });
 
@@ -217,18 +219,32 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
     }
      */
 
-    private void answerQuestion(View view, boolean answer){
-        // TODO: save answer to server
-        // show snackbar feedback
+    private void answerQuestion(View view, String answer){
         Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
-        int feedbackStringId = R.string.issue_question_answered;
-        logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
+        // update the UI
+        final String newAnswer = answer;
         changeFollowedAndUpdateUI(view, true);
+        // show some snackbar feedback
+        int feedbackStringId = R.string.issue_question_answered;
         Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_unfollow, new View.OnClickListener() {
                     @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false);}
                 })
                 .show();
+        // save the answer to the server
+        AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
+            @Override
+            protected Object doInBackground(Object[] params) {
+                logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
+                boolean success = ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
+                return success;
+            }
+            @Override
+            protected void onPostExecute(Object o) {
+                boolean success = (boolean) o;
+                Log.d(TAG,"saved answer to server "+success);
+            }
+        }.execute();
     }
 
     @Override

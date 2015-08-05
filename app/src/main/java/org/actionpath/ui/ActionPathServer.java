@@ -1,5 +1,6 @@
 package org.actionpath.ui;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.actionpath.issues.Issue;
@@ -125,15 +126,7 @@ public class ActionPathServer {
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
-            InputStream inputStream = httpResponse.getEntity().getContent();
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            StringBuilder stringBuilder = new StringBuilder();
-            String bufferedStrChunk = null;
-            while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
-                stringBuilder.append(bufferedStrChunk);
-            }
-            responseStr = stringBuilder.toString();
+            responseStr = getHttpResponseAsString(httpResponse);
         } catch (ClientProtocolException e) {
             Log.e(TAG, "Unable to createUser " + e.toString());
         } catch (IOException e) {
@@ -154,6 +147,58 @@ public class ActionPathServer {
             Log.e(TAG, "Failed to parse json in createUser | " + ex.toString());
         }
         return false;
+    }
+
+    /**
+     * Tell the server that we have a new installation (ie. a new user)
+     * To test run:  wget http://action-path-server-rahulbot.c9.io/issues/460375/responses --post-data='installId=23409fsd9f&answer=yes'
+     */
+    public static boolean saveAnswer(String installId, int issueId, String answer) {
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpPost httpPost = new HttpPost(BASE_URL + "/issues/" + issueId + "/responses");
+        String responseStr = null;
+        try {
+            List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+            nameValuePairs.add(new BasicNameValuePair("installId", installId));
+            nameValuePairs.add(new BasicNameValuePair("answer", answer));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            responseStr = getHttpResponseAsString(httpResponse);
+        } catch (ClientProtocolException e) {
+            Log.e(TAG, "Unable to createUser " + e.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to createUser " + e.toString());
+        }
+        try{
+            if(responseStr!=null){
+                JSONObject jsonResponse = new JSONObject(responseStr);
+                if(jsonResponse.getString(RESPONSE_STATUS) == RESPONSE_STATUS_OK){
+                    Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
+                    return true;
+                } else {
+                    Log.e(TAG,"Server said it failed to saveAnswer "+issueId+"/"+answer);
+                    return false;
+                }
+            }
+        } catch (JSONException ex){
+            Log.e(TAG, "Failed to parse json in saveAnswer | " + ex.toString());
+        }
+        return false;
+    }
+
+    @NonNull
+    private static String getHttpResponseAsString(HttpResponse httpResponse) throws IOException {
+        InputStream inputStream = httpResponse.getEntity().getContent();
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        StringBuilder stringBuilder = new StringBuilder();
+        String bufferedStrChunk = null;
+        while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
+            stringBuilder.append(bufferedStrChunk);
+        }
+        String responseStr = stringBuilder.toString();
+        return responseStr;
     }
 
 }
