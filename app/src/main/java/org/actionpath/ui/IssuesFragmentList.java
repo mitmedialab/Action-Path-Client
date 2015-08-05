@@ -63,7 +63,8 @@ public class IssuesFragmentList extends ListFragment {
             type = getArguments().getInt(ARG_TYPE);
         }
 
-        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance().countFollowedIssues(listener.getPlaceId()));
+        Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance(getActivity())
+                .countFollowedIssues(listener.getPlaceId()));
     }
 
     @Override
