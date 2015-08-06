@@ -34,6 +34,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         }
         // generate a new installId user if we need to
         if (!Installation.hasId()) {
+            getInstallId(); // create the id
             new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
