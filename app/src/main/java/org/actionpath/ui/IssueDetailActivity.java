@@ -249,6 +249,8 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
         LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLongitude());
         googleMap.addMarker(new MarkerOptions()
                 .position(issueLatLng)
