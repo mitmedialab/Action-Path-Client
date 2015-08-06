@@ -20,6 +20,10 @@ public class Issue implements Serializable {
     private static ParsePosition zeroParsePosition = new ParsePosition(0);
     private static SimpleDateFormat serverJsonDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
+    public static final String STATUS_CLOSED = "Closed";
+    public static final String STATUS_OPEN = "Open";
+    public static final String STATUS_ACKNOWLEDGED = "Acknowledged";
+
     int id;
     String status;
     String summary;

@@ -2,28 +2,24 @@ package org.actionpath.ui;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 
 import org.actionpath.R;
 import org.actionpath.geofencing.GeofencingRegisterer;
+import org.actionpath.geofencing.GeofencingRegistrationListener;
+import org.actionpath.geofencing.GeofencingRemovalListener;
+import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
-import org.actionpath.places.Place;
-import org.actionpath.util.Development;
-import org.actionpath.util.Locator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +30,8 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnIssuesUpdatedListener}
  * interface.
  */
-public class UpdateIssuesFragment extends Fragment {
+public class UpdateIssuesFragment extends Fragment implements
+        GeofencingRegistrationListener, GeofencingRemovalListener {
 
     private static String TAG = UpdateIssuesFragment.class.getName();
 
@@ -82,6 +79,7 @@ public class UpdateIssuesFragment extends Fragment {
                     dataSource.insertOrUpdateIssue(i);
                 }
                 Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
+                removeExistingGeofencesExcept(newIssues);
                 buildGeofences();
                 return newIssues;
             }
@@ -95,6 +93,8 @@ public class UpdateIssuesFragment extends Fragment {
         }.execute();
         return view;
     }
+
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -116,19 +116,39 @@ public class UpdateIssuesFragment extends Fragment {
         public void onIssuesUpdated(int newIssueCount);
     }
 
+    private void removeExistingGeofencesExcept(ArrayList<Issue> issuesNeedingGeofences) {
+        ArrayList<Integer> issueIdsToKeep = new ArrayList();
+        for(Issue issue:issuesNeedingGeofences){
+            issueIdsToKeep.add(issue.getId());
+        }
+        Log.d(TAG, "Removing existing geofences");
+        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(this.getActivity());
+        Cursor cursor  = issuesDataSource.getIssuesWithGeofences();
+        while(!cursor.isAfterLast()){
+            int issueId = cursor.getInt(0);
+            if(!issueIdsToKeep.contains(issueId)){
+                List<String> requestIds = new ArrayList<>();
+                GeofencingRemover remover = new GeofencingRemover(
+                        this.getActivity().getApplicationContext(),requestIds,this);
+                remover.sendRequest();
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+    }
+
     /**
      * Build geofences for all non-geofenced issues in the database
      * TODO: consider filtering for closed issues, and remember we can only do 100 total
      */
     private void buildGeofences(){
         Log.d(TAG, "Building geofences");
-        Cursor cursor = IssuesDataSource.getInstance().getNonGeoFencedIssuesCursor(placeId);
+        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(this.getActivity());
+        Cursor cursor = issuesDataSource.getIssuesToGeofenceCursor(placeId);
         while (!cursor.isAfterLast()) {
             int issueId = cursor.getInt(0);
-            IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(this.getActivity());
             Issue issue = issuesDataSource.getIssue(issueId);
             buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
-            issuesDataSource.updateIssueGeofenceCreated(issueId, true);
             //logMsg(issueId, LogMsg.ACTION_ADDED_GEOFENCE);
             cursor.moveToNext();
         }
@@ -136,15 +156,45 @@ public class UpdateIssuesFragment extends Fragment {
     }
 
     private void buildGeofence(int issueId, double latitude, double longitude, float radius){
-        List<Geofence> newGeoFences = new ArrayList<>();
+        List<Geofence> newGeofences = new ArrayList<>();
         Geofence.Builder geofenceBuilder = new Geofence.Builder();
         geofenceBuilder.setRequestId((new Integer(issueId)).toString());
         geofenceBuilder.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
         geofenceBuilder.setCircularRegion(latitude, longitude, radius);
         geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);
-        GeofencingRegisterer registerer= new GeofencingRegisterer(getActivity());
-        newGeoFences.add(geofenceBuilder.build());
-        registerer.registerGeofences(newGeoFences);
+        newGeofences.add(geofenceBuilder.build());
+        GeofencingRegisterer registerer= new GeofencingRegisterer(
+                this.getActivity().getApplicationContext(), newGeofences,this);
+        registerer.sendRequest();
+    }
+
+    @Override
+    public void onGeofenceRegistrationSuccess(List data){
+        List<Geofence> newGeofences = (List<Geofence>) data;
+        for(Geofence geofence: newGeofences){
+            Log.d(TAG, "Created geofence for "+geofence.getRequestId());
+            IssuesDataSource.getInstance().updateIssueGeofenceCreated(
+                    Integer.parseInt(geofence.getRequestId()), true);
+        }
+    }
+    @Override
+    public void onGeofenceRegistrationFailure(Status status){
+        Log.d(TAG,"Got geofence registration failure - "+status);
+    }
+
+    @Override
+    public void onGeofenceRemovalSuccess(List data){
+        List<String> requestIds = (List<String>) data;
+        for(String requestId: requestIds){
+            Log.d(TAG, "Removed geofence for "+requestId);
+            IssuesDataSource.getInstance().updateIssueGeofenceCreated(
+                    Integer.parseInt(requestId), false);
+        }
+    }
+
+    @Override
+    public void onGeofenceRemovalFailure(Status status){
+        Log.d(TAG,"Got geofence registration failure - "+status);
     }
 
 }

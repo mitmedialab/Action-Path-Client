@@ -95,10 +95,31 @@ public class IssuesDataSource {
         return cursor;
     }
 
-    public Cursor getNonGeoFencedIssuesCursor(int placeId){
+    /**
+     * Get a list of issues in this place that we should add geofences for
+     * @param placeId
+     * @return
+     */
+    public Cursor getIssuesToGeofenceCursor(int placeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_LATITUDE_COL, IssuesDbHelper.ISSUES_LONGITUDE_COL},
-                IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL+"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?", new String[] {"0",placeId+""}, null, null, null);
+                IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL+"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_STATUS_COL+"!=?",
+                new String[] {"0",placeId+"",Issue.STATUS_CLOSED}, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Get a list of issues that we have created geofences for
+     * @return
+     */
+    public Cursor getIssuesWithGeofences(){
+        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
+                new String[] {IssuesDbHelper.ISSUES_ID_COL},
+                IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL+"=?",
+                new String[] {"1"}, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
         }

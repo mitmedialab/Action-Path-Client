@@ -12,102 +12,38 @@ import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    private Context mContext;
-    private GoogleApiClient mGoogleApiClient;
+public class GeofencingRegisterer extends AbstractGeofencingManager {
+
     private List<Geofence> geofencesToAdd;
-    private PendingIntent mGeofencePendingIntent;
+    private PendingIntent geofencePendingIntent;
+    private GeofencingRegistrationListener listener;
 
-    private GeofencingRegistererCallbacks mCallback;
-
-    private final String TAG = this.getClass().getName();
-
-    public GeofencingRegisterer(Context context){
-        mContext =context;
-    }
-
-    public void setGeofencingCallback(GeofencingRegistererCallbacks callback){
-        mCallback = callback;
-    }
-
-    public void registerGeofences(List<Geofence> geofences){
-        geofencesToAdd = geofences;
-
-        mGoogleApiClient = new GoogleApiClient.Builder(mContext)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        mGoogleApiClient.connect();
+    public GeofencingRegisterer(Context context, List<Geofence> geofencesToAdd, GeofencingRegistrationListener listener){
+        super(context);
+        this.listener = listener;
+        this.geofencesToAdd = geofencesToAdd;
+        geofencePendingIntent = createRequestPendingIntent();
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
-        if(mCallback != null){
-            mCallback.onApiClientConnected();
-        }
-
-        mGeofencePendingIntent = createRequestPendingIntent();
-        PendingResult<Status> result = LocationServices.GeofencingApi.addGeofences(mGoogleApiClient, geofencesToAdd, mGeofencePendingIntent);
-        result.setResultCallback(new ResultCallback<Status>() {
-            @Override
-            public void onResult(Status status) {
-                if (status.isSuccess()) {
-                    // Successfully registered
-                    if(mCallback != null){
-                        mCallback.onGeofencesRegisteredSuccessful();
-                        Log.d(TAG, "callback not null: " + status.getStatusMessage());
-                    }
-                    Log.d(TAG, "Registering success: " + status.getStatusMessage()+ geofencesToAdd.toString());
-                } else if (status.hasResolution()) {
-                    // Google provides a way to fix the issue
-                    /*
-                    status.startResolutionForResult(
-                            mContext,     // your current activity used to receive the result
-                            RESULT_CODE); // the result code you'll look for in your
-                    // onActivityResult method to retry registering
-                    */
-                } else {
-                    //TODO: check errr code, if 1000 pop up dialog asking user to enable location in settings
-                    // No recovery. Weep softly or inform the user.
-                    Log.e(TAG, "Status code: " + status.getStatusCode());
-                    Log.e(TAG, "Registering failed: " + status.getStatusMessage());
-                }
-            }
-        });
+    public PendingResult<Status> onReadyForAction(){
+        return LocationServices.GeofencingApi.addGeofences(googleApiClient, geofencesToAdd, geofencePendingIntent);
     }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        if(mCallback != null){
-            mCallback.onApiClientSuspended();
-        }
-
-        Log.d(TAG, "onConnectionSuspended: " + i);
+    public void onRequestSuccess(){
+        listener.onGeofenceRegistrationSuccess(geofencesToAdd);
     }
 
     @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if(mCallback != null){
-            mCallback.onApiClientConnectionFailed(connectionResult);
-        }
-
-        Log.e(TAG, "onConnectionFailed: " + connectionResult.getErrorCode());
-    }
-
-
-
-    /**
-     * Returns the current PendingIntent to the caller.
-     *
-     * @return The PendingIntent used to create the current set of geofences
-     */
-    public PendingIntent getRequestPendingIntent() {
-        return createRequestPendingIntent();
+    public void onRequestFailure(Status status){
+        listener.onGeofenceRegistrationFailure(status);
     }
 
     /**
@@ -119,11 +55,11 @@ public class GeofencingRegisterer implements GoogleApiClient.ConnectionCallbacks
      * transitions.
      */
     private PendingIntent createRequestPendingIntent() {
-        if (mGeofencePendingIntent != null) {
-            return mGeofencePendingIntent;
+        if (geofencePendingIntent != null) {
+            return geofencePendingIntent;
         } else {
-            Intent intent = new Intent(mContext, GeofencingReceiver.class);
-            return PendingIntent.getService(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent intent = new Intent(context, GeofencingReceiver.class);
+            return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
     }
 }
