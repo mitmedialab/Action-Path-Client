@@ -128,6 +128,7 @@ public class UpdateIssuesFragment extends Fragment implements
             int issueId = cursor.getInt(0);
             if(!issueIdsToKeep.contains(issueId)){
                 List<String> requestIds = new ArrayList<>();
+                requestIds.add(issueId+"");
                 GeofencingRemover remover = new GeofencingRemover(
                         this.getActivity().getApplicationContext(),requestIds,this);
                 remover.sendRequest();

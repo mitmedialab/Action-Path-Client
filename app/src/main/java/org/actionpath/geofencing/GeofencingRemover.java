@@ -26,6 +26,7 @@ public class GeofencingRemover extends AbstractGeofencingManager {
     public GeofencingRemover(Context context, List<String> geofenceRequstIdsToRemove, GeofencingRemovalListener listener){
         super(context);
         this.geofenceRequstIdsToRemove = geofenceRequstIdsToRemove;
+        this.listener=listener;
     }
 
     @Override
