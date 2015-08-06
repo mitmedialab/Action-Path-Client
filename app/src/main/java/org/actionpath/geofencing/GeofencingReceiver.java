@@ -72,14 +72,17 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);
-        notificationBuilder.setContentTitle("Action: " + issueID)
+        notificationBuilder
                 //notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
                 // Notification title
                 // not sure how to make this appear, or where it does appear
                 //.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
                 // you can put subject line.
+                //.setCategory(Notification.CATEGORY_RECOMMENDATION)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("Action Path")
+                .setContentTitle("Action Nearby")
                 .setContentText(summary)
                 .setContentIntent(pi);
                         // Set your notification icon here.
