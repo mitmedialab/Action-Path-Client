@@ -88,7 +88,7 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
         walkThereButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:m=w&q=" + issue.getIssueAddress());
+                Uri gmmIntentUri = Uri.parse("google.navigation:mode=w&q=" + issue.getIssueAddress());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
