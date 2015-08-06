@@ -20,34 +20,20 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     @Override
     protected void onEnteredGeofences(String[] strings) {
-        sendNotification(strings[0]);
-
-        // CREATE AN ACTION LOG
+        int issueId = Integer.parseInt(strings[0]);
+        sendNotification(issueId);
         LogsDataSource.getInstance(getApplicationContext()).insertLog(
                 getApplicationContext(), Integer.valueOf(strings[0]), LogMsg.ACTION_ENTERED_GEOFENCE);
-
-        //TODO: change so it takes in a list of strings
-        //ex: String[] main where
-        //main[0] is latitude
-        //main[1] is longitude
-        //main[2] is Name of main
-        //main[3] is a short description of the main
-        //main[4] is a picture url??
-
-        //openAlert(strings);
     }
-
-
 
     @Override
     protected void onExitedGeofences(String[] strings) {
         //TODO: remove pop-up from screen
-        //or do nothing
     }
 
     @Override
     protected void onError(int i) {
-        Log.e(TAG, "Error: " + i);
+        Log.e(TAG, "GeofencingReceiver Error: " + i);
     }
 
 
@@ -56,76 +42,43 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      * If the user clicks the notification, control goes to the main Activity.
      * param transitionType The type of transition that occurred.
      * For now, ActionPath only handles enter transitionTypes
-     *
      */
-    private void sendNotification(String issueID) {
+    private void sendNotification(int issueId) {
+        Log.d(TAG,"sending notification for issueId: "+issueId);
 
-        Log.d(TAG,"sending notification for issueId: "+issueID);
-
-        int id = Integer.parseInt(issueID);
-        Issue issue = IssuesDataSource.getInstance(this).getIssue(id);
+        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getIssueSummary();
-        //surveyKey="Chuckie Harris Park";
 
-        // create "surveyIntent" to be triggered when user clicks on notification
-        PendingIntent pi = getPendingIntent(issueID);
+        PendingIntent pi = getPendingIntent(issueId);
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);
         notificationBuilder
-                //notificationBuilder.setContentTitle("ActionPath " + transitionType + " " + TextUtils.join(GeofenceUtils.GEOFENCE_ID_DELIMITER,ids))
-                // Notification title
-                // not sure how to make this appear, or where it does appear
-                //.setContentText("You have " + transitionType + " " + ids.length + "ActionPaths")
-                // you can put subject line.
-                //.setCategory(Notification.CATEGORY_RECOMMENDATION)
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
                 .setContentTitle("Action Nearby")
                 .setContentText(summary)
                 .setContentIntent(pi);
-                        // Set your notification icon here.
-
-                        //TODO: ADD THESE BACK IN WHEN NEEDED
-//                .addAction(R.drawable.ic_notification_overlay, "Take Action", pi);
-    	/*.addAction(
-    			R.drawable.ic_stat_snooze,
-    			"Snooze", pi); // TODO: Make this an actual snooze button*/
-
-        //notificationBuilder.setContentIntent(pi);
-
+/*
+                //TODO: ADD THESE BACK IN WHEN NEEDED
+                .addAction(R.drawable.ic_notification_overlay, "Take Action", pi);
+                .addAction(R.drawable.ic_stat_snooze, "Snooze", pi); // TODO: Make this an actual snooze button
+*/
         Notification notification = notificationBuilder.build();
-
-
-
-        // Now create the Big picture notification.
-//        Notification notification = new Notification.BigTextStyle(notificationBuilder)
-//                .bigText("Take the survey!").build();
-        //	Notification notification = new Notification.BigPictureStyle(notificationBuilder).build();
-    	/*.bigPicture(
-    			BitmapFactory.decodeResource(getResources(),
-    					R.drawable.ic_notification_placeholder)).build();*/
-        // Put the auto cancel notification flag
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notificationManager = getNotificationManager();
         notificationManager.notify(1, notification);
-
-
     }
 
-
-    //creates a PendingIntent for bigPicture notifications
-    //TODO: Build a bigPicture Notification with issue info and respond/ignore buttons
-    public PendingIntent getPendingIntent(String issueID) {
+    public PendingIntent getPendingIntent(int issueId) {
         Log.v(TAG,"returning an intent for ResponseActivity.class");
 
-        int id = Integer.parseInt(issueID);
-        Issue issue = IssuesDataSource.getInstance(this).getIssue(id);
+        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getIssueSummary();
 
         Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
-                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, id)
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
