@@ -42,7 +42,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     logMsg(LogMsg.ACTION_INSTALLED_APP);
-                    boolean success = ActionPathServer.createUser(getInstallId());
+                    boolean success = ActionPathServer.createInstall(getInstallId());
                     return success;
                 }
                 @Override

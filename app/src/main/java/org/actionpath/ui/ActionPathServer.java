@@ -112,25 +112,25 @@ public class ActionPathServer {
 
     /**
      * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget http://action-path-server-rahulbot.c9.io/users/add --post-data='installId=1234'
+     * To test run:  wget http://action-path-server-rahulbot.c9.io/installs/add --post-data='id=1234'
      * http://stackoverflow.com/questions/2938502/sending-post-data-in-android
      * @param   installId
      */
-    public static boolean createUser(String installId) {
+    public static boolean createInstall(String installId) {
         HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(BASE_URL + "/users/add.json");
+        HttpPost httpPost = new HttpPost(BASE_URL + "/installs/add.json");
         String responseStr = null;
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<>(2);
-            nameValuePairs.add(new BasicNameValuePair("installId", installId));
+            nameValuePairs.add(new BasicNameValuePair("id", installId));
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             responseStr = getHttpResponseAsString(httpResponse);
         } catch (ClientProtocolException e) {
-            Log.e(TAG, "Unable to createUser " + e.toString());
+            Log.e(TAG, "Unable to createInstall " + e.toString());
         } catch (IOException e) {
-            Log.e(TAG, "Unable to createUser " + e.toString());
+            Log.e(TAG, "Unable to createInstall " + e.toString());
         }
         try{
             if(responseStr!=null){
@@ -168,9 +168,9 @@ public class ActionPathServer {
 
             responseStr = getHttpResponseAsString(httpResponse);
         } catch (ClientProtocolException e) {
-            Log.e(TAG, "Unable to createUser " + e.toString());
+            Log.e(TAG, "Unable to saveAnswer " + e.toString());
         } catch (IOException e) {
-            Log.e(TAG, "Unable to createUser " + e.toString());
+            Log.e(TAG, "Unable to saveAnswer " + e.toString());
         }
         try{
             if(responseStr!=null){

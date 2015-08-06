@@ -24,7 +24,7 @@ public class Installation {
     }
 
     public synchronized static String id(Context context) {
-        if (sID == null) {
+        if (sID == null || sID.length()==0) {
             File installation = new File(context.getFilesDir(), INSTALLATION);
             try {
                 if (!installation.exists())
