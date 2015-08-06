@@ -1,29 +1,21 @@
 package org.actionpath.ui;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.R;
 import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LogsDataSource;
-import org.actionpath.places.Place;
-import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
 
-import java.util.ArrayList;
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
 
@@ -42,19 +34,19 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         }
         // generate a new installId user if we need to
         if (!Installation.hasId()) {
-            AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
+            new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     logMsg(LogMsg.ACTION_INSTALLED_APP);
-                    boolean success = ActionPathServer.createInstall(getInstallId());
-                    return success;
+                    return ActionPathServer.createInstall(getInstallId());
                 }
+
                 @Override
                 protected void onPostExecute(Object o) {
                     boolean success = (boolean) o;
-                    if(success){
+                    if (success) {
                         Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content),
-                            R.string.created_new_user,Snackbar.LENGTH_SHORT);
+                                R.string.created_new_user, Snackbar.LENGTH_SHORT);
                     }
                 }
             }.execute();
