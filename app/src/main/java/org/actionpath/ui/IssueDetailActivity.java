@@ -128,10 +128,10 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
         followFloatingButton.setOnClickListener(onFollowClickListener);
 
         // create and add the map
-        LatLng issueLocation = new LatLng(issue.getLatitude(), issue.getLatitude());
+        LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLatitude());
         GoogleMapOptions options = new GoogleMapOptions();
         options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-                .camera(CameraPosition.fromLatLngZoom(issueLocation, 13))
+                .camera(CameraPosition.fromLatLngZoom(issueLatLng, 13))
                 .liteMode(true);
         MapFragment mapFragment = MapFragment.newInstance(options);
         FragmentTransaction fragmentTransaction =
