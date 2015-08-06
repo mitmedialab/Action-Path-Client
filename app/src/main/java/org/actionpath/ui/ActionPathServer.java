@@ -179,7 +179,7 @@ public class ActionPathServer {
                     Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
                     return true;
                 } else {
-                    Log.e(TAG,"Server said it failed to saveAnswer "+issueId+"/"+answer);
+                    Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
                     return false;
                 }
             }
