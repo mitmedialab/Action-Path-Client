@@ -14,6 +14,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.R;
+import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LogsDataSource;
@@ -31,6 +33,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceBundle){
         super.onCreate(savedInstanceBundle);
+        // make sure database is instantiated
+        IssuesDataSource.getInstance(this);
         // make sure the LogSyncService is running
         if(!LogSyncService.isRunning()) {
             Intent i = new Intent(this, LogSyncService.class);
