@@ -112,13 +112,13 @@ public class ActionPathServer {
 
     /**
      * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget http://action-path-server-rahulbot.c9.io/users --post-data='installId=1234'
+     * To test run:  wget http://action-path-server-rahulbot.c9.io/users/add --post-data='installId=1234'
      * http://stackoverflow.com/questions/2938502/sending-post-data-in-android
      * @param   installId
      */
     public static boolean createUser(String installId) {
         HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(BASE_URL + "/users");
+        HttpPost httpPost = new HttpPost(BASE_URL + "/users/add.json");
         String responseStr = null;
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<>(2);
@@ -135,11 +135,12 @@ public class ActionPathServer {
         try{
             if(responseStr!=null){
                 JSONObject jsonResponse = new JSONObject(responseStr);
-                if(jsonResponse.getString(RESPONSE_STATUS) == RESPONSE_STATUS_OK){
+                String responseStatus = jsonResponse.getString(RESPONSE_STATUS);
+                if(RESPONSE_STATUS_OK.equals(responseStatus)){
                     Log.i(TAG,"Told the server to createUser "+installId);
                     return true;
                 } else {
-                    Log.e(TAG,"Server said it failed to createUser " + installId);
+                    Log.e(TAG,"Server said it failed to createUser " + installId + "(status="+responseStatus+")");
                     return false;
                 }
             }
@@ -151,14 +152,15 @@ public class ActionPathServer {
 
     /**
      * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget http://action-path-server-rahulbot.c9.io/issues/460375/responses --post-data='installId=23409fsd9f&answer=yes'
+     * To test run:  wget http://action-path-server-rahulbot.c9.io/issues/460375/responses/add --post-data='installId=23409fsd9f&answer=yes'
      */
     public static boolean saveAnswer(String installId, int issueId, String answer) {
         HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(BASE_URL + "/issues/" + issueId + "/responses");
+        HttpPost httpPost = new HttpPost(BASE_URL + "/responses/add.json");
         String responseStr = null;
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+            nameValuePairs.add(new BasicNameValuePair("issueId", issueId+""));
             nameValuePairs.add(new BasicNameValuePair("installId", installId));
             nameValuePairs.add(new BasicNameValuePair("answer", answer));
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
