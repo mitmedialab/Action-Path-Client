@@ -137,7 +137,7 @@ public class LogsDataSource {
     }
 
     public void insertLog(Context context, int issueId, String action){
-        Location loc = Locator.getInstance(context).getLocation();
+        Location loc = Locator.getInstance().getLocation();
         double latitude = 0;
         double longitude = 0;
         if(loc!=null) {

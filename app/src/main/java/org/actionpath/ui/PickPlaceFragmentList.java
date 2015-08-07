@@ -58,11 +58,12 @@ public class PickPlaceFragmentList extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG,"Building pick place UI");
         view = inflater.inflate(R.layout.fragment_pick_place, container, false);
-        locator = Locator.getInstance(view.getContext());
+        locator = Locator.getInstance(this.getActivity());
 
         AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
+                Log.v(TAG,"Trying to get location...");
                 Location loc = null;
                 if(!Development.isSimulator()){
                     synchronized (this) {
@@ -81,6 +82,7 @@ public class PickPlaceFragmentList extends ListFragment {
                 if(loc==null){
                     return ActionPathServer.getPlacesNear(Development.MIT_LAT,Development.MIT_LNG);
                 } else {
+                    Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
                     return ActionPathServer.getPlacesNear(loc.getLatitude(),loc.getLongitude());
                 }
             }
