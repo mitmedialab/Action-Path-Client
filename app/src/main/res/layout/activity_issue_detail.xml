@@ -88,11 +88,13 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
             <LinearLayout
                 android:orientation="horizontal"
+                style="?android:attr/buttonBarStyle"
                 android:layout_marginTop="@dimen/button_margin"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
                 <Button
                     android:background="@android:drawable/dialog_holo_light_frame"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/issue_answer_yes"
@@ -101,6 +103,7 @@
                     android:layout_weight="1.0" />
                 <Button
                     android:background="@android:drawable/dialog_holo_light_frame"
+                    style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/issue_answer_no"
