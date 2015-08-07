@@ -51,6 +51,8 @@ public class PickPlaceFragmentList extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            // What is meant to go here?
+            Log.e(TAG, "Arguments are " + String.valueOf(getArguments()));
         }
     }
 
@@ -60,7 +62,7 @@ public class PickPlaceFragmentList extends ListFragment {
         view = inflater.inflate(R.layout.fragment_pick_place, container, false);
         locator = Locator.getInstance(view.getContext());
 
-        AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
+        new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 Location loc = null;
@@ -89,7 +91,7 @@ public class PickPlaceFragmentList extends ListFragment {
                 super.onPostExecute(o);
                 Log.d(TAG, "Got places list from server");
                 ArrayList<Place> places = (ArrayList<Place>) o;
-                ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<Place>(
+                ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
                         view.getContext(), R.layout.places_list_item, places);
                 setListAdapter(placesArrayAdaptor);
             }
@@ -126,7 +128,7 @@ public class PickPlaceFragmentList extends ListFragment {
     }
 
     public interface OnPlaceSelectedListener {
-        public void onPlaceSelected(int placeId,String placeName);
+        void onPlaceSelected(int placeId,String placeName);
     }
 
 }

@@ -10,14 +10,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
@@ -31,7 +28,6 @@ import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
-import org.actionpath.util.Installation;
 
 
 public class IssueDetailActivity extends AbstractBaseActivity implements OnMapReadyCallback {
@@ -46,8 +42,6 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
     private View.OnClickListener onFollowClickListener;
 
     private FloatingActionButton followFloatingButton;
-    private Menu toolbarMenu;
-    private MenuItem followToolbarMenuItem;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,7 +56,11 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+            Log.e(TAG, "Action Bar not available not created yet.");
+        }
         // weird that I have to do this manually...
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,13 +181,13 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
     private void updateFollowedButtons(boolean isFollowed){
         // update the floating action bar and toolbar icon
         int iconId;
-        int stringId;
+        //int stringId;
         if (isFollowed) {
             iconId = R.drawable.ic_favorite_black_24dp;
-            stringId = R.string.action_unfollow;
+            //stringId = R.string.action_unfollow;
         } else {
             iconId = R.drawable.ic_favorite_border_black_24dp;
-            stringId = R.string.action_follow;
+            //stringId = R.string.action_follow;
         }
         followFloatingButton.setImageResource(iconId);
         //followToolbarMenuItem.setIcon(iconId);
@@ -232,12 +230,11 @@ public class IssueDetailActivity extends AbstractBaseActivity implements OnMapRe
                 })
                 .show();
         // save the answer to the server
-        AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
+        new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
-                boolean success = ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
-                return success;
+                return ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
             }
             @Override
             protected void onPostExecute(Object o) {

@@ -13,20 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
-import org.actionpath.logging.LogSyncService;
 import org.actionpath.util.Development;
-import org.actionpath.util.Installation;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -35,9 +27,7 @@ public class MainActivity extends AbstractBaseActivity implements
         IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
         UpdateIssuesFragment.OnIssuesUpdatedListener {
 
-    private Button updateIssues;
     private Toolbar toolbar;
-    private NavigationView navigationView;
     private DrawerLayout drawerLayout;
 
     private static String TAG = MainActivity.class.getName();
@@ -46,9 +36,6 @@ public class MainActivity extends AbstractBaseActivity implements
     public static final String PREF_PLACE_ID = "placeId";
     public static final String PREF_PLACE_NAME = "placeName";
     private static int INVALID_PLACE_ID = -1;
-
-    ListView favoritedIssueList;
-    SimpleCursorAdapter favoritedIssueDataAdaptor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,7 +52,7 @@ public class MainActivity extends AbstractBaseActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -160,7 +147,6 @@ public class MainActivity extends AbstractBaseActivity implements
     }
 
     private void displayIssuesListFragment(int type){
-        String prefix;
         switch(type){
             case IssuesFragmentList.ALL_ISSUES:
                 toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlaceName()));

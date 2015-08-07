@@ -38,7 +38,6 @@ public class UpdateIssuesFragment extends Fragment implements
     private static final String ARG_PLACE_ID = "ARG_PLACE_ID";
 
     private OnIssuesUpdatedListener listener;
-    private View view;
     private int placeId;
 
     public static UpdateIssuesFragment newInstance(int placeId) {
@@ -67,9 +66,9 @@ public class UpdateIssuesFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG, "Building pick place UI");
-        view = inflater.inflate(R.layout.fragment_update_issues, container, false);
+        View view = inflater.inflate(R.layout.fragment_update_issues, container, false);
 
-        AsyncTask<Object, Void, Object> task = new AsyncTask<Object, Void, Object>() {
+        new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 Log.d(TAG, "Loading new issues for place "+placeId);
@@ -113,11 +112,11 @@ public class UpdateIssuesFragment extends Fragment implements
     }
 
     public interface OnIssuesUpdatedListener {
-        public void onIssuesUpdated(int newIssueCount);
+        void onIssuesUpdated(int newIssueCount);
     }
 
     private void removeExistingGeofencesExcept(ArrayList<Issue> issuesNeedingGeofences) {
-        ArrayList<Integer> issueIdsToKeep = new ArrayList();
+        ArrayList<Integer> issueIdsToKeep = new ArrayList<>();
         for(Issue issue:issuesNeedingGeofences){
             issueIdsToKeep.add(issue.getId());
         }
@@ -159,7 +158,7 @@ public class UpdateIssuesFragment extends Fragment implements
     private void buildGeofence(int issueId, double latitude, double longitude, float radius){
         List<Geofence> newGeofences = new ArrayList<>();
         Geofence.Builder geofenceBuilder = new Geofence.Builder();
-        geofenceBuilder.setRequestId((new Integer(issueId)).toString());
+        geofenceBuilder.setRequestId((Integer.valueOf(issueId)).toString());
         geofenceBuilder.setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER);
         geofenceBuilder.setCircularRegion(latitude, longitude, radius);
         geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);

@@ -2,7 +2,6 @@ package org.actionpath.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.TextView;
 
 import org.actionpath.R;
 import org.actionpath.issues.IssuesDataSource;
@@ -35,7 +33,6 @@ public class IssuesFragmentList extends ListFragment {
     private static final String ARG_TYPE = "ARG_LIST_TYPE";
 
     private int type;
-    private String title;
 
     private OnIssueSelectedListener listener;
 
@@ -130,8 +127,8 @@ public class IssuesFragmentList extends ListFragment {
     }
 
     public interface OnIssueSelectedListener {
-        public void onIssueSelected(int issueId);
-        public int getPlaceId();
+        void onIssueSelected(int issueId);
+        int getPlaceId();
     }
 
 }
