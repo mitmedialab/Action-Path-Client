@@ -72,10 +72,10 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     }
 
     public PendingIntent getPendingIntent(int issueId) {
-        Log.v(TAG,"returning an intent for ResponseActivity.class");
-
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getIssueSummary();
+
+        Log.v(TAG,"Returning intent for ResponseActivity.class for issue: " + summary);
 
         Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
                 .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)

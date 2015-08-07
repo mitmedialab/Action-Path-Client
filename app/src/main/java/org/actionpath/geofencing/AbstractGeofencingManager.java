@@ -1,8 +1,6 @@
 package org.actionpath.geofencing;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -11,11 +9,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationServices;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Lets you add or remove geofences via the onReadyForAction method you have to implement

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class Issue implements Serializable {
@@ -18,7 +19,7 @@ public class Issue implements Serializable {
 
     // used for parsing date in json from server
     private static ParsePosition zeroParsePosition = new ParsePosition(0);
-    private static SimpleDateFormat serverJsonDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private static SimpleDateFormat serverJsonDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault());
 
     public static final String STATUS_CLOSED = "Closed";
     public static final String STATUS_OPEN = "Open";
@@ -111,13 +112,7 @@ public class Issue implements Serializable {
     public String getImageUrl() {return imageUrl; }
 
     public boolean hasImageUrl() {
-        if(null==imageUrl) {
-            return false;
-        }
-        if(imageUrl.equals("null")){
-            return false;
-        }
-        return imageUrl.length()>0;
+        return !(null == imageUrl || imageUrl.equals("null")) && imageUrl.length() > 0;
     }
 
     public String getStatus() { return status; }
@@ -205,8 +200,8 @@ public class Issue implements Serializable {
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
         cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
-        cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL,followed==true?1:0);
-        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL,geofenceCreated==true?1:0);
+        cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ?1:0);
+        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ?1:0);
         return cv;
     }
 
@@ -216,14 +211,12 @@ public class Issue implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Issue issue = (Issue) o;
-        if (id != issue.id) return false;
-        return true;
+        return id == issue.id;
     }
 
     @Override
     public int hashCode() {
-        int result = (id+placeId+"").hashCode();
-        return result;
+        return (id+placeId+"").hashCode();
     }
 
     public String getUrl(){

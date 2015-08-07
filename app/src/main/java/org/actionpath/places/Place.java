@@ -1,17 +1,16 @@
 package org.actionpath.places;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.util.JsonReader;
-
-import org.actionpath.logging.LogsDbHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 
+import android.util.Log;
+
 public class Place implements Serializable {
+
+    public static String TAG = Place.class.getName();
 
     // Fields
     public int id;
@@ -50,9 +49,13 @@ public class Place implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        Place p = (Place) o;
-        if (id != p.id) return false;
-        return true;
+        if (o instanceof Place) {
+            Place p = (Place) o;
+            return id == p.id;
+        } else {
+            Log.e(TAG, "Object not a place.");
+            return false;
+        }
     }
 
     @Override

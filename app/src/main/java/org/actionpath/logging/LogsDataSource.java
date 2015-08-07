@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
 
-import org.actionpath.issues.IssuesDbHelper;
 import org.actionpath.util.Installation;
 import org.actionpath.util.Locator;
 
@@ -60,9 +59,10 @@ public class LogsDataSource {
         }
     }
 
+    /*
     public void close() {
         dbHelper.close();
-    }
+    }*/
 
     public void insertLog(LogMsg logMsg){
         this.db.insert(LogsDbHelper.LOGS_TABLE_NAME, null, logMsg.getContentValues());
@@ -137,14 +137,18 @@ public class LogsDataSource {
     }
 
     public void insertLog(Context context, int issueId, String action){
-        Location loc = Locator.getInstance().getLocation();
+        Location location = null;
+        Locator locator = Locator.getInstance();
+        if (locator != null) {
+            location = locator.getLocation();
+        }
         double latitude = 0;
         double longitude = 0;
-        if(loc!=null) {
-            latitude = loc.getLatitude();
-            longitude = loc.getLongitude();
+        if(location!=null) {
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
         }
-        int status = (loc==null) ? LogMsg.LOG_STATUS_NEEDS_LOCATION : LogMsg.LOG_STATUS_READY_TO_SYNC;
+        int status = (location==null) ? LogMsg.LOG_STATUS_NEEDS_LOCATION : LogMsg.LOG_STATUS_READY_TO_SYNC;
         LogMsg logMsg = new LogMsg(action, Installation.id(context), issueId,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,

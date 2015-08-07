@@ -57,9 +57,10 @@ public class IssuesDataSource {
         }
     }
 
+    /*
     public void close() {
         dbHelper.close();
-    }
+    }*/
 
     public long getIssueCount(int placeId) {
         return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.ISSUES_TABLE_NAME,
@@ -97,8 +98,6 @@ public class IssuesDataSource {
 
     /**
      * Get a list of issues in this place that we should add geofences for
-     * @param placeId
-     * @return
      */
     public Cursor getIssuesToGeofenceCursor(int placeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
@@ -113,7 +112,7 @@ public class IssuesDataSource {
 
     /**
      * Get a list of issues that we have created geofences for
-     * @return
+     * @return cursor
      */
     public Cursor getIssuesWithGeofences(){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
@@ -161,9 +160,10 @@ public class IssuesDataSource {
         return issue!=null;
     }
 
+    /*
     public void insertIssue(Issue i){
         insertOrUpdateIssue(i,false);
-    }
+    }*/
 
     public void insertOrUpdateIssue(Issue i){
         insertOrUpdateIssue(i,true);

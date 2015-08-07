@@ -5,7 +5,7 @@ import com.google.android.gms.common.api.Status;
 import java.util.List;
 
 /**
- * Created by rahulb on 8/6/15.
+ * Simple interface for geofence removal listener
  */
 public interface GeofencingRemovalListener {
 

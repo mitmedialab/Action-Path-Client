@@ -7,6 +7,8 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 
+import java.util.Arrays;
+
 
 
 public abstract class ReceiveGeofenceTransitionIntentService extends IntentService {
@@ -34,12 +36,12 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
                     String[] issuesIds = new String[event.getTriggeringGeofences().size()];
                     for (int index = 0; index < event.getTriggeringGeofences().size(); index++) {
                         issuesIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
-                        Log.d(TAG, "triggered issues: " + issuesIds.toString());
+                        Log.d(TAG, "triggered issues: " + Arrays.toString(issuesIds));
                     }
 
                     if (transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                         onEnteredGeofences(issuesIds);
-                    } else if (transition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+                    } else {
                         onExitedGeofences(issuesIds);
                     }
                 }
