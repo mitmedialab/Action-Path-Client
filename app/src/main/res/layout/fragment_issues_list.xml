@@ -4,30 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/android:list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
+
+    <TextView android:id="@id/android:empty"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:id="@+id/scrollView">
+        android:padding="@dimen/activity_horizontal_margin"
+        android:text="@string/no_issues_to_show"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ListView
-                android:id="@+id/android:list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ListView>
-
-            <TextView android:id="@id/android:empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="@dimen/activity_horizontal_margin"
-                android:text="@string/no_issues_to_show"/>
-
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>
