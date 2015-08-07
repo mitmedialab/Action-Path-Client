@@ -1,12 +1,16 @@
 package org.actionpath.util;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.IntentSender;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
@@ -20,27 +24,37 @@ public class Locator implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    public String LOG_TAG = this.getClass().getName();
+    private static final int RC_SIGN_IN = 0;
+
+    public static String TAG = Locator.class.getName();
 
     public static Locator instance;
 
-    private Context context;
+    private Activity activity;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
 
     public boolean hasLocation = false;
 
-    public static synchronized Locator getInstance(Context context){
+    public static synchronized Locator getInstance(Activity activity){
         if(instance==null){
-            instance = new Locator(context);
+            instance = new Locator(activity);
         }
         return instance;
     }
 
-    private Locator(Context context){
-        this.context = context;
-        googleApiClient = new GoogleApiClient.Builder(this.context)
+    public static synchronized Locator getInstance(){
+        if(instance==null){
+            Log.e(TAG,"Tried to get Locator before initializing it with an instance!");
+            return null;
+        }
+        return instance;
+    }
+
+    private Locator(Activity activity){
+        this.activity = activity;
+        googleApiClient = new GoogleApiClient.Builder(activity.getApplicationContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -62,27 +76,38 @@ public class Locator implements
 		 * start a Google Play services activity that can resolve
 		 * error.
 		 */
-        //TODO: determine if we need to do this or not
-        Log.e(LOG_TAG, "connection to google services failed");
+        Log.e(TAG, "connection to google services failed");
         if (result.hasResolution()) {
-            // if there's a way to resolve the result
+            try {
+                result.startResolutionForResult(this.activity,RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                Log.e(TAG,"Unable to resolve error :-( "+e);
+            }
         } else {
-            // otherwise consider showing an error
+            switch(result.getErrorCode()){
+                case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+                case ConnectionResult.SERVICE_DISABLED:
+                case ConnectionResult.SERVICE_MISSING:
+                    Dialog dialog = GooglePlayServicesUtil.getErrorDialog(result.getErrorCode(), activity, 1);
+                    dialog.show();
+                    break;
+            }
+            Log.e(TAG,"No resolution for failure :-( "+result.getErrorCode());
         }
     }
 
     @Override
     public void onConnected(Bundle connectionHint) {
-        Log.i(LOG_TAG, "Connected to google services");
+        Log.i(TAG, "Connected to google services");
         // also update last known location (current location)
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         hasLocation = true;
         if(lastLocation==null){
-            Log.w(LOG_TAG,"unable to get last location");
+            Log.w(TAG,"unable to get last location");
         } else {
-            Log.d(LOG_TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
-            LogsDataSource.getInstance(this.context).updateAllLogsNeedingLocation(
+            Log.d(TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
+            LogsDataSource.getInstance(activity.getApplicationContext()).updateAllLogsNeedingLocation(
                     lastLocation.getLatitude(), lastLocation.getLongitude()
             );
         }
@@ -90,7 +115,7 @@ public class Locator implements
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.e(LOG_TAG, "connection to google services suspended");
+        Log.e(TAG, "connection to google services suspended");
     }
 
     public synchronized boolean hasLocation(){

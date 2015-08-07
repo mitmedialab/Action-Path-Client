@@ -15,6 +15,7 @@ import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LogsDataSource;
 import org.actionpath.util.Installation;
+import org.actionpath.util.Locator;
 
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
@@ -57,6 +58,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
             ImageLoader.getInstance().init(config);
         }
+        // try to get the location
+        Locator.getInstance(this);
     }
 
     protected void logMsg(String action){
