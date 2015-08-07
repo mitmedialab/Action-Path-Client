@@ -3,7 +3,7 @@ package org.actionpath.util;
 import android.os.Build;
 
 /**
- * Created by rahulb on 8/3/15.
+ * Development test class
  */
 public class Development {
 

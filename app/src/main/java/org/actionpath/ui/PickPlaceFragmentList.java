@@ -51,8 +51,8 @@ public class PickPlaceFragmentList extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            // What is meant to go here?
-            Log.e(TAG, "Arguments are " + String.valueOf(getArguments()));
+            // TODO: What is really meant to go here?
+            Log.i(TAG, "Arguments are not null");
         }
     }
 

@@ -10,23 +10,23 @@ import java.util.List;
 
 public class GeofencingRemover extends AbstractGeofencingManager {
 
-    private List<String> geofenceRequstIdsToRemove;
+    private List<String> geofenceRequestIdsToRemove;
     private GeofencingRemovalListener listener;
 
-    public GeofencingRemover(Context context, List<String> geofenceRequstIdsToRemove, GeofencingRemovalListener listener){
+    public GeofencingRemover(Context context, List<String> geofenceRequestIdsToRemove, GeofencingRemovalListener listener){
         super(context);
-        this.geofenceRequstIdsToRemove = geofenceRequstIdsToRemove;
+        this.geofenceRequestIdsToRemove = geofenceRequestIdsToRemove;
         this.listener=listener;
     }
 
     @Override
     public PendingResult<Status> onReadyForAction(){
-        return LocationServices.GeofencingApi.removeGeofences(googleApiClient,geofenceRequstIdsToRemove);
+        return LocationServices.GeofencingApi.removeGeofences(googleApiClient,geofenceRequestIdsToRemove);
     }
 
     @Override
     public void onRequestSuccess(){
-        listener.onGeofenceRemovalSuccess(geofenceRequstIdsToRemove);
+        listener.onGeofenceRemovalSuccess(geofenceRequestIdsToRemove);
     }
 
     @Override

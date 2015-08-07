@@ -2,9 +2,7 @@ package org.actionpath.util;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.IntentSender;
-import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +12,6 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogsDataSource;
 
 /**
