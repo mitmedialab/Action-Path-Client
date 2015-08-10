@@ -18,6 +18,7 @@
     <string name="followed_issues_header">My Issues in %s</string>
     <string name="pick_place_header">Choose Your City</string>
     <string name="update_issues_header">Updating Issues in %s</string>
+    <string name="about_header">About Action Path</string>
 
     <string name="issue_detail_summary">Summary</string>
     <string name="issue_detail_description">Description</string>
@@ -56,5 +57,7 @@
     <string name="placeholder">Placeholder Text</string>
 
     <string name="image_description">Image associated with the current issue.</string>
+
+    <string name="about_text">Let me tell you about Action Path</string>
 
 </resources>
