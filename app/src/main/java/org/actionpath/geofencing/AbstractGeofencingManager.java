@@ -55,7 +55,7 @@ public abstract class AbstractGeofencingManager implements GoogleApiClient.Conne
                     // onActivityResult method to retry registering
                     */
                 } else {
-                    //TODO: check errr code, if 1000 pop up dialog asking user to enable location in settings
+                    //TODO: check error code, if 1000 pop up dialog asking user to enable location in settings
                     // No recovery. Weep softly or inform the user.
                     onRequestFailure(status);
                 }

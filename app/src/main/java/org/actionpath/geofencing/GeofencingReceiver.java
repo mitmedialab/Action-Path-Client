@@ -60,11 +60,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 .setContentTitle("Action Nearby")
                 .setContentText(summary)
                 .setContentIntent(pi);
-/*
-                //TODO: ADD THESE BACK IN WHEN NEEDED
-                .addAction(R.drawable.ic_notification_overlay, "Take Action", pi);
-                .addAction(R.drawable.ic_stat_snooze, "Snooze", pi); // TODO: Make this an actual snooze button
-*/
+
         Notification notification = notificationBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notificationManager = getNotificationManager();
