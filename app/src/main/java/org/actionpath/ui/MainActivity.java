@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.net.Uri;
 
 import org.actionpath.R;
 import org.actionpath.issues.Issue;
@@ -25,7 +26,7 @@ import org.actionpath.util.Development;
 
 public class MainActivity extends AbstractBaseActivity implements
         IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
-        UpdateIssuesFragment.OnIssuesUpdatedListener {
+        UpdateIssuesFragment.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -84,7 +85,7 @@ public class MainActivity extends AbstractBaseActivity implements
                         displayPickPlaceFragment();
                         return true;
                     case R.id.nav_about:
-                        // TODO
+                        displayAboutFragment();
                         return true;
                     default:
                         Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
@@ -159,6 +160,12 @@ public class MainActivity extends AbstractBaseActivity implements
         displayFragment(fragment);
     }
 
+    private void displayAboutFragment(){
+        toolbar.setTitle(R.string.about_header);
+        AboutFragment fragment = AboutFragment.newInstance();
+        displayFragment(fragment);
+    }
+
     private void addTestIssues(){
         final double Cambridge_lat = 42.359254;
         final double Cambridge_long = -71.093667;
@@ -227,6 +234,10 @@ public class MainActivity extends AbstractBaseActivity implements
     public String getPlaceName(){
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         return settings.getString(MainActivity.PREF_PLACE_NAME, "Unknown City");
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
     }
 
 }
