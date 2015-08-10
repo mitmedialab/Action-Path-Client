@@ -65,7 +65,7 @@ public class UpdateIssuesFragment extends Fragment implements
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
-        Log.d(TAG, "Building pick place UI");
+        Log.d(TAG, "Building Update Issues Fragment UI");
         View view = inflater.inflate(R.layout.fragment_update_issues, container, false);
 
         new AsyncTask<Object, Void, Object>() {
