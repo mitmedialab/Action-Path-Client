@@ -60,4 +60,6 @@
 
     <string name="about_text">Let me tell you about Action Path</string>
 
+    <string name="nearby_notification">Action Nearby</string>
+
 </resources>

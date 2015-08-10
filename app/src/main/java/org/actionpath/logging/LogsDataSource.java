@@ -9,7 +9,6 @@ import android.location.Location;
 import android.util.Log;
 
 import org.actionpath.util.Installation;
-import org.actionpath.util.Locator;
 
 import java.sql.SQLException;
 
@@ -132,23 +131,18 @@ public class LogsDataSource {
                 new String[]{logId + ""});
     }
 
-    public void insertLog(Context context, String action) {
-        insertLog(context, LogMsg.NO_ISSUE,action);
+    public void insertLog(Context context, String action, Location loc) {
+        insertLog(context, LogMsg.NO_ISSUE,action, loc);
     }
 
-    public void insertLog(Context context, int issueId, String action){
-        Location location = null;
-        Locator locator = Locator.getInstance();
-        if (locator != null) {
-            location = locator.getLocation();
-        }
+    public void insertLog(Context context, int issueId, String action, Location loc){
         double latitude = 0;
         double longitude = 0;
-        if(location!=null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
+        if(loc!=null) {
+            latitude = loc.getLatitude();
+            longitude = loc.getLongitude();
         }
-        int status = (location==null) ? LogMsg.LOG_STATUS_NEEDS_LOCATION : LogMsg.LOG_STATUS_READY_TO_SYNC;
+        int status = (loc==null) ? LogMsg.LOG_STATUS_NEEDS_LOCATION : LogMsg.LOG_STATUS_READY_TO_SYNC;
         LogMsg logMsg = new LogMsg(action, Installation.id(context), issueId,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,

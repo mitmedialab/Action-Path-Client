@@ -1,6 +1,7 @@
 package org.actionpath.ui;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -15,7 +16,6 @@ import org.actionpath.logging.LogMsg;
 import org.actionpath.logging.LogSyncService;
 import org.actionpath.logging.LogsDataSource;
 import org.actionpath.util.Installation;
-import org.actionpath.util.Locator;
 
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
@@ -39,10 +39,9 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
             new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
-                    logMsg(LogMsg.ACTION_INSTALLED_APP);
+                    logMsg(LogMsg.NO_ISSUE,LogMsg.ACTION_INSTALLED_APP,null);
                     return ActionPathServer.createInstall(getInstallId());
                 }
-
                 @Override
                 protected void onPostExecute(Object o) {
                     boolean success = (boolean) o;
@@ -58,22 +57,15 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
             ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
             ImageLoader.getInstance().init(config);
         }
-        // try to get the location
-        Locator.getInstance(this);
-    }
-
-    protected void logMsg(String action){
-        LogsDataSource.getInstance(getApplicationContext()).insertLog(
-                getApplicationContext(),action);
-    }
-
-    protected void logMsg(int issueId, String action){
-        LogsDataSource.getInstance(getApplicationContext()).insertLog(
-                getApplicationContext(),issueId,action);
     }
 
     protected String getInstallId(){
         return Installation.id(this.getApplicationContext());
+    }
+
+    protected void logMsg(int issueId, String action, Location loc){
+        LogsDataSource.getInstance(getApplicationContext()).insertLog(
+                getApplicationContext(),issueId,action, loc);
     }
 
 

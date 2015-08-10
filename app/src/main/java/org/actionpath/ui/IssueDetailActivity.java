@@ -30,7 +30,7 @@ import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractBaseActivity implements OnMapReadyCallback {
+public class IssueDetailActivity extends AbstractLocationActivity implements OnMapReadyCallback {
 
     public static final String PARAM_ISSUE_ID = "issueID";
 

@@ -175,7 +175,7 @@ public class ActionPathServer {
         try{
             if(responseStr!=null){
                 JSONObject jsonResponse = new JSONObject(responseStr);
-                if(jsonResponse.getString(RESPONSE_STATUS) == RESPONSE_STATUS_OK){
+                if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
                     Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
                     return true;
                 } else {

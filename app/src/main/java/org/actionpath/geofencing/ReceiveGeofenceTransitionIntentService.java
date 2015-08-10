@@ -33,16 +33,15 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
             } else {
                 int transition = event.getGeofenceTransition();
                 if(transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL || transition == Geofence.GEOFENCE_TRANSITION_EXIT){
-                    String[] issuesIds = new String[event.getTriggeringGeofences().size()];
+                    String[] issueIds = new String[event.getTriggeringGeofences().size()];
                     for (int index = 0; index < event.getTriggeringGeofences().size(); index++) {
-                        issuesIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
-                        Log.d(TAG, "triggered issues: " + Arrays.toString(issuesIds));
+                        issueIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
+                        Log.d(TAG, "triggered issues: " + Arrays.toString(issueIds));
                     }
-
                     if (transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
-                        onEnteredGeofences(issuesIds);
+                        onEnteredGeofences(issueIds);
                     } else {
-                        onExitedGeofences(issuesIds);
+                        onExitedGeofences(issueIds);
                     }
                 }
             }
