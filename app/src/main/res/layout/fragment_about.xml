@@ -5,8 +5,112 @@
     android:layout_height="match_parent"
     tools:context="org.actionpath.ui.AboutFragment">
 
-    <TextView android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/about_text" />
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView android:id="@+id/about_summary_title"
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_summary_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView android:id="@+id/about_summary_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_summary_body"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+            <TextView android:id="@+id/about_team_title"
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_team_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView android:id="@+id/about_team_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_team_body"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+            <TextView android:id="@+id/about_contact_title"
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_contact_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView android:id="@+id/about_contact_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_contact_body"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/textview_title_padding"
+                android:paddingBottom="@dimen/textview_title_padding"
+                android:baselineAligned="false">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5">
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/about_image_medialab_logo"
+                            android:src="@drawable/medialab_logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:scaleType="fitStart"
+                            android:adjustViewBounds="true"
+                            android:fitsSystemWindows="true"
+                            android:paddingRight="@dimen/activity_horizontal_margin_half"
+                            android:contentDescription="@string/image_description_medialab_logo"
+                            android:clickable="true" />
+
+                        <ImageView
+                            android:id="@+id/about_image_civicmedia_logo"
+                            android:src="@drawable/civicmedia_logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1"
+                            android:scaleType="fitStart"
+                            android:adjustViewBounds="true"
+                            android:fitsSystemWindows="true"
+                            android:paddingLeft="@dimen/activity_horizontal_margin_half"
+                            android:contentDescription="@string/image_description_civicmedia_logo"
+                            android:clickable="true" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5">
+                    <!-- Empty Layout to force images to first half of screen -->
+                </RelativeLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

@@ -1,7 +1,11 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="expanded_title_margin_start">48dp</dimen>
+    <dimen name="expanded_title_margin_end">64dp</dimen>
+    <dimen name="activity_top_padding">24dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin_half">8dp</dimen>
     <dimen name="detail_backdrop_height">256dp</dimen>
     <dimen name="embedded_map_height">256dp</dimen>
     <dimen name="fab_margin">16dp</dimen>

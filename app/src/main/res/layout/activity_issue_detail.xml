@@ -20,8 +20,8 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp">
+            app:expandedTitleMarginStart="@dimen/expanded_title_margin_start"
+            app:expandedTitleMarginEnd="@dimen/expanded_title_margin_end">
 
             <ImageView
                 android:id="@+id/issue_detail_backdrop"
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="24dp"
+            android:paddingTop="@dimen/activity_top_padding"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             >
