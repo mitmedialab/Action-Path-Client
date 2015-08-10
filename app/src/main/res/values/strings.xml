@@ -69,4 +69,7 @@
 
     <string name="image_description_medialab_logo">MIT Media Lab logo</string>
     <string name="image_description_civicmedia_logo">MIT Center for Civic Media logo</string>
+
+    <string name="nearby_notification">Action Nearby</string>
+
 </resources>

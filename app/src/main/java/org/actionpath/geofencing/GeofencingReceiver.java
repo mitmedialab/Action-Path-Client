@@ -19,11 +19,13 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     public String TAG = this.getClass().getName();
 
     @Override
-    protected void onEnteredGeofences(String[] strings) {
-        int issueId = Integer.parseInt(strings[0]);
-        sendNotification(issueId);
-        LogsDataSource.getInstance(getApplicationContext()).insertLog(
-                getApplicationContext(), Integer.valueOf(strings[0]), LogMsg.ACTION_ENTERED_GEOFENCE);
+    protected void onEnteredGeofences(String[] issueIds) {
+        for(String str:issueIds){
+            int issueId = Integer.parseInt(issueIds[0]);
+            sendNotification(issueId);
+            LogsDataSource.getInstance(getApplicationContext()).insertLog(
+                    getApplicationContext(), issueId, LogMsg.ACTION_ENTERED_GEOFENCE, null);
+        }
     }
 
     @Override
@@ -35,7 +37,6 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     protected void onError(int i) {
         Log.e(TAG, "GeofencingReceiver Error: " + i);
     }
-
 
     /**
      * Posts a notification in the notification bar when a transition is detected.
@@ -57,7 +58,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher)
-                .setContentTitle("Action Nearby")
+                .setContentTitle(getResources().getString(R.string.nearby_notification))
                 .setContentText(summary)
                 .setContentIntent(pi);
 

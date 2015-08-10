@@ -33,15 +33,15 @@ public class ActionPathServer {
 
     public static final String TAG = ActionPathServer.class.getName();
 
-    //public static final String SERVER_BASE_URL = "https://api.dev.actionpath.org";
-    public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
+    public static final String BASE_URL = "https://api.dev.actionpath.org";
+    //public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
 
     private static final String RESPONSE_STATUS = "status";
     private static final String RESPONSE_STATUS_OK = "ok";
     private static final String RESPONSE_STATUS_ERROR = "error";
 
     /**
-     * Ask tjava.lang.Stringhe server for the latest issues within the specified place
+     * Ask the server for the latest issues within the specified place
      * @param placeId
      * @return
      */
@@ -175,7 +175,7 @@ public class ActionPathServer {
         try{
             if(responseStr!=null){
                 JSONObject jsonResponse = new JSONObject(responseStr);
-                if(jsonResponse.getString(RESPONSE_STATUS) == RESPONSE_STATUS_OK){
+                if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
                     Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
                     return true;
                 } else {

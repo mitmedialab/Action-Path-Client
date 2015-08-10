@@ -24,7 +24,7 @@ import org.actionpath.util.Development;
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
 
-public class MainActivity extends AbstractBaseActivity implements
+public class MainActivity extends AbstractLocationActivity implements
         IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
         UpdateIssuesFragment.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
 

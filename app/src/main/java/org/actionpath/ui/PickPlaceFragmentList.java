@@ -15,7 +15,7 @@ import android.widget.ListView;
 import org.actionpath.R;
 import org.actionpath.places.Place;
 import org.actionpath.util.Development;
-import org.actionpath.util.Locator;
+import org.actionpath.util.MissingLocationException;
 
 import java.util.ArrayList;
 
@@ -31,7 +31,6 @@ public class PickPlaceFragmentList extends ListFragment {
 
     private OnPlaceSelectedListener listener;
     private View view;
-    private Locator locator;
 
     public static PickPlaceFragmentList newInstance() {
         PickPlaceFragmentList fragment = new PickPlaceFragmentList();
@@ -60,44 +59,52 @@ public class PickPlaceFragmentList extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG,"Building pick place UI");
         view = inflater.inflate(R.layout.fragment_pick_place, container, false);
-        locator = Locator.getInstance(this.getActivity());
-
-        new AsyncTask<Object, Void, Object>() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                Log.v(TAG,"Trying to get location...");
-                Location loc = null;
-                if(!Development.isSimulator()){
-                    synchronized (this) {
-                        while (!locator.hasLocation()) {
-                            try {
-                                wait(500);
-                            } catch (InterruptedException ie) {
-                                Log.e(TAG, "Interrupted while getting location :-( " + ie);
+        if(this.getActivity() instanceof AbstractLocationActivity){
+            final AbstractLocationActivity parentActivity = (AbstractLocationActivity) this.getActivity();
+            new AsyncTask<Object, Void, Object>() {
+                @Override
+                protected Object doInBackground(Object[] params) {
+                    Log.v(TAG,"Trying to get location...");
+                    Location loc = null;
+                    if(!Development.isSimulator()){
+                        synchronized (this) {
+                            while (!parentActivity.hasLocation()) {
+                                try {
+                                    wait(500);
+                                } catch (InterruptedException ie) {
+                                    Log.e(TAG, "Interrupted while getting location :-( " + ie);
+                                }
                             }
                         }
+                        try{
+                            loc = parentActivity.getLocation();
+                        } catch(MissingLocationException mle){
+                            Log.e(TAG,"said it had a location but then threw error when I asked for it");
+                            loc = null;
+                        }
+                    } else {
+                        Log.i(TAG,"Faking location in simulator");
                     }
-                    loc = locator.getLocation();
-                } else {
-                    Log.i(TAG,"Faking location in simulator");
+                    if(loc==null){
+                        return ActionPathServer.getPlacesNear(Development.MIT_LAT,Development.MIT_LNG);
+                    } else {
+                        Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
+                        return ActionPathServer.getPlacesNear(loc.getLatitude(),loc.getLongitude());
+                    }
                 }
-                if(loc==null){
-                    return ActionPathServer.getPlacesNear(Development.MIT_LAT,Development.MIT_LNG);
-                } else {
-                    Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
-                    return ActionPathServer.getPlacesNear(loc.getLatitude(),loc.getLongitude());
+                @Override
+                protected void onPostExecute(Object o) {
+                    super.onPostExecute(o);
+                    Log.d(TAG, "Got places list from server");
+                    ArrayList<Place> places = (ArrayList<Place>) o;
+                    ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
+                            view.getContext(), R.layout.places_list_item, places);
+                    setListAdapter(placesArrayAdaptor);
                 }
-            }
-            @Override
-            protected void onPostExecute(Object o) {
-                super.onPostExecute(o);
-                Log.d(TAG, "Got places list from server");
-                ArrayList<Place> places = (ArrayList<Place>) o;
-                ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
-                        view.getContext(), R.layout.places_list_item, places);
-                setListAdapter(placesArrayAdaptor);
-            }
-        }.execute();
+            }.execute();
+        } else {
+            Log.e(TAG,"BADNESS - you can only use this inside of an AbstractLocationActivity!");
+        }
         return view;
     }
 
