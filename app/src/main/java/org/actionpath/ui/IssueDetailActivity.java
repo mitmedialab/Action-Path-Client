@@ -36,7 +36,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         OnMapReadyCallback, IssueQuestionFragment.OnAnswerSelectedListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
-    public static final String PARAM_SHOW_QUESTION = "showQuestion";
+    public static final String PARAM_FROM_NOTIFICATION = "fromNotification";
 
     public String TAG = this.getClass().getName();
 
@@ -55,7 +55,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
-        boolean showQuestion = bundle.getBoolean(PARAM_SHOW_QUESTION);
+        boolean fromNotification = bundle.getBoolean(PARAM_FROM_NOTIFICATION);
         Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
         Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
@@ -109,9 +109,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             }
         });
 
-        if(showQuestion){
-            showQuestionUiFragment();
-        }
+        showQuestionUiFragment();
 
         onFollowClickListener = new View.OnClickListener() {
             @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
@@ -151,10 +149,10 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     private void changeFollowedAndUpdateUI(View view) {
-        changeFollowedAndUpdateUI(view, !issue.isFollowed());
+        changeFollowedAndUpdateUI(view, !issue.isFollowed(),true);
     }
 
-    private void changeFollowedAndUpdateUI(View view,boolean follow){
+    private void changeFollowedAndUpdateUI(View view,boolean follow,boolean showSnackbar){
         Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
         // update the issue first
         issue.setFollowed(follow);
@@ -168,9 +166,11 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         } else {
             feedbackStringId = R.string.unfollowed_issue_feedback;
         }
-        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_SHORT)
-                .setAction(R.string.action_undo, onFollowClickListener)
-                .show();
+        if(showSnackbar) {
+            Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.action_undo, onFollowClickListener)
+                    .show();
+        }
     }
 
     private void updateFollowedButtons(boolean isFollowed){
@@ -216,14 +216,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
         // update the UI
         final String newAnswer = answer;
-        changeFollowedAndUpdateUI(view, true);
-        // show some snackbar feedback
-        int feedbackStringId = R.string.issue_question_answered;
-        Snackbar.make(view, feedbackStringId, Snackbar.LENGTH_LONG)
-                .setAction(R.string.action_unfollow, new View.OnClickListener() {
-                    @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false);}
-                })
-                .show();
+        changeFollowedAndUpdateUI(view, true, false);
+        final View v = view;
         // save the answer to the server
         new AsyncTask<Object, Void, Object>() {
             @Override
@@ -235,6 +229,13 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             protected void onPostExecute(Object o) {
                 boolean success = (boolean) o;
                 Log.d(TAG,"saved answer to server "+success);
+                // show some snackbar feedback
+                int feedbackStringId = R.string.issue_question_answered;
+                Snackbar.make(v, feedbackStringId, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.action_unfollow, new View.OnClickListener() {
+                            @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false,true);}
+                        })
+                        .show();
             }
         }.execute();
     }

@@ -16,10 +16,7 @@ import android.view.View;
 import android.net.Uri;
 
 import org.actionpath.R;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
-import org.actionpath.util.Development;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -175,7 +172,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Intent intent = new Intent()
             .setClass(MainActivity.this, IssueDetailActivity.class)
             .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-            .putExtra(IssueDetailActivity.PARAM_SHOW_QUESTION, false);
+            .putExtra(IssueDetailActivity.PARAM_FROM_NOTIFICATION, false);
         startActivity(intent);
     }
 

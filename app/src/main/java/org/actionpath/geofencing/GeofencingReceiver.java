@@ -76,7 +76,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
                 .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-                .putExtra(IssueDetailActivity.PARAM_SHOW_QUESTION, true)
+                .putExtra(IssueDetailActivity.PARAM_FROM_NOTIFICATION, true)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
