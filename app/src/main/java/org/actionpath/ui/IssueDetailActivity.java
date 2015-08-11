@@ -295,6 +295,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         issuesToRemove.add(issue.getId() + "");
         GeofencingRemover remover = new GeofencingRemover(getApplicationContext(),
             issuesToRemove,this);
+        remover.sendRequest();
     }
 
     @Override
