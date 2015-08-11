@@ -8,14 +8,17 @@
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView" >
+        android:id="@+id/scrollView"
+        android:fillViewport="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:baselineAligned="false"
+            android:measureWithLargestChild="false">
 
             <TextView android:id="@+id/about_summary_title"
                 android:paddingTop="@dimen/textview_title_padding"
@@ -51,24 +54,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_contact_body"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:linksClickable="true"
+                android:autoLink="email|web" />
 
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/textview_title_padding"
-                android:paddingBottom="@dimen/textview_title_padding"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:measureWithLargestChild="true"
+                android:layout_marginTop="@dimen/activity_top_padding">
 
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.5">
+                    android:layout_weight="1">
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <ImageView
@@ -82,20 +87,22 @@
                             android:fitsSystemWindows="true"
                             android:paddingRight="@dimen/activity_horizontal_margin_half"
                             android:contentDescription="@string/image_description_medialab_logo"
-                            android:clickable="true" />
+                            android:clickable="false"
+                            android:baselineAlignBottom="false" />
 
                         <ImageView
                             android:id="@+id/about_image_civicmedia_logo"
                             android:src="@drawable/civicmedia_logo"
                             android:layout_width="wrap_content"
-                            android:layout_height="fill_parent"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:scaleType="fitStart"
                             android:adjustViewBounds="true"
                             android:fitsSystemWindows="true"
                             android:paddingLeft="@dimen/activity_horizontal_margin_half"
                             android:contentDescription="@string/image_description_civicmedia_logo"
-                            android:clickable="true" />
+                            android:clickable="false"
+                            android:baselineAlignBottom="false" />
 
                     </LinearLayout>
 
@@ -103,8 +110,8 @@
 
                 <RelativeLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5">
+                    android:layout_height="0dp"
+                    android:layout_weight="2">
                     <!-- Empty Layout to force images to first half of screen -->
                 </RelativeLayout>
             </LinearLayout>
