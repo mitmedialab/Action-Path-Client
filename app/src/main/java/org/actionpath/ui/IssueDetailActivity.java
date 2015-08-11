@@ -1,5 +1,6 @@
 package org.actionpath.ui;
 
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -30,9 +32,11 @@ import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractLocationActivity implements OnMapReadyCallback {
+public class IssueDetailActivity extends AbstractLocationActivity implements
+        OnMapReadyCallback, IssueQuestionFragment.OnAnswerSelectedListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
+    public static final String PARAM_SHOW_QUESTION = "showQuestion";
 
     public String TAG = this.getClass().getName();
 
@@ -51,6 +55,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements OnM
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
+        boolean showQuestion = bundle.getBoolean(PARAM_SHOW_QUESTION);
         Log.i(TAG, "Details to issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
 
@@ -103,20 +108,9 @@ public class IssueDetailActivity extends AbstractLocationActivity implements OnM
             }
         });
 
-        Button answerYes = (Button) findViewById(R.id.issue_detail_yes);
-        answerYes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                answerQuestion(v, "yes");
-            }
-        });
-        Button answerNo = (Button) findViewById(R.id.issue_detail_no);
-        answerNo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                answerQuestion(v, "no");
-            }
-        });
+        if(showQuestion){
+            showQuestionUiFragment();
+        }
 
         onFollowClickListener = new View.OnClickListener() {
             @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
@@ -253,6 +247,27 @@ public class IssueDetailActivity extends AbstractLocationActivity implements OnM
                 .position(issueLatLng)
                 .title(issue.getIssueSummary()));
 
+    }
+
+    private void showQuestionUiFragment(){
+        Fragment fragment = IssueQuestionFragment.newInstance();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onAnswerSelected(int answerIndex) {
+        String answerText = "";
+        switch(answerIndex) {
+            case 0:
+                answerText = "no";
+                break;
+            case 1:
+                answerText = "yes";
+                break;
+        }
+        answerQuestion(findViewById(R.id.issue_detail_question_container),answerText);
     }
 
 }

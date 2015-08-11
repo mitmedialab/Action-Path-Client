@@ -199,9 +199,10 @@ public class MainActivity extends AbstractLocationActivity implements
         Log.d(TAG, "clicked item with id: " + issueId);
         logMsg(issueId, LogMsg.FOLLOWED_ISSUE_CLICK);
         // Then you start a new Activity via Intent
-        Intent intent = new Intent();
-        intent.setClass(MainActivity.this, IssueDetailActivity.class);
-        intent.putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId);
+        Intent intent = new Intent()
+            .setClass(MainActivity.this, IssueDetailActivity.class)
+            .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
+            .putExtra(IssueDetailActivity.PARAM_SHOW_QUESTION, false);
         startActivity(intent);
     }
 

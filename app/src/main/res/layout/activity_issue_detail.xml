@@ -80,34 +80,12 @@
                 android:id="@+id/issue_detail_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-            <TextView
-                android:paddingTop="@dimen/textview_title_padding"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/issue_question"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
             <LinearLayout
-                android:orientation="horizontal"
-                android:layout_marginTop="@dimen/button_margin"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:background="@android:drawable/dialog_holo_light_frame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/issue_answer_yes"
-                    android:id="@+id/issue_detail_yes"
-                    android:enabled="true"
-                    android:layout_weight="1.0" />
-                <Button
-                    android:background="@android:drawable/dialog_holo_light_frame"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/issue_answer_no"
-                    android:id="@+id/issue_detail_no"
-                    android:enabled="true"
-                    android:layout_weight="1.0" />
-            </LinearLayout>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:id="@+id/issue_detail_question_container"
+                />
 
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
