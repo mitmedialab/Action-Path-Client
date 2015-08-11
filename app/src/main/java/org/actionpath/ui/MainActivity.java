@@ -193,7 +193,7 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     @Override
-    public void onIssuesUpdated(int newIssueCount){
+    public void onIssuesUpdateSucceeded(int newIssueCount){
         String feedback = getResources().getQuantityString(R.plurals.updated_issues, newIssueCount, newIssueCount);
         Snackbar.make(findViewById(R.id.main_content), feedback, Snackbar.LENGTH_SHORT).show();
         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
@@ -202,6 +202,12 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onIssueUpdateFailed(){
         Snackbar.make(findViewById(R.id.main_content), R.string.issues_update_failed, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus){
+        // TODO: Fire a low priority notification
+        // TODO: Mark issue as having something "new" on fav list (a UI indication)
     }
 
     @Override

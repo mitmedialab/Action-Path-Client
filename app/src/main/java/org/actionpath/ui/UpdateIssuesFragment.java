@@ -114,9 +114,15 @@ public class UpdateIssuesFragment extends Fragment implements
                     newIssues = ActionPathServer.getLatestIssues(placeId);
                     IssuesDataSource dataSource = IssuesDataSource.getInstance();
                     for(Issue i:newIssues){
-                        boolean wasAnInsert = dataSource.insertOrUpdateIssue(i);
-                        if(wasAnInsert){
+                        if(dataSource.issueExists(i.getId())){
+                            Issue existingIssue = dataSource.getIssue(i.getId());
+                            if(existingIssue.isFollowed() && existingIssue.getStatus()!=i.getStatus()){
+                                listener.onFollowedIssueStatusChanged(i.getId(), existingIssue.getStatus(), i.getStatus());
+                            }
+                            dataSource.updateIssue(i);
+                        } else {
                             LogsDataSource.getInstance(context).insertLog(context, LogMsg.ACTION_CREATED_ISSUE,null);
+                            dataSource.insertIssue(i);
                         }
                     }
                     Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
@@ -138,7 +144,7 @@ public class UpdateIssuesFragment extends Fragment implements
                 } else {
                     ArrayList<Issue> newIssues = (ArrayList<Issue>) o;
                     Log.d(TAG, "Got " + newIssues.size() + " issues from server");
-                    listener.onIssuesUpdated(newIssues.size());
+                    listener.onIssuesUpdateSucceeded(newIssues.size());
                 }
             }
         };
@@ -152,8 +158,9 @@ public class UpdateIssuesFragment extends Fragment implements
     }
 
     public interface OnIssuesUpdatedListener {
-        void onIssuesUpdated(int newIssueCount);
+        void onIssuesUpdateSucceeded(int newIssueCount);
         void onIssueUpdateFailed();
+        void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus);
     }
 
     private void removeExistingGeofencesExcept(ArrayList<Issue> issuesNeedingGeofences) {

@@ -158,44 +158,40 @@ public class IssuesDataSource {
         return issue;
     }
 
-    private boolean issueExists(int issueId){
+    public boolean issueExists(int issueId){
         Issue issue = getIssue(issueId);
         return issue!=null;
     }
 
-
     public void insertIssue(Issue i){
+        Log.v(LOG_TAG, "Inserting " + i.toString());
         db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
     }
 
-    /**
-     *
-     * @param i
-     * @return True if inserted, false otherwise
-     */
-    public boolean insertOrUpdateIssue(Issue i){
-        return insertOrUpdateIssue(i,true);
+    public void updateIssue(Issue i){
+        Log.v(LOG_TAG, "Updating " + i.toString());
+        db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
+                IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
     }
 
-    public boolean insertOrUpdateIssue(Issue i, boolean orUpdate) {
+    public void insertOrUpdateIssue(Issue i){
+        insertOrUpdateIssue(i,true);
+    }
+
+    public void insertOrUpdateIssue(Issue i, boolean orUpdate) {
         if(i==null){
             Log.e(LOG_TAG,"trying to insert a null issue - ignoring to fail gracefully");
         } else {
             try {
                 if (issueExists(i.getId()) && orUpdate) {
-                    Log.v(LOG_TAG, "Updating " + i.toString());
-                    db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
-                            IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
+                    updateIssue(i);
                 } else {
-                    Log.v(LOG_TAG, "Inserting " + i.toString());
                     insertIssue(i);
-                    return true;
                 }
             } catch (SQLiteConstraintException ce) {
                 Log.w(LOG_TAG, "Ignoring issue " + i.toString() + " because it already exists and you said not to update");
             }
         }
-        return false;
     }
 
 }
