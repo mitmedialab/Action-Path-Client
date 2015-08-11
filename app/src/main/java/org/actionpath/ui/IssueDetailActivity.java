@@ -56,8 +56,9 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
         boolean showQuestion = bundle.getBoolean(PARAM_SHOW_QUESTION);
-        Log.i(TAG, "Details to issue " + issueID);
+        Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
+        Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

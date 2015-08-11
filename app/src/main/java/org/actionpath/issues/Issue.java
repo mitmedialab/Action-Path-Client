@@ -2,6 +2,7 @@ package org.actionpath.issues;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,8 +13,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-
 public class Issue implements Serializable {
+
+    private static String TAG = Issue.class.getName();
 
     public static final int DEFAULT_RADIUS = 500;
 
@@ -29,8 +31,8 @@ public class Issue implements Serializable {
     String status;
     String summary;
     String description;
-    double latitude;
-    double longitude;
+    float latitude;
+    float longitude;
     String address;
     String imageUrl;
     Date createdAt;
@@ -50,8 +52,8 @@ public class Issue implements Serializable {
                  String status,
                  String summary,
                  String description,
-                 double latitude,
-                 double longitude,
+                 float latitude,
+                 float longitude,
                  String address,
                  String imageUrl,
                  Date createdAt,
@@ -61,7 +63,7 @@ public class Issue implements Serializable {
     }
 
     public Issue(int id, String status, String summary,
-            String description,double latitude,double longitude,
+            String description,float latitude,float longitude,
             String address, String imageUrl,Date createdAt,Date updatedAt,
             int placeId, boolean followed, boolean geofenceCreated){
         this.id = id;
@@ -152,12 +154,12 @@ public class Issue implements Serializable {
     }
 
     public static Issue fromCursor(Cursor cursor){
-        return new Issue(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),       // id
+        Issue issue = new Issue(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),       // id
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL)),    // status
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL)),    // summary
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL)),    // description
-                cursor.getDouble(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)),     // latitude
-                cursor.getDouble(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)),     // longitude
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)),     // latitude
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)),     // longitude
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ADDRESS_COL)),    // address
                 cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_IMAGE_URL_COL)),    // imageUrl
                 new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000),    // createdAt
@@ -166,6 +168,13 @@ public class Issue implements Serializable {
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1,   // followed
                 cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1 // geofenceCreated
         );
+        Log.v(TAG, "Parsed cursor issue at loc (" +
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)) + "," +
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)) + ")");
+        Log.v(TAG, "  as (" +
+                issue.latitude + "," +
+                issue.longitude + ")");
+        return issue;
     }
 
     public static Issue fromJson(JSONObject object) throws JSONException{
@@ -174,14 +183,23 @@ public class Issue implements Serializable {
         i.status = object.getString("status");
         i.summary = object.getString("summary");
         i.description = object.getString("description");
-        i.latitude = Double.parseDouble(object.getString("lat"));
-        i.longitude = Double.parseDouble(object.getString("lng"));
+        i.latitude = Float.parseFloat(object.getString("lat"));
+        i.longitude = Float.parseFloat(object.getString("lng"));
         i.address = object.getString("address");
         i.imageUrl = object.getString("image_full");
         if(i.imageUrl.equals("null")) i.imageUrl = null;    // catch for server data inconsistency
         i.createdAt = serverJsonDateFormat.parse(object.getString("created_at"), zeroParsePosition);
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");
+        Log.v(TAG, "Parsed json issue at loc strings: (" +
+                object.getString("lat") + "," +
+                object.getString("lng") + ")");
+        Log.v(TAG, "Parsed json issue at loc floats: (" +
+                Float.parseFloat(object.getString("lat")) + "," +
+                Float.parseFloat(object.getString("lng")) + ")");
+        Log.v(TAG, "  as lat/lng (" +
+                i.latitude + "," +
+                i.longitude + ")");
         return i;
     }
 

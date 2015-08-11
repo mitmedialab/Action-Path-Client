@@ -56,7 +56,9 @@ public class ActionPathServer {
             while ((line = reader.readLine()) != null) {
                 result.append(line);
             }
+            Log.v(TAG,"Got latestIssues JSON results:"+result.toString());
             JSONArray issuesArray = new JSONArray(result.toString());
+            Log.v(TAG,"  first issue"+issuesArray.get(0).toString());
             for(int i=0;i<issuesArray.length();i++){
                 JSONObject object = issuesArray.getJSONObject(i);
                 Issue issue = Issue.fromJson(object);
