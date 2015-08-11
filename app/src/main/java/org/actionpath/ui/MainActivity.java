@@ -197,6 +197,11 @@ public class MainActivity extends AbstractLocationActivity implements
         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
     }
 
+    @Override
+    public void onIssueUpdateFailed(){
+        Snackbar.make(findViewById(R.id.main_content), R.string.issues_update_failed, Snackbar.LENGTH_SHORT).show();
+    }
+
     public int getPlaceId(){
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         return settings.getInt(MainActivity.PREF_PLACE_ID,INVALID_PLACE_ID);

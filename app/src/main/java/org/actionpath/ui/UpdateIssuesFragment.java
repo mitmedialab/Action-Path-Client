@@ -21,7 +21,9 @@ import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.util.ActionPathServer;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,22 +75,34 @@ public class UpdateIssuesFragment extends Fragment implements
             @Override
             protected Object doInBackground(Object[] params) {
                 Log.d(TAG, "Loading new issues for place "+placeId);
-                ArrayList<Issue> newIssues = ActionPathServer.getLatestIssues(placeId);
-                IssuesDataSource dataSource = IssuesDataSource.getInstance();
-                for(Issue i:newIssues){
-                    dataSource.insertOrUpdateIssue(i);
+                ArrayList<Issue> newIssues = null;
+                try {
+                    newIssues = ActionPathServer.getLatestIssues(placeId);
+                    IssuesDataSource dataSource = IssuesDataSource.getInstance();
+                    for(Issue i:newIssues){
+                        dataSource.insertOrUpdateIssue(i);
+                    }
+                    Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
+                    removeExistingGeofencesExcept(newIssues);
+                    buildGeofences();
+                    return newIssues;
+                } catch (IOException ex){
+                    Log.e(TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
+                } catch (JSONException ex){
+                    Log.e(TAG, "Failed to parse issues json from server for "+placeId+" | "+ex);
                 }
-                Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
-                removeExistingGeofencesExcept(newIssues);
-                buildGeofences();
-                return newIssues;
+                return null;
             }
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                ArrayList<Issue> newIssues = (ArrayList<Issue>) o;
-                Log.d(TAG, "Got "+newIssues.size()+" issues from server");
-                listener.onIssuesUpdated(newIssues.size());
+                if(o==null){
+                    listener.onIssueUpdateFailed();
+                } else {
+                    ArrayList<Issue> newIssues = (ArrayList<Issue>) o;
+                    Log.d(TAG, "Got " + newIssues.size() + " issues from server");
+                    listener.onIssuesUpdated(newIssues.size());
+                }
             }
         }.execute();
         return view;
@@ -114,6 +128,7 @@ public class UpdateIssuesFragment extends Fragment implements
 
     public interface OnIssuesUpdatedListener {
         void onIssuesUpdated(int newIssueCount);
+        void onIssueUpdateFailed();
     }
 
     private void removeExistingGeofencesExcept(ArrayList<Issue> issuesNeedingGeofences) {

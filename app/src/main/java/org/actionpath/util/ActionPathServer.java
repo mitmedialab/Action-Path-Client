@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,31 +45,25 @@ public class ActionPathServer {
      * @param placeId
      * @return
      */
-    public static ArrayList<Issue> getLatestIssues(int placeId){
+    public static ArrayList<Issue> getLatestIssues(int placeId) throws IOException, JSONException {
         ArrayList<Issue> newIssues = new ArrayList<>();
-        try {
-            URL u = new URL(BASE_URL + "/places/"+placeId+"/issues.json");
-            InputStream in = u.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-            Log.v(TAG,"Got latestIssues JSON results:"+result.toString());
-            JSONArray issuesArray = new JSONArray(result.toString());
-            Log.v(TAG,"  first issue"+issuesArray.get(0).toString());
-            for(int i=0;i<issuesArray.length();i++){
-                JSONObject object = issuesArray.getJSONObject(i);
-                Issue issue = Issue.fromJson(object);
-                newIssues.add(issue);
-            }
-            Log.i(TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+placeId);
-        } catch (IOException ex){
-            Log.e(TAG, "Failed to pull new issues for " + placeId + " | " + ex.toString());
-        } catch (JSONException ex){
-            Log.e(TAG, "Failed to parse issues json from server for "+placeId+" | "+ex);
+        URL u = new URL(BASE_URL + "/places/"+placeId+"/issues.json");
+        InputStream in = u.openStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder result = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
         }
+        Log.v(TAG,"Got latestIssues JSON results:"+result.toString());
+        JSONArray issuesArray = new JSONArray(result.toString());
+        Log.v(TAG,"  first issue"+issuesArray.get(0).toString());
+        for(int i=0;i<issuesArray.length();i++){
+            JSONObject object = issuesArray.getJSONObject(i);
+            Issue issue = Issue.fromJson(object);
+            newIssues.add(issue);
+        }
+        Log.i(TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+placeId);
         return newIssues;
     }
 
