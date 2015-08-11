@@ -72,7 +72,9 @@ public class LogSyncService extends Service implements
                 Log.d(TAG, "  " + dataSource.countLogsNeedingLocation() + " logs needing location");
                 if(googleApiClient.isConnected()) {
                     Location loc = getLocation();
-                    dataSource.updateAllLogsNeedingLocation(loc.getLatitude(), loc.getLongitude());
+                    if(loc!=null) {
+                        dataSource.updateAllLogsNeedingLocation(loc.getLatitude(), loc.getLongitude());
+                    }
                 } else {
                     googleApiClient.connect();  // try to reconnect!
                 }
