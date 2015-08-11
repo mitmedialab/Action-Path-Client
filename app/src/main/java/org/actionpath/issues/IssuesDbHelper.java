@@ -48,7 +48,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_STATUS_COL + " text, " +
             ISSUES_SUMMARY_COL + " text, " +
             ISSUES_DESCRIPTION_COL + " text, " +
-            ISSUES_ADDRESS_COL + " test, " +
+            ISSUES_ADDRESS_COL + " text, " +
             ISSUES_LATITUDE_COL + " double, " +
             ISSUES_LONGITUDE_COL + " double, " +
             ISSUES_IMAGE_URL_COL + " text, " +
