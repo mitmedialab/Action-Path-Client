@@ -20,6 +20,7 @@ import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.util.ActionPathServer;
 
 import java.util.ArrayList;
 import java.util.List;

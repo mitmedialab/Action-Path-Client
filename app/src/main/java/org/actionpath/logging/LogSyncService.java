@@ -1,9 +1,7 @@
 package org.actionpath.logging;
 
-import android.app.Dialog;
 import android.app.Service;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,14 +9,13 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import org.actionpath.ui.ActionPathServer;
+import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Installation;
 import org.apache.http.Header;
 import org.json.JSONArray;

@@ -1,4 +1,4 @@
-package org.actionpath.ui;
+package org.actionpath.util;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -21,7 +21,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

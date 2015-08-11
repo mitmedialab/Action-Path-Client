@@ -14,6 +14,7 @@ import android.widget.ListView;
 
 import org.actionpath.R;
 import org.actionpath.places.Place;
+import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Development;
 import org.actionpath.util.MissingLocationException;
 
@@ -86,7 +87,7 @@ public class PickPlaceFragmentList extends ListFragment {
                         Log.i(TAG,"Faking location in simulator");
                     }
                     if(loc==null){
-                        return ActionPathServer.getPlacesNear(Development.MIT_LAT,Development.MIT_LNG);
+                        return ActionPathServer.getPlacesNear(Development.MIT_LAT, Development.MIT_LNG);
                     } else {
                         Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
                         return ActionPathServer.getPlacesNear(loc.getLatitude(),loc.getLongitude());
