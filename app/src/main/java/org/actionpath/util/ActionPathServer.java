@@ -7,7 +7,6 @@ import org.actionpath.issues.Issue;
 import org.actionpath.places.Place;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
@@ -21,7 +20,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +40,8 @@ public class ActionPathServer {
 
     /**
      * Ask the server for the latest issues within the specified place
-     * @param placeId
-     * @return
+     * @param placeId The city the user is looking for issues in
+     * @return new issues from the specified place
      */
     public static ArrayList<Issue> getLatestIssues(int placeId) throws IOException, JSONException {
         ArrayList<Issue> newIssues = new ArrayList<>();
@@ -69,9 +67,9 @@ public class ActionPathServer {
 
     /**
      * Ask the server for a list of places near the specific location
-     * @param lat
-     * @param lng
-     * @return
+     * @param lat latitude the user is currently at
+     * @param lng longitude the user is currently at
+     * @return a list of places near the user's lat/long
      */
     public static ArrayList<Place> getPlacesNear(double lat, double lng) {
         ArrayList<Place> places = new ArrayList<>();
@@ -110,7 +108,7 @@ public class ActionPathServer {
      * Tell the server that we have a new installation (ie. a new user)
      * To test run:  wget http://action-path-server-rahulbot.c9.io/installs/add --post-data='id=1234'
      * http://stackoverflow.com/questions/2938502/sending-post-data-in-android
-     * @param   installId
+     * @param installId the unique id of the installation of Action Path on the user's phone
      */
     public static boolean createInstall(String installId) {
         HttpClient httpClient = new DefaultHttpClient();
@@ -123,8 +121,6 @@ public class ActionPathServer {
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             responseStr = getHttpResponseAsString(httpResponse);
-        } catch (ClientProtocolException e) {
-            Log.e(TAG, "Unable to createInstall " + e.toString());
         } catch (IOException e) {
             Log.e(TAG, "Unable to createInstall " + e.toString());
         }
@@ -163,8 +159,6 @@ public class ActionPathServer {
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             responseStr = getHttpResponseAsString(httpResponse);
-        } catch (ClientProtocolException e) {
-            Log.e(TAG, "Unable to saveAnswer " + e.toString());
         } catch (IOException e) {
             Log.e(TAG, "Unable to saveAnswer " + e.toString());
         }
@@ -191,12 +185,10 @@ public class ActionPathServer {
         InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
         StringBuilder stringBuilder = new StringBuilder();
-        String bufferedStrChunk = null;
-        while ((bufferedStrChunk = bufferedReader.readLine()) != null) {
-            stringBuilder.append(bufferedStrChunk);
+        while (bufferedReader.readLine() != null) {
+            stringBuilder.append(bufferedReader.readLine());
         }
-        String responseStr = stringBuilder.toString();
-        return responseStr;
+        return stringBuilder.toString();
     }
 
 }
