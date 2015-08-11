@@ -21,7 +21,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     @Override
     protected void onEnteredGeofences(String[] issueIds) {
         for(String str:issueIds){
-            int issueId = Integer.parseInt(issueIds[0]);
+            int issueId = Integer.parseInt(str);
             sendNotification(issueId);
             LogsDataSource.getInstance(getApplicationContext()).insertLog(
                     getApplicationContext(), issueId, LogMsg.ACTION_ENTERED_GEOFENCE, null);
@@ -45,7 +45,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
      * For now, ActionPath only handles enter transitionTypes
      */
     private void sendNotification(int issueId) {
-        Log.d(TAG,"sending notification for issueId: "+issueId);
+        Log.d(TAG,"Sending notification for issueId: "+issueId);
 
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getIssueSummary();
@@ -68,21 +68,21 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         notificationManager.notify(1, notification);
     }
 
-    public PendingIntent getPendingIntent(int issueId) {
+    private PendingIntent getPendingIntent(int issueId) {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getIssueSummary();
 
-        Log.v(TAG, "Returning intent for ResponseActivity.class for issue: " + summary);
+        Log.v(TAG, "Returning survey intent for IssueDetailActivity.class for issue: " + summary);
 
         Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
                 .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-                .putExtra(IssueDetailActivity.PARAM_FROM_NOTIFICATION, true)
+                .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, true)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
-    public NotificationManager getNotificationManager() {
+    private NotificationManager getNotificationManager() {
         return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 

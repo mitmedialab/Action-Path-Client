@@ -72,5 +72,6 @@
     <string name="image_description_civicmedia_logo">MIT Center for Civic Media logo</string>
 
     <string name="nearby_notification">Action Nearby</string>
+    <string name="update_notification">Action Updated</string>
 
 </resources>

@@ -18,7 +18,7 @@ public class LogMsg implements Serializable {
     public static final String ACTION_FOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "FollowedIssueFromFollowButton";
     public static final String ACTION_UNFOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "UnfollowedIssueFromFollowButton";
     public static final String ACTION_FOLLOWED_ISSUE_BY_ANSWERING = "FollowedIssueFromAnswer";
-    public static final String ACTION_CLICKED_ON_NOTIFICATION= "ClickedOnNotification";
+    public static final String ACTION_CLICKED_ON_SURVEY_NOTIFICATION = "ClickedOnSurveyNotification";
     public static final String ACTION_RESPONDED_TO_QUESTION = "SurveyResponse";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
@@ -31,6 +31,7 @@ public class LogMsg implements Serializable {
     public static final String ACTION_CLICKED_UPDATE_ISSUES = "ClickedUpdateIssues";
     public static final String ACTION_CLICKED_PICK_PLACE = "ClickedPickPlace";
     public static final String ACTION_CLICKED_HOME = "ClickedHome";
+    public static final String ACTION_CLICKED_ON_UPDATE_NOTIFICATION="ClicksOnUpdateNotification";
 
     public static final Integer NO_ISSUE = -1;
 
@@ -89,14 +90,12 @@ public class LogMsg implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LogMsg log = (LogMsg) o;
-        if (id != log.id) return false;
-        return true;
+        return id == log.id;
     }
 
     @Override
     public int hashCode() {
-        int result = (id+timestamp+actionType+issueId).hashCode();
-        return result;
+        return (id+timestamp+actionType+issueId).hashCode();
     }
 
     @Override

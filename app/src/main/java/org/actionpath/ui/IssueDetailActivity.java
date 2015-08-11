@@ -43,13 +43,15 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         GeofencingRemovalListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
-    public static final String PARAM_FROM_NOTIFICATION = "fromNotification";
+    public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
+    public static final String PARAM_FROM_UPDATE_NOTIFICATION = "fromUpdateNotification";
 
     public String TAG = this.getClass().getName();
 
     private Issue issue;
     private ImageLoader imageLoader;
-    private boolean fromNotification;
+    private boolean fromSurveyNotification;
+    private boolean fromUpdateNotification;
 
     private View.OnClickListener onFollowClickListener;
 
@@ -63,9 +65,12 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
-        fromNotification = bundle.getBoolean(PARAM_FROM_NOTIFICATION);
-        if(fromNotification){
-            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_NOTIFICATION);
+        fromSurveyNotification = bundle.getBoolean(PARAM_FROM_SURVEY_NOTIFICATION);
+        fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
+        if(fromSurveyNotification){
+            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
+        } else if (fromUpdateNotification) {
+            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
         }
         Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
@@ -284,7 +289,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                 break;
         }
         answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
-        if(fromNotification) {
+        if(fromSurveyNotification) {
             // only remove the geofence if we got an alert and then answered a question
             removeGeofence();
         }

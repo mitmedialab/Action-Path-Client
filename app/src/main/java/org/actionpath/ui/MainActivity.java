@@ -1,5 +1,8 @@
 package org.actionpath.ui;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +19,8 @@ import android.view.View;
 import android.net.Uri;
 
 import org.actionpath.R;
+import org.actionpath.issues.Issue;
+import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 
 //TODO: create account page at start & send data
@@ -173,7 +178,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Intent intent = new Intent()
             .setClass(MainActivity.this, IssueDetailActivity.class)
             .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-            .putExtra(IssueDetailActivity.PARAM_FROM_NOTIFICATION, false);
+            .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
         startActivity(intent);
     }
 
@@ -206,8 +211,58 @@ public class MainActivity extends AbstractLocationActivity implements
 
     @Override
     public void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus){
-        // TODO: Fire a low priority notification
+        // Fire a low priority notification
+        sendNotification(issueId, newStatus);
+
         // TODO: Mark issue as having something "new" on fav list (a UI indication)
+    }
+
+    /**
+     * Posts a notification in the notification bar when a update is called.
+     * If the user clicks the notification, control goes to the Main Activity.
+     * param transitionType The type of transition that occurred.
+     * For now, ActionPath only handles enter transitionTypes
+     */
+    private void sendNotification(int issueId, String newStatus) {
+        Log.d(TAG,"Sending notification for issueId: "+issueId);
+
+        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
+        String updateSummary = newStatus + ": " + issue.getIssueSummary();
+
+        PendingIntent pi = getPendingIntent(issueId);
+
+        // create the notification
+        Notification.Builder notificationBuilder = new Notification.Builder(this);
+        notificationBuilder
+                .setPriority(Notification.PRIORITY_LOW)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setSmallIcon(R.drawable.ic_launcher)
+                .setContentTitle(getResources().getString(R.string.update_notification))
+                .setContentText(updateSummary)
+                .setContentIntent(pi);
+
+        Notification notification = notificationBuilder.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = getNotificationManager();
+        notificationManager.notify(1, notification);
+    }
+
+    private PendingIntent getPendingIntent(int issueId) {
+        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
+        String summary = issue.getIssueSummary();
+
+        Log.v(TAG, "Returning update intent for IssueDetailActivity.class for issue: " + summary);
+
+        Intent updateIntent = new Intent(this, IssueDetailActivity.class)
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
+                .putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, true)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        return PendingIntent.getActivity(this, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
+
+    private NotificationManager getNotificationManager() {
+        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
