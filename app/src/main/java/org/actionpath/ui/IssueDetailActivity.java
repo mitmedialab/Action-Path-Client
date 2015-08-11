@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
@@ -26,14 +27,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.R;
+import org.actionpath.geofencing.GeofencingRemovalListener;
+import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.util.ActionPathServer;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
-        OnMapReadyCallback, IssueQuestionFragment.OnAnswerSelectedListener {
+        OnMapReadyCallback, IssueQuestionFragment.OnAnswerSelectedListener,
+        GeofencingRemovalListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
     public static final String PARAM_FROM_NOTIFICATION = "fromNotification";
@@ -42,6 +49,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     private Issue issue;
     private ImageLoader imageLoader;
+    private boolean fromNotification;
 
     private View.OnClickListener onFollowClickListener;
 
@@ -55,7 +63,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
-        boolean fromNotification = bundle.getBoolean(PARAM_FROM_NOTIFICATION);
+        fromNotification = bundle.getBoolean(PARAM_FROM_NOTIFICATION);
         Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
         Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
@@ -149,7 +157,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     private void changeFollowedAndUpdateUI(View view) {
-        changeFollowedAndUpdateUI(view, !issue.isFollowed(),true);
+        changeFollowedAndUpdateUI(view, !issue.isFollowed(), true);
     }
 
     private void changeFollowedAndUpdateUI(View view,boolean follow,boolean showSnackbar){
@@ -269,7 +277,32 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                 answerText = "yes";
                 break;
         }
-        answerQuestion(findViewById(R.id.issue_detail_question_container),answerText);
+        answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
+        if(fromNotification) {
+            // only remove the geofence if we got an alert and then answered a question
+            removeGeofence();
+        }
+    }
+
+    protected void removeGeofence(){
+        List<String> issuesToRemove = new ArrayList<String>();
+        issuesToRemove.add(issue.getId() + "");
+        GeofencingRemover remover = new GeofencingRemover(getApplicationContext(),
+            issuesToRemove,this);
+    }
+
+    @Override
+    public void onGeofenceRemovalSuccess(List<String> requestIdsRemoved){
+        for(String issueId: requestIdsRemoved){
+            Log.d(TAG,"Removing geofence for issue "+issueId);
+            IssuesDataSource.getInstance(getApplicationContext()).updateIssueGeofenceCreated(
+                    Integer.parseInt(issueId),false);
+        }
+    }
+
+    @Override
+    public void onGeofenceRemovalFailure(Status status) {
+        Log.w(TAG, "Failed to remove geofence for issue " + issue.getId() + " - " + status.getStatus());
     }
 
 }

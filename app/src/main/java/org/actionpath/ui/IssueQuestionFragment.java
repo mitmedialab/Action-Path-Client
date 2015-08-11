@@ -10,6 +10,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.actionpath.R;
+import org.actionpath.geofencing.GeofencingRemover;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Activities containing this fragment MUST implement the {@link OnAnswerSelectedListener}

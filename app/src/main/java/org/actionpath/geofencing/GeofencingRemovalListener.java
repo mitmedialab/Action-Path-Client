@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface GeofencingRemovalListener {
 
-    void onGeofenceRemovalSuccess(List data);
+    void onGeofenceRemovalSuccess(List<String> requestIdsRemoved);
     void onGeofenceRemovalFailure(Status status);
 
 }
