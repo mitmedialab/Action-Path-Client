@@ -8,8 +8,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.actionpath.R;
 import org.actionpath.issues.Issue;
@@ -60,7 +62,13 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         }
         // create an image loader instance
         if(!ImageLoader.getInstance().isInited()){
-            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this).build();
+            DisplayImageOptions defaultOptions = new DisplayImageOptions.Builder()
+                    .cacheInMemory(true)
+                    .displayer(new FadeInBitmapDisplayer(1000,true,false,false))
+                    .build();
+            ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                    .defaultDisplayImageOptions(defaultOptions)
+                    .build();
             ImageLoader.getInstance().init(config);
         }
         // create the issue database
