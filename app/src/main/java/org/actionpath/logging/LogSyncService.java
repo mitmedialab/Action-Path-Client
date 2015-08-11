@@ -64,12 +64,12 @@ public class LogSyncService extends Service implements
         timer.schedule(new TimerTask() {
             public void run() {
                 LogsDataSource dataSource = LogsDataSource.getInstance(getApplicationContext());
-                Log.d(TAG,"Timer says we should sync logs now!");
-                Log.d(TAG,"  "+dataSource.countLogsToSync()+" logs to sync");
+                Log.d(TAG, "Timer says we should sync logs now!");
+                Log.d(TAG, "  " + dataSource.countLogsToSync() + " logs to sync");
                 Log.d(TAG, "  " + dataSource.countLogsNeedingLocation() + " logs needing location");
-                if(googleApiClient.isConnected()) {
+                if (googleApiClient.isConnected()) {
                     Location loc = getLocation();
-                    if(loc!=null) {
+                    if (loc != null) {
                         dataSource.updateAllLogsNeedingLocation(loc.getLatitude(), loc.getLongitude());
                     }
                 } else {
@@ -86,11 +86,11 @@ public class LogSyncService extends Service implements
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(logIds.size()==0){   // if not logs to sync, don't send to server
+                if (logIds.size() == 0) {   // if not logs to sync, don't send to server
                     return;
                 }
                 RequestParams params = new RequestParams();
-                params.add("data",sendJSON.toString());
+                params.add("data", sendJSON.toString());
                 params.add("install_id", getInstallationId());
                 client.post(ActionPathServer.BASE_URL + "/logs/sync", params, new JsonHttpResponseHandler() {
                     @Override
@@ -98,22 +98,23 @@ public class LogSyncService extends Service implements
                         Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
                         Log.d(TAG, "Response from server: " + response.toString());
                         // delete sync'ed log items
-                        for(int logId:logIds){
+                        for (int logId : logIds) {
                             LogsDataSource.getInstance().deleteLog(logId);
                         }
                     }
+
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
                         Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
                         Log.e(TAG, "Response from server: " + response.toString());
                         // mark that we were not able to sync them
-                        for(int logId:logIds){
+                        for (int logId : logIds) {
                             LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_DID_NOT_SYNC);
                         }
                     }
                 });
             }
-        }, 60*1000);
+        }, 60 * 1000);
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -203,7 +204,7 @@ public class LogSyncService extends Service implements
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         if(lastLocation==null){
-            Log.w(TAG,"unable to get last location");
+            Log.w(TAG, "unable to get last location");
         } else {
             Log.d(TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
         }
@@ -212,5 +213,12 @@ public class LogSyncService extends Service implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.e(TAG, "connection to google services suspended");
+    }
+
+    @Override
+    public void onDestroy() {
+        if((googleApiClient!=null) && googleApiClient.isConnected() ){
+            googleApiClient.disconnect();
+        }
     }
 }
