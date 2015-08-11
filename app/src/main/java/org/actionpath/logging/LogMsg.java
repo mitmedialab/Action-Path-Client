@@ -14,16 +14,23 @@ public class LogMsg implements Serializable {
     public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
     public static final Integer LOG_STATUS_NEEDS_LOCATION = 3;
 
-    public static final String FOLLOWED_ISSUE_CLICK = "FollowedIssueClick";
-    public static final String ACTION_NOTIFICATION_IGNORE_CLICK = "NotificationIgnoreClick";
-    public static final String ACTION_NOTIFICATION_RESPOND_CLICK = "NotificationRespondClick";
-    public static final String ACTION_SURVEY_RESPONSE = "SurveyResponse";
-    public static final String ACTION_THANKS_DISMISSED = "ThanksDismissed";
-    public static final String ACTION_UNFOLLOWED_ISSUE = "UnfollowedIssue";
+    public static final String ACTION_CLICKED_ON_ISSUE_IN_LIST = "ClickOnIssueInList";
+    public static final String ACTION_FOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "FollowedIssueFromFollowButton";
+    public static final String ACTION_UNFOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "UnfollowedIssueFromFollowButton";
+    public static final String ACTION_FOLLOWED_ISSUE_BY_ANSWERING = "FollowedIssueFromAnswer";
+    public static final String ACTION_CLICKED_ON_NOTIFICATION= "ClickedOnNotification";
+    public static final String ACTION_RESPONDED_TO_QUESTION = "SurveyResponse";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
-    public static final String ACTION_ADDED_GEOFENCE = "AddedGeofence";
+    public static final String ACTION_CREATED_ISSUE = "CreatedIssueInDB";
+    public static final String ACTION_PICKED_PLACE= "PickedPlace";
+    public static final String ACTION_CLICKED_ABOUT = "ClickedAbout";
+    public static final String ACTION_CLICKED_MY_ISSUES = "ClickedMyIssues";
+    public static final String ACTION_CLICKED_ALL_ISSUES = "ClickedAllIssues";
+    public static final String ACTION_CLICKED_UPDATE_ISSUES = "ClickedUpdateIssues";
+    public static final String ACTION_CLICKED_PICK_PLACE = "ClickedPickPlace";
+    public static final String ACTION_CLICKED_HOME = "ClickedHome";
 
     public static final Integer NO_ISSUE = -1;
 

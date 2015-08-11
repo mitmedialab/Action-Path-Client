@@ -64,6 +64,9 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
         fromNotification = bundle.getBoolean(PARAM_FROM_NOTIFICATION);
+        if(fromNotification){
+            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_NOTIFICATION);
+        }
         Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
         Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
@@ -170,8 +173,10 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         // show the snackbar feedback
         int feedbackStringId;
         if(issue.isFollowed()){
+            logMsg(issue.getId(),LogMsg.ACTION_UNFOLLOWED_ISSUE_FROM_FOLLOW_BUTTON);
             feedbackStringId = R.string.followed_issue_feedback;
         } else {
+            logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_FROM_FOLLOW_BUTTON);
             feedbackStringId = R.string.unfollowed_issue_feedback;
         }
         if(showSnackbar) {
@@ -230,7 +235,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
-                logMsg(issue.getId(), LogMsg.ACTION_SURVEY_RESPONSE);
+                logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
                 return ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
             }
             @Override
@@ -268,6 +273,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     @Override
     public void onAnswerSelected(int answerIndex) {
+        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
         String answerText = "";
         switch(answerIndex) {
             case 0:

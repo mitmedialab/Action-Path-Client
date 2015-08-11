@@ -61,19 +61,25 @@ public class MainActivity extends AbstractLocationActivity implements
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
+                        logMsg(LogMsg.ACTION_CLICKED_HOME);
                     case R.id.nav_my_issues:
+                        logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
                         displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
                         return true;
                     case R.id.nav_all_issues:
+                        logMsg(LogMsg.ACTION_CLICKED_ALL_ISSUES);
                         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
                         return true;
                     case R.id.nav_update_issues:
+                        logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
                         displayUpdateIssuesFragment();
                         return true;
                     case R.id.nav_pick_place:
+                        logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
                         displayPickPlaceFragment();
                         return true;
                     case R.id.nav_about:
+                        logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
                         return true;
                     default:
@@ -162,7 +168,7 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onIssueSelected(int issueId) {
         Log.d(TAG, "clicked item with id: " + issueId);
-        logMsg(issueId, LogMsg.FOLLOWED_ISSUE_CLICK);
+        logMsg(issueId, LogMsg.ACTION_CLICKED_ON_ISSUE_IN_LIST);
         // Then you start a new Activity via Intent
         Intent intent = new Intent()
             .setClass(MainActivity.this, IssueDetailActivity.class)
@@ -181,6 +187,7 @@ public class MainActivity extends AbstractLocationActivity implements
         editor.putString(MainActivity.PREF_PLACE_NAME, placeName);
         editor.apply();
         Log.i(TAG, "Saved place " + placeId);
+        logMsg(LogMsg.ACTION_PICKED_PLACE);
         // and jump to update the issues
         displayUpdateIssuesFragment();
     }

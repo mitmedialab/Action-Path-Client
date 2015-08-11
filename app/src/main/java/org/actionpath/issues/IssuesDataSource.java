@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import org.actionpath.logging.LogMsg;
+import org.actionpath.logging.LogsDataSource;
+
 import java.sql.SQLException;
 
 /**
@@ -160,32 +163,39 @@ public class IssuesDataSource {
         return issue!=null;
     }
 
-    /*
-    public void insertIssue(Issue i){
-        insertOrUpdateIssue(i,false);
-    }*/
 
-    public void insertOrUpdateIssue(Issue i){
-        insertOrUpdateIssue(i,true);
+    public void insertIssue(Issue i){
+        db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
     }
 
-    public void insertOrUpdateIssue(Issue i, boolean orUpdate) {
+    /**
+     *
+     * @param i
+     * @return True if inserted, false otherwise
+     */
+    public boolean insertOrUpdateIssue(Issue i){
+        return insertOrUpdateIssue(i,true);
+    }
+
+    public boolean insertOrUpdateIssue(Issue i, boolean orUpdate) {
         if(i==null){
             Log.e(LOG_TAG,"trying to insert a null issue - ignoring to fail gracefully");
-            return;
-        }
-        try {
-            if(issueExists(i.getId()) && orUpdate) {
-                Log.v(LOG_TAG,"Updating "+i.toString());
-                db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
-                        IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
-            } else {
-                Log.v(LOG_TAG,"Inserting "+i.toString());
-                db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
+        } else {
+            try {
+                if (issueExists(i.getId()) && orUpdate) {
+                    Log.v(LOG_TAG, "Updating " + i.toString());
+                    db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
+                            IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
+                } else {
+                    Log.v(LOG_TAG, "Inserting " + i.toString());
+                    insertIssue(i);
+                    return true;
+                }
+            } catch (SQLiteConstraintException ce) {
+                Log.w(LOG_TAG, "Ignoring issue " + i.toString() + " because it already exists and you said not to update");
             }
-        } catch (SQLiteConstraintException ce){
-            Log.w(LOG_TAG,"Ignoring issue "+i.toString()+" because it already exists and you said not to update");
         }
+        return false;
     }
 
 }

@@ -1,6 +1,7 @@
 package org.actionpath.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
+import org.actionpath.logging.LogMsg;
+import org.actionpath.logging.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONException;
 
@@ -101,6 +104,7 @@ public class UpdateIssuesFragment extends Fragment implements
     }
 
     private void startTask(){
+        final Context context = getActivity().getApplicationContext();
         task = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
@@ -110,7 +114,10 @@ public class UpdateIssuesFragment extends Fragment implements
                     newIssues = ActionPathServer.getLatestIssues(placeId);
                     IssuesDataSource dataSource = IssuesDataSource.getInstance();
                     for(Issue i:newIssues){
-                        dataSource.insertOrUpdateIssue(i);
+                        boolean wasAnInsert = dataSource.insertOrUpdateIssue(i);
+                        if(wasAnInsert){
+                            LogsDataSource.getInstance(context).insertLog(context, LogMsg.ACTION_CREATED_ISSUE,null);
+                        }
                     }
                     Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
                     removeExistingGeofencesExcept(newIssues);
