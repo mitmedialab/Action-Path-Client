@@ -29,7 +29,7 @@ public class MainActivity extends AbstractLocationActivity implements
     private DrawerLayout drawerLayout;
 
     private static String TAG = MainActivity.class.getName();
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,8 +108,8 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
+    public void onResume(){
+        super.onResume();
         // check that we have a place selected
         if(getPlaceId()==INVALID_PLACE_ID){
             Log.w(TAG,"No place set yet");
@@ -187,7 +187,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     @Override
     public void onIssuesUpdated(int newIssueCount){
-        String feedback = getResources().getQuantityString(R.plurals.updated_issues,newIssueCount,newIssueCount);
+        String feedback = getResources().getQuantityString(R.plurals.updated_issues, newIssueCount, newIssueCount);
         Snackbar.make(findViewById(R.id.main_content), feedback, Snackbar.LENGTH_SHORT).show();
         displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
     }
