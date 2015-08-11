@@ -29,12 +29,7 @@ public class MainActivity extends AbstractLocationActivity implements
     private DrawerLayout drawerLayout;
 
     private static String TAG = MainActivity.class.getName();
-
-    public static final String PREFS_NAME = "ActionPathPrefs";
-    public static final String PREF_PLACE_ID = "placeId";
-    public static final String PREF_PLACE_NAME = "placeName";
-    private static int INVALID_PLACE_ID = -1;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,16 +195,6 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onIssueUpdateFailed(){
         Snackbar.make(findViewById(R.id.main_content), R.string.issues_update_failed, Snackbar.LENGTH_SHORT).show();
-    }
-
-    public int getPlaceId(){
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
-        return settings.getInt(MainActivity.PREF_PLACE_ID,INVALID_PLACE_ID);
-    }
-
-    public String getPlaceName(){
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
-        return settings.getString(MainActivity.PREF_PLACE_NAME, "Unknown City");
     }
 
     @Override

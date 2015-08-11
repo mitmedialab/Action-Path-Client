@@ -1,6 +1,7 @@
 package org.actionpath.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,6 +28,11 @@ import org.actionpath.util.Installation;
 public abstract class AbstractBaseActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getName();
+
+    public static final String PREFS_NAME = "ActionPathPrefs";
+    public static final String PREF_PLACE_ID = "placeId";
+    public static final String PREF_PLACE_NAME = "placeName";
+    protected static int INVALID_PLACE_ID = -1;
 
     /**
      * Do any config and setup that applies no matter how we enter the app here
@@ -81,7 +87,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
 
     protected void logMsg(int issueId, String action, Location loc){
         LogsDataSource.getInstance(getApplicationContext()).insertLog(
-                getApplicationContext(),issueId,action, loc);
+                getApplicationContext(), issueId, action, loc);
     }
 
     private void addTestIssues(){
@@ -103,7 +109,15 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         dataSource.updateIssueFollowed(1234, true);
         dataSource.insertOrUpdateIssue(testIssue2);
         dataSource.updateIssueFollowed(2345, true);
-
     }
 
+    public int getPlaceId(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        return settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
+    }
+
+    public String getPlaceName(){
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        return settings.getString(PREF_PLACE_NAME, "Unknown City");
+    }
 }
