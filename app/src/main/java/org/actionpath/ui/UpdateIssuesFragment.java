@@ -42,6 +42,7 @@ public class UpdateIssuesFragment extends Fragment implements
 
     private OnIssuesUpdatedListener listener;
     private int placeId;
+    private AsyncTask task;
 
     public static UpdateIssuesFragment newInstance(int placeId) {
         UpdateIssuesFragment fragment = new UpdateIssuesFragment();
@@ -70,8 +71,37 @@ public class UpdateIssuesFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG, "Building Update Issues Fragment UI");
         View view = inflater.inflate(R.layout.fragment_update_issues, container, false);
+        return view;
+    }
 
-        new AsyncTask<Object, Void, Object>() {
+    @Override
+    /**
+     * Do this stuff in onAttach because we need the activity
+     */
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            listener = (OnIssuesUpdatedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnIssuesUpdatedListener");
+        }
+        if (task!=null) {
+            if(task.getStatus()==AsyncTask.Status.PENDING) {
+                Log.d(TAG, "task is pending, won't restart");
+            } else if(task.getStatus()==AsyncTask.Status.RUNNING) {
+                Log.d(TAG,"task is running, won't restart");
+            } else if(task.getStatus()==AsyncTask.Status.FINISHED) {
+                Log.d(TAG,"task is finished, restarting");
+                startTask();
+            }
+        } else {
+            Log.d(TAG,"no task creating anew");
+            startTask();
+        }
+    }
+
+    private void startTask(){
+        task = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 Log.d(TAG, "Loading new issues for place "+placeId);
@@ -104,20 +134,8 @@ public class UpdateIssuesFragment extends Fragment implements
                     listener.onIssuesUpdated(newIssues.size());
                 }
             }
-        }.execute();
-        return view;
-    }
-
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            listener = (OnIssuesUpdatedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnIssuesUpdatedListener");
-        }
+        };
+        task.execute();
     }
 
     @Override
