@@ -42,6 +42,10 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "onCreate");
+
+        // create the issue database
+        addTestIssues();
+
         setContentView(R.layout.activity_main);
 
         // setup the UI
@@ -160,6 +164,30 @@ public class MainActivity extends AbstractLocationActivity implements
         toolbar.setTitle(R.string.about_header);
         AboutFragment fragment = AboutFragment.newInstance();
         displayFragment(fragment);
+    }
+
+    private void addTestIssues(){
+        final double Cambridge_lat = 42.359254;
+        final double Cambridge_long = -71.093667;
+        final float Cambridge_rad = 1601;
+        final double Cambridge_lat2 = 42.359255;
+        final double Cambridge_long2 = -71.093666;
+        Issue testIssue1 = new Issue(1234, "Acknowledged", "Toy Train Hack", "Giant Toy Train hack on Kendall Square T entrance.", Cambridge_lat, Cambridge_long, "350 Main Street, Cambridge, Massachusetts", "", null, null,
+                Development.PLACE_ID_CAMBRIDGE);
+        testIssue1.setRadius(Cambridge_rad);
+        testIssue1.setTest(true);
+        Issue testIssue2 = new Issue(2345, "Acknowledged", "Pothole", "Pothole on the corner of Mass Ave and Vassar.", Cambridge_lat2, Cambridge_long2, "Massachusetts Ave./Vassar St., Cambridge, Massachusetts", "", null, null,
+                Development.PLACE_ID_CAMBRIDGE);
+        testIssue2.setRadius(Cambridge_rad);
+        testIssue2.setTest(true);
+        Log.d(TAG, "added test issues");
+        IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
+        dataSource.insertOrUpdateIssue(testIssue1);
+        dataSource.updateIssueFollowed(1234, true);
+        dataSource.insertOrUpdateIssue(testIssue2);
+        dataSource.updateIssueFollowed(2345, true);
+        long issueCount = dataSource.getIssueCount(getPlaceId());
+        Log.i(TAG, issueCount + " issues in the db");
     }
 
     public void onStop() {
