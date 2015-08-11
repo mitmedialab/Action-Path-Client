@@ -41,7 +41,6 @@ public abstract class AbstractGeofencingManager implements GoogleApiClient.Conne
         result.setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(Status status) {
-                Log.d(TAG,"Got action result!");
                 if (status.isSuccess()) {
                     // Successfully registered
                     onRequestSuccess();
