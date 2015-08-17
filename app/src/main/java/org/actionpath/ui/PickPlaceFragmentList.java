@@ -87,10 +87,12 @@ public class PickPlaceFragmentList extends ListFragment {
                             loc = parentActivity.getLocation();
                         } catch(GoogleApiClientNotConnectionException mle){
                             Log.e(TAG,"said it had a location but then threw error when I asked for it");
+                            // TODO: figure out how to return a unique value to onPostExecute to fire a snack bar saying we couldn't get a location fix
                             loc = null;
                         }
                     } else {
                         Log.i(TAG,"Faking location in simulator");
+                        //TODO: set loc to Development.MIT_LAT Development.MIT_LNG
                     }
                     List<Place> results = null;
                     if(loc!=null) {
@@ -99,8 +101,10 @@ public class PickPlaceFragmentList extends ListFragment {
                             results = ActionPathServer.getPlacesNear(loc.getLatitude(), loc.getLongitude());
                         } catch(IOException ioe){
                             Log.e(TAG,"Failed to get places new "+ioe.toString());
+                            // TODO: figure out how to return a unique value to onPostExecute to say we couldn't connect to server
                         } catch(JSONException js){
                             Log.e(TAG,"Failed to parse places near "+js.toString());
+                            // TODO: figure out how to return a unique value to onPostExecute to say server responded badly
                         }
                     }
                     return results;
@@ -110,6 +114,10 @@ public class PickPlaceFragmentList extends ListFragment {
                     super.onPostExecute(o);
                     Log.d(TAG, "Got places list from server");
                     if(o==null){
+                        // TODO: this needs to be more specific, not just null... to differentaiate between:
+                        //  1) no location
+                        //  2) couldn't connect to server
+                        //  3) couldn't parse serer response
                         // something in the server comms failed
                         Snackbar.make(view, R.string.failed_to_fetch_places_near, Snackbar.LENGTH_LONG).show();
                     } else {
