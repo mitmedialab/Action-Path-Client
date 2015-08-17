@@ -119,7 +119,7 @@ public class UpdateIssuesFragment extends Fragment implements
                             if(existingIssue.isFollowed() && existingIssue.getStatus()!=i.getStatus()){
                                 listener.onFollowedIssueStatusChanged(i.getId(), existingIssue.getStatus(), i.getStatus());
                             }
-                            dataSource.updateIssue(i);
+                            dataSource.updateIssue(i,true);
                         } else {
                             LogsDataSource.getInstance(context).insertLog(context, LogMsg.ACTION_CREATED_ISSUE,null);
                             dataSource.insertIssue(i);

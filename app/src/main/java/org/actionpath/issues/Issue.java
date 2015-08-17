@@ -199,7 +199,7 @@ public class Issue implements Serializable {
         return i;
     }
 
-    public ContentValues getContentValues(){
+    public ContentValues getContentValues(boolean justServerFields){
         ContentValues cv = new ContentValues();
         cv.put(IssuesDbHelper.ISSUES_ID_COL,id);
         cv.put(IssuesDbHelper.ISSUES_STATUS_COL,status);
@@ -214,9 +214,11 @@ public class Issue implements Serializable {
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
         cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
-        cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ?1:0);
-        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ?1:0);
         cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
+        if(!justServerFields) {
+            cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ? 1 : 0);
+            cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
+        }
         return cv;
     }
 

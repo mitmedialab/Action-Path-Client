@@ -105,9 +105,9 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         testIssue2.setTest(true);
         Log.d(TAG, "added test issues");
         IssuesDataSource dataSource = IssuesDataSource.getInstance(this);
-        dataSource.insertOrUpdateIssue(testIssue1);
+        dataSource.insertOrUpdateIssue(testIssue1,true);
         dataSource.updateIssueFollowed(1234, true);
-        dataSource.insertOrUpdateIssue(testIssue2);
+        dataSource.insertOrUpdateIssue(testIssue2, true);
         dataSource.updateIssueFollowed(2345, true);
     }
 

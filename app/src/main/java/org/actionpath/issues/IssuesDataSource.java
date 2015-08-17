@@ -165,26 +165,26 @@ public class IssuesDataSource {
 
     public void insertIssue(Issue i){
         Log.v(LOG_TAG, "Inserting " + i.toString());
-        db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues());
+        db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues(false));
     }
 
-    public void updateIssue(Issue i){
+    public void updateIssue(Issue i, boolean justServerFields){
         Log.v(LOG_TAG, "Updating " + i.toString());
-        db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(),
+        db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(justServerFields),
                 IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
     }
 
-    public void insertOrUpdateIssue(Issue i){
-        insertOrUpdateIssue(i,true);
+    public void insertOrUpdateIssue(Issue i, boolean justServerFields){
+        insertOrUpdateIssue(i,true,justServerFields);
     }
 
-    public void insertOrUpdateIssue(Issue i, boolean orUpdate) {
+    public void insertOrUpdateIssue(Issue i, boolean orUpdate, boolean justServerFields) {
         if(i==null){
             Log.e(LOG_TAG,"trying to insert a null issue - ignoring to fail gracefully");
         } else {
             try {
                 if (issueExists(i.getId()) && orUpdate) {
-                    updateIssue(i);
+                    updateIssue(i,justServerFields);
                 } else {
                     insertIssue(i);
                 }
