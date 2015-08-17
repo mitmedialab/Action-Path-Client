@@ -55,7 +55,7 @@ public class ActionPathServer {
         }
         Log.v(TAG,"Got latestIssues JSON results:"+result.toString());
         JSONArray issuesArray = new JSONArray(result.toString());
-        Log.v(TAG,"  first issue"+issuesArray.get(0).toString());
+        Log.v(TAG, "  first issue" + issuesArray.get(0).toString());
         for(int i=0;i<issuesArray.length();i++){
             JSONObject object = issuesArray.getJSONObject(i);
             Issue issue = Issue.fromJson(object);
@@ -71,36 +71,28 @@ public class ActionPathServer {
      * @param lng longitude the user is currently at
      * @return a list of places near the user's lat/long
      */
-    public static ArrayList<Place> getPlacesNear(double lat, double lng) {
+    public static ArrayList<Place> getPlacesNear(double lat, double lng) throws IOException, JSONException {
         ArrayList<Place> places = new ArrayList<>();
         // fetch json from server
         String jsonStr = null;
-        try {
-            URL u = new URL(BASE_URL + "/places/near.json?lat="+lat+"&lng="+lng);
-            InputStream in = u.openStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-            StringBuilder result = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-            jsonStr = result.toString();
-            Log.i(TAG, "Successfully fetches places from " + BASE_URL);
-        } catch (IOException ex){
-            Log.e(TAG, "Failed to fetch places near | " + ex.toString());
+        URL u = new URL(BASE_URL + "/places/near.json?lat="+lat+"&lng="+lng);
+        InputStream in = u.openStream();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder result = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            result.append(line);
         }
+        jsonStr = result.toString();
+        Log.i(TAG, "Successfully fetches places from " + BASE_URL);
         // now parse it into Place objects
-        try {
-            JSONArray placesArray = new JSONArray(jsonStr);
-            for (int i = 0; i < placesArray.length(); i++) {
-                JSONObject placesObject = placesArray.getJSONObject(i);
-                Place place = Place.fromJson(placesObject);
-                places.add(place);
-            }
-            Log.i(TAG,"Found "+places.size()+" places near "+lat+","+lng);
-        } catch (JSONException ex){
-            Log.e(TAG, "Failed to parse json in places near | " + ex.toString());
+        JSONArray placesArray = new JSONArray(jsonStr);
+        for (int i = 0; i < placesArray.length(); i++) {
+            JSONObject placesObject = placesArray.getJSONObject(i);
+            Place place = Place.fromJson(placesObject);
+            places.add(place);
         }
+        Log.i(TAG,"Found "+places.size()+" places near "+lat+","+lng);
         return places;
     }
 
@@ -146,35 +138,27 @@ public class ActionPathServer {
      * Tell the server that we have a new installation (ie. a new user)
      * To test run:  wget http://action-path-server-rahulbot.c9.io/issues/460375/responses/add --post-data='installId=23409fsd9f&answer=yes'
      */
-    public static boolean saveAnswer(String installId, int issueId, String answer) {
+    public static boolean saveAnswer(String installId, int issueId, String answer) throws IOException, JSONException{
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(BASE_URL + "/responses/add.json");
         String responseStr = null;
-        try {
-            List<NameValuePair> nameValuePairs = new ArrayList<>(2);
-            nameValuePairs.add(new BasicNameValuePair("issueId", issueId+""));
-            nameValuePairs.add(new BasicNameValuePair("installId", installId));
-            nameValuePairs.add(new BasicNameValuePair("answer", answer));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+        List<NameValuePair> nameValuePairs = new ArrayList<>(2);
+        nameValuePairs.add(new BasicNameValuePair("issueId", issueId+""));
+        nameValuePairs.add(new BasicNameValuePair("installId", installId));
+        nameValuePairs.add(new BasicNameValuePair("answer", answer));
+        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        HttpResponse httpResponse = httpClient.execute(httpPost);
 
-            responseStr = getHttpResponseAsString(httpResponse);
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to saveAnswer " + e.toString());
-        }
-        try{
-            if(responseStr!=null){
-                JSONObject jsonResponse = new JSONObject(responseStr);
-                if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
-                    Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
-                    return true;
-                } else {
-                    Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
-                    return false;
-                }
+        responseStr = getHttpResponseAsString(httpResponse);
+        if(responseStr!=null){
+            JSONObject jsonResponse = new JSONObject(responseStr);
+            if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
+                Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
+                return true;
+            } else {
+                Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
+                return false;
             }
-        } catch (JSONException ex){
-            Log.e(TAG, "Failed to parse json in saveAnswer | " + ex.toString());
         }
         return false;
     }

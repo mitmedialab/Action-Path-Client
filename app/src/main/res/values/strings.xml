@@ -74,4 +74,7 @@
     <string name="nearby_notification">Action Nearby</string>
     <string name="update_notification">Action Updated</string>
 
+    <string name="failed_to_save_answer">Couldn\'t save your answer</string>
+    <string name="failed_to_fetch_places_near">Could\'t find any places near here</string>
+
 </resources>

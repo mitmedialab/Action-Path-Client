@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,8 +18,11 @@ import org.actionpath.places.Place;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Development;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A fragment representing a list of followed issues.
@@ -69,9 +73,11 @@ public class PickPlaceFragmentList extends ListFragment {
                     Location loc = null;
                     if(!Development.isSimulator()){
                         synchronized (this) {
-                            while (!parentActivity.hasLocation()) {
+                            int retries = 0;
+                            while (!parentActivity.hasLocation() && retries < 4) {
                                 try {
                                     wait(500);
+                                    retries++;
                                 } catch (InterruptedException ie) {
                                     Log.e(TAG, "Interrupted while getting location :-( " + ie);
                                 }
@@ -86,22 +92,32 @@ public class PickPlaceFragmentList extends ListFragment {
                     } else {
                         Log.i(TAG,"Faking location in simulator");
                     }
-                    if(loc==null){
-                        // TODO: Replace Dev options with Location Settings Prompt
-                        return ActionPathServer.getPlacesNear(Development.MIT_LAT, Development.MIT_LNG);
-                    } else {
+                    List<Place> results = null;
+                    if(loc!=null) {
                         Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
-                        return ActionPathServer.getPlacesNear(loc.getLatitude(),loc.getLongitude());
+                        try {
+                            results = ActionPathServer.getPlacesNear(loc.getLatitude(), loc.getLongitude());
+                        } catch(IOException ioe){
+                            Log.e(TAG,"Failed to get places new "+ioe.toString());
+                        } catch(JSONException js){
+                            Log.e(TAG,"Failed to parse places near "+js.toString());
+                        }
                     }
+                    return results;
                 }
                 @Override
                 protected void onPostExecute(Object o) {
                     super.onPostExecute(o);
                     Log.d(TAG, "Got places list from server");
-                    ArrayList<Place> places = (ArrayList<Place>) o;
-                    ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
-                            view.getContext(), R.layout.places_list_item, places);
-                    setListAdapter(placesArrayAdaptor);
+                    if(o==null){
+                        // something in the server comms failed
+                        Snackbar.make(view, R.string.failed_to_fetch_places_near, Snackbar.LENGTH_LONG).show();
+                    } else {
+                        ArrayList<Place> places = (ArrayList<Place>) o;
+                        ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
+                                view.getContext(), R.layout.places_list_item, places);
+                        setListAdapter(placesArrayAdaptor);
+                    }
                 }
             }.execute();
         } else {

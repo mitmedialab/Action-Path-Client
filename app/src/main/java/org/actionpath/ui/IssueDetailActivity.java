@@ -33,7 +33,9 @@ import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
 import org.actionpath.util.ActionPathServer;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,19 +243,36 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             @Override
             protected Object doInBackground(Object[] params) {
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
-                return ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
+                try {
+                    boolean worked = ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
+                    return worked;
+                } catch(IOException ioe){
+                    Log.e(TAG,"Failed to save answer "+ioe.toString());
+                    return false;
+                } catch(JSONException js){
+                    Log.e(TAG,"Failed to parse answer response"+js.toString());
+                    return false;
+                }
             }
             @Override
             protected void onPostExecute(Object o) {
                 boolean success = (boolean) o;
                 Log.d(TAG,"saved answer to server "+success);
-                // show some snackbar feedback
-                int feedbackStringId = R.string.issue_question_answered;
-                Snackbar.make(v, feedbackStringId, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.action_unfollow, new View.OnClickListener() {
-                            @Override public void onClick(View v) {changeFollowedAndUpdateUI(v,false,true);}
-                        })
-                        .show();
+                if(success) {
+                    // show some snackbar feedback
+                    int feedbackStringId = R.string.issue_question_answered;
+                    Snackbar.make(v, feedbackStringId, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.action_unfollow, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    changeFollowedAndUpdateUI(v, false, true);
+                                }
+                            })
+                            .show();
+                } else {
+                    // something in the server comms failed
+                    Snackbar.make(v, R.string.failed_to_save_answer, Snackbar.LENGTH_LONG).show();
+                }
             }
         }.execute();
     }

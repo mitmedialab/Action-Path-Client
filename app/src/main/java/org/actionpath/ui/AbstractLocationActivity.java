@@ -129,11 +129,15 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to google services");
+        try {
+            Log.i(TAG, "  Location Avaliable = " + isLocationAvailable());
+        } catch (GoogleApiClientNotConnectionException e ){
+            Log.e(TAG,"google play service not connected!");    // shouldn't happen ever because we are in onConencted!
+        }
         updateLastLocation();
         if(lastLocation==null){
             Log.w(TAG,"unable to get last location");
         } else {
-            hasLocation = true;
             Log.d(TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
         }
     }
@@ -163,6 +167,14 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
             hasLocation = true;
         }
         return lastLocation;
+    }
+
+    protected boolean isLocationAvailable() throws GoogleApiClientNotConnectionException {
+        if(googleApiClient==null || !googleApiClient.isConnected()){
+            throw new GoogleApiClientNotConnectionException();
+        } else {
+            return LocationServices.FusedLocationApi.getLocationAvailability(googleApiClient).isLocationAvailable();
+        }
     }
 
     protected void logMsg(String action){
