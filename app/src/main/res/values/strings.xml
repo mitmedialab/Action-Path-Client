@@ -74,7 +74,9 @@
     <string name="nearby_notification">Action Nearby</string>
     <string name="update_notification">Action Updated</string>
 
-    <string name="failed_to_save_answer">Couldn\'t save your answer</string>
-    <string name="failed_to_fetch_places_near">Couldn\'t find any places near here</string>
+    <string name="failed_to_save_answer">Problem saving your answer</string>
+    <string name="failed_to_get_location">Problem determining your location</string>
+    <string name="failed_to_fetch_places_near">Problem finding places near you</string>
+    <string name="failed_to_parse_places_near">Server error retrieving places</string>
 
 </resources>

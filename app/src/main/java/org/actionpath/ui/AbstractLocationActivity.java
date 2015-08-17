@@ -130,7 +130,7 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "Connected to google services");
         try {
-            Log.i(TAG, "  Location Avaliable = " + isLocationAvailable());
+            Log.i(TAG, "  Location Available = " + isLocationAvailable());
         } catch (GoogleApiClientNotConnectionException e ){
             Log.e(TAG,"google play service not connected!");    // shouldn't happen ever because we are in onConencted!
         }

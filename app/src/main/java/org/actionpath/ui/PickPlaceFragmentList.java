@@ -32,6 +32,11 @@ import java.util.List;
  */
 public class PickPlaceFragmentList extends ListFragment {
 
+    public static final int STATUS_LOCATION_SERVICES_TOTAL_FAILURE = 0;
+    public static final int STATUS_LOCATION_SERVICES_SUCCESS = 1;
+    public static final int STATUS_LOCATION_SERVICES_GET_FAILURE = 2;
+    public static final int STATUS_LOCATION_SERVICES_PARSE_FAILURE = 3;
+
     private static String TAG = PickPlaceFragmentList.class.getName();
 
     private OnPlaceSelectedListener listener;
@@ -88,7 +93,7 @@ public class PickPlaceFragmentList extends ListFragment {
                             loc = parentActivity.getLocation();
                         } catch(GoogleApiClientNotConnectionException mle){
                             Log.e(TAG,"said it had a location but then threw error when I asked for it");
-                            results.status = 0;
+                            results.status = STATUS_LOCATION_SERVICES_TOTAL_FAILURE;
                             loc = null;
                         }
                     } else {
@@ -99,13 +104,13 @@ public class PickPlaceFragmentList extends ListFragment {
                         Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
                         try {
                             results.object = ActionPathServer.getPlacesNear(loc.getLatitude(), loc.getLongitude());
-                            results.status = 1;
+                            results.status = STATUS_LOCATION_SERVICES_SUCCESS;
                         } catch(IOException ioe){
                             Log.e(TAG,"Failed to get places new "+ioe.toString());
-                            results.status = 2;
+                            results.status = STATUS_LOCATION_SERVICES_GET_FAILURE;
                         } catch(JSONException js){
                             Log.e(TAG,"Failed to parse places near "+js.toString());
-                            results.status = 3;
+                            results.status = STATUS_LOCATION_SERVICES_PARSE_FAILURE;
 
                         }
                     }
@@ -117,21 +122,21 @@ public class PickPlaceFragmentList extends ListFragment {
                     Log.d(TAG, "Got places list from server");
                     AsyncTaskResultsWrapper results = (AsyncTaskResultsWrapper) o;
                     switch (results.status) {
-                        case 0:
-                            // TODO: fire snackbar saying couldn't get location
+                        case STATUS_LOCATION_SERVICES_TOTAL_FAILURE:
+                            Snackbar.make(view, R.string.failed_to_get_location, Snackbar.LENGTH_LONG).show();
                             break;
-                        case 1:
+                        case STATUS_LOCATION_SERVICES_SUCCESS:
                             // it worked!
                             ArrayList<Place> places = (ArrayList<Place>) results.object;
                             ArrayAdapter<Place> placesArrayAdaptor = new ArrayAdapter<>(
                                     view.getContext(), R.layout.places_list_item, places);
                             setListAdapter(placesArrayAdaptor);
                             break;
-                        case 2:
+                        case STATUS_LOCATION_SERVICES_GET_FAILURE:
                             Snackbar.make(view, R.string.failed_to_fetch_places_near, Snackbar.LENGTH_LONG).show();
                             break;
-                        case 3:
-                            // TODO: snackbar to say server responded badly
+                        case STATUS_LOCATION_SERVICES_PARSE_FAILURE:
+                            Snackbar.make(view, R.string.failed_to_parse_places_near, Snackbar.LENGTH_LONG).show();
                             break;
                     }
                 }
