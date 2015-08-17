@@ -37,6 +37,7 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
     @Override
     public void onCreate(Bundle savedInstanceBundle){
         super.onCreate(savedInstanceBundle);
+        // TODO: If Location services are off, fire dialog box
         // try to get the location
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)

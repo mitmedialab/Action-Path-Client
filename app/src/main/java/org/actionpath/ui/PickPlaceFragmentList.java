@@ -87,6 +87,7 @@ public class PickPlaceFragmentList extends ListFragment {
                         Log.i(TAG,"Faking location in simulator");
                     }
                     if(loc==null){
+                        // TODO: Replace Dev options with Location Settings Prompt
                         return ActionPathServer.getPlacesNear(Development.MIT_LAT, Development.MIT_LNG);
                     } else {
                         Log.v(TAG,"Got location "+loc.getLatitude()+","+loc.getLongitude());
