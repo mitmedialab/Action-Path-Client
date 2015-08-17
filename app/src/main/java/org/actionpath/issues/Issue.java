@@ -38,7 +38,7 @@ public class Issue implements Serializable {
     Date createdAt;
     Date updatedAt;
     int placeId;
-    float radius;   // geofence radius to use, in meters
+    float radius = 500;   // geofence radius to use, in meters
     boolean test = false;   // is this a test issue we have inserted?
 
     boolean followed = false;
@@ -194,15 +194,8 @@ public class Issue implements Serializable {
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");
         i.radius = object.getInt("geofence_radius");
-        Log.v(TAG, "Parsed json issue at loc strings: (" +
-                object.getString("lat") + "," +
-                object.getString("lng") + ")");
-        Log.v(TAG, "Parsed json issue at loc floats: (" +
-                Float.parseFloat(object.getString("lat")) + "," +
-                Float.parseFloat(object.getString("lng")) + ")");
-        Log.v(TAG, "  as lat/lng (" +
-                i.latitude + "," +
-                i.longitude + ")");
+        Log.v(TAG, "  "+i.id+": parse lat/lng/radius (" + i.latitude + "," + i.longitude + " + "+i.radius+")");
+        Log.v(TAG, "  "+i.id+": image_url = "+i.imageUrl);
         return i;
     }
 

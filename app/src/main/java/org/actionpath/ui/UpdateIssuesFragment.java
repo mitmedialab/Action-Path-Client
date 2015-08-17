@@ -196,8 +196,12 @@ public class UpdateIssuesFragment extends Fragment implements
         while (!cursor.isAfterLast()) {
             int issueId = cursor.getInt(0);
             Issue issue = issuesDataSource.getIssue(issueId);
-            buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
-            //logMsg(issueId, LogMsg.ACTION_ADDED_GEOFENCE);
+            if(issue.getRadius()==0){
+                Log.e(TAG,"  skipping geofence for issue "+issueId+" due to radius of 0");
+            } else {
+                buildGeofence(issueId, cursor.getDouble(1), cursor.getDouble(2), issue.getRadius());
+                //logMsg(issueId, LogMsg.ACTION_ADDED_GEOFENCE);
+            }
             cursor.moveToNext();
         }
         cursor.close();

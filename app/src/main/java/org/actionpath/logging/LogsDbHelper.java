@@ -56,16 +56,15 @@ public class LogsDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
+        Log.i(TAG, "Created " + LOGS_TABLE_NAME);
+        Log.d(TAG, "  " + DATABASE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(TAG,
-                "Upgrading database from version " + oldVersion + " to "
-                        + newVersion + ", which will destroy all old data");
+        Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
         db.execSQL("DROP TABLE IF EXISTS " + LOGS_TABLE_NAME);
         onCreate(db);
-        Log.i(TAG, "Created " + LOGS_TABLE_NAME);
     }
 
 }

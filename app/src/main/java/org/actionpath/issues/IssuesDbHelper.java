@@ -57,7 +57,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_GEOFENCE_CREATED_COL + " int, " +
             ISSUES_PLACE_ID_COL + " int, " +
             ISSUES_CREATED_AT_COL + " int, " +
-            ISSUES_UPDATED_AT_COL + " int " +
+            ISSUES_UPDATED_AT_COL + " int, " +
             ISSUES_GEOFENCE_RADIUS_COL + " int " +
             ");";
 
@@ -69,6 +69,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
+        Log.i(TAG, "Created " + ISSUES_TABLE_NAME);
+        Log.d(TAG, "  " + DATABASE_CREATE);
     }
 
     @Override
@@ -80,7 +82,6 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
             onCreate(db);
-            Log.i(TAG, "Created " + ISSUES_TABLE_NAME);
         }
     }
 
