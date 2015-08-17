@@ -1,10 +1,17 @@
 package org.actionpath.ui;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
+import org.actionpath.R;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -12,7 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.actionpath.logging.LogMsg;
-import org.actionpath.util.MissingLocationException;
+import org.actionpath.util.GoogleApiClientNotConnectionException;
 
 /**
  * An activity with location helpers
@@ -46,9 +53,40 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
                 .build();
     }
 
+    private void verifyLocationServicesEnabled(){
+        LocationManager lm = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        boolean gpsOk = false;
+        boolean networkOk = false;
+
+        try {
+            if(lm.getAllProviders().contains(LocationManager.GPS_PROVIDER)){
+                gpsOk = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } else {
+                gpsOk = true;
+            }
+        } catch(Exception ex) {}
+
+        try {
+            if(lm.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+                networkOk = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } else {
+                networkOk = true;
+            }
+        } catch(Exception ex) {}
+
+        Log.i(TAG,"LocationManager - GPS: "+gpsOk+", Network:"+networkOk);
+
+        if(!gpsOk && !networkOk) {
+            Log.e(TAG, "Location GPS or Network not available :-(");
+            // notify user via a dialog alert, linking to a
+            // new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        }
+    }
+
     @Override
     public void onStart(){
         super.onStart();
+        verifyLocationServicesEnabled();
         googleApiClient.connect();
     }
 
@@ -107,11 +145,11 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
         // to onConnected(Bundle) to re-enable them.
     }
 
-    public Location getLocation() throws MissingLocationException {
+    public Location getLocation() throws GoogleApiClientNotConnectionException {
         if(googleApiClient.isConnected()){
             return updateLastLocation();
         }
-        throw new MissingLocationException();
+        throw new GoogleApiClientNotConnectionException();
     }
 
     public boolean hasLocation(){
@@ -119,9 +157,11 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
     }
 
     private Location updateLastLocation(){
-        hasLocation = true;
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
+        if(lastLocation!=null){
+            hasLocation = true;
+        }
         return lastLocation;
     }
 
@@ -133,7 +173,7 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
         Location loc = null;
         try {
             loc = getLocation();
-        } catch(MissingLocationException mce){
+        } catch(GoogleApiClientNotConnectionException mce){
             Log.w(TAG,"unable to get location for log message");
         }
         logMsg(issueId, action, loc);

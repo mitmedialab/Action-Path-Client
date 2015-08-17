@@ -16,7 +16,7 @@ import org.actionpath.R;
 import org.actionpath.places.Place;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Development;
-import org.actionpath.util.MissingLocationException;
+import org.actionpath.util.GoogleApiClientNotConnectionException;
 
 import java.util.ArrayList;
 
@@ -79,7 +79,7 @@ public class PickPlaceFragmentList extends ListFragment {
                         }
                         try{
                             loc = parentActivity.getLocation();
-                        } catch(MissingLocationException mle){
+                        } catch(GoogleApiClientNotConnectionException mle){
                             Log.e(TAG,"said it had a location but then threw error when I asked for it");
                             loc = null;
                         }
