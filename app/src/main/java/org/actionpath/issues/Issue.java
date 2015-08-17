@@ -38,8 +38,8 @@ public class Issue implements Serializable {
     Date createdAt;
     Date updatedAt;
     int placeId;
-    float radius = DEFAULT_RADIUS;    // in meters
-    boolean test = false;
+    float radius;   // geofence radius to use, in meters
+    boolean test = false;   // is this a test issue we have inserted?
 
     boolean followed = false;
     boolean geofenceCreated = false;
@@ -186,11 +186,14 @@ public class Issue implements Serializable {
         i.latitude = Float.parseFloat(object.getString("lat"));
         i.longitude = Float.parseFloat(object.getString("lng"));
         i.address = object.getString("address");
-        i.imageUrl = object.getString("image_full");
-        if(i.imageUrl.equals("null")) i.imageUrl = null;    // catch for server data inconsistency
+        String custom_image_url = object.getString("custom_image_url");
+        String scf_image_url = object.getString("scf_image_url");
+        if(scf_image_url.equals("null")) scf_image_url = null;    // catch for server data inconsistency
+        i.imageUrl = (custom_image_url.length()>0) ? custom_image_url : scf_image_url;
         i.createdAt = serverJsonDateFormat.parse(object.getString("created_at"), zeroParsePosition);
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");
+        i.radius = object.getInt("geofence_radius");
         Log.v(TAG, "Parsed json issue at loc strings: (" +
                 object.getString("lat") + "," +
                 object.getString("lng") + ")");
@@ -220,6 +223,7 @@ public class Issue implements Serializable {
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
         cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ?1:0);
         cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ?1:0);
+        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
         return cv;
     }
 
