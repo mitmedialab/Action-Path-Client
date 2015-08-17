@@ -8,16 +8,16 @@
 
     <!-- Items that show up in the main nav drawer menu -->
     <string name="nav_home">Home</string>
-    <string name="nav_followed_issues">My Issues</string>
-    <string name="nav_all_issues">All Issues</string>
-    <string name="nav_update_issues">Update Issues</string>
+    <string name="nav_followed_issues">My Actions</string>
+    <string name="nav_all_issues">All Local Actions</string>
+    <string name="nav_update_issues">Update Actions</string>
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
 
-    <string name="all_issues_header">All Issues in %s</string>
-    <string name="followed_issues_header">My Issues in %s</string>
+    <string name="all_issues_header">All Actions in %s</string>
+    <string name="followed_issues_header">My Actions in %s</string>
     <string name="pick_place_header">Choose Your City</string>
-    <string name="update_issues_header">Updating Issues in %s</string>
+    <string name="update_issues_header">Updating Actions in %s</string>
     <string name="about_header">About Action Path</string>
 
     <string name="issue_detail_summary">Summary</string>
@@ -26,8 +26,8 @@
     <string name="issue_detail_location">Location</string>
     <string name="issue_detail_view_online">View Online</string>
 
-    <string name="followed_issue_feedback">Issue followed</string>
-    <string name="unfollowed_issue_feedback">Issue unfollowed</string>
+    <string name="followed_issue_feedback">Action followed</string>
+    <string name="unfollowed_issue_feedback">Action unfollowed</string>
 
     <string name="walk_there">Walk There Now</string>
 
@@ -36,28 +36,28 @@
 
     <string name="loading">Loading&#8230;</string>
 
-    <string name="no_issues_to_show">No issues to show</string>
+    <string name="no_issues_to_show">No actions to show</string>
 
     <string name="issue_question">Is this still a problem?</string>
     <string name="issue_answer_yes">Yes</string>
     <string name="issue_answer_no">No</string>
-    <string name="issue_question_answered">Saved your answer. Following this issue.</string>
+    <string name="issue_question_answered">Saved your answer. Following this action.</string>
 
     <string name="action_undo">Undo</string>
     <string name="action_follow">Follow</string>
     <string name="action_unfollow">Unfollow</string>
 
     <plurals name="updated_issues">
-        <item quantity="one">Updated %d issue</item>
-        <item quantity="other">Updated %d issues</item>
+        <item quantity="one">Updated %d action</item>
+        <item quantity="other">Updated %d actions</item>
     </plurals>
-    <string name="issues_update_failed">Failed to update issues :-(</string>
+    <string name="issues_update_failed">Failed to update actions.</string>
     <string name="title_activity_maps">Map</string>
 
     <string name="created_new_user">Created a new user</string>
     <string name="placeholder">Placeholder Text</string>
 
-    <string name="image_description">Image associated with the current issue.</string>
+    <string name="image_description">Image associated with the current action.</string>
 
     <string name="about_summary_title">Summary</string>
     <string name="about_summary_body">Action Path is a location-based civic engagement platform for Android smartphones that prompts citizens to explore their cities and participate in governance around infrastructure issues and planning. Existing platforms for civic engagement, whether online or offline, are inconvenient and disconnected from the source of issues they are meant to address. They require that citizens leave the places they normally inhabit physically or virtually and commit to a separate space and set of processes.\n\nAction Path answers the challenge: How do you address barriers to effective civic engagement in community matters, and ensure all citizens can have their voice heard on how to improve their local communities? It does so by converting individual actions into collective action and by providing context and a sense of efficacy, which may help citizens become more effective through regular practice and feedback.</string>
