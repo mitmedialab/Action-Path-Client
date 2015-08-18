@@ -152,6 +152,7 @@ public class ActionPathServer {
         responseStr = getHttpResponseAsString(httpResponse);
         if(responseStr!=null){
             JSONObject jsonResponse = new JSONObject(responseStr);
+            Log.d(TAG, "responseStatus = " + jsonResponse.getString(RESPONSE_STATUS));
             if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
                 Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
                 return true;

@@ -233,7 +233,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
      */
 
     private void answerQuestion(View view, String answer){
-        Log.i(TAG, "Answered " + answer + " issue " + issue.getId());
+        Log.i(TAG, "Answered '" + answer + "' on issue " + issue.getId());
         // update the UI
         final String newAnswer = answer;
         changeFollowedAndUpdateUI(view, true, false);
@@ -250,7 +250,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                     Log.e(TAG,"Failed to save answer "+ioe.toString());
                     return false;
                 } catch(JSONException js){
-                    Log.e(TAG,"Failed to parse answer response"+js.toString());
+                    Log.e(TAG,"Failed to parse answer response "+js.toString());
                     return false;
                 }
             }
