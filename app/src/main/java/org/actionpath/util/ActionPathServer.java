@@ -98,7 +98,7 @@ public class ActionPathServer {
 
     /**
      * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget http://action-path-server-rahulbot.c9.io/installs/add --post-data='id=1234'
+     * To test run:  wget https://api.dev.actionpath.org/installs/add --post-data='id=1234'
      * http://stackoverflow.com/questions/2938502/sending-post-data-in-android
      * @param installId the unique id of the installation of Action Path on the user's phone
      */
@@ -136,7 +136,7 @@ public class ActionPathServer {
 
     /**
      * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget http://action-path-server-rahulbot.c9.io/issues/460375/responses/add --post-data='installId=23409fsd9f&answer=yes'
+     * To test run:  wget https://api.dev.actionpath.org/responses/add --post-data='issueId=1234&installId=23409fsd9f&answer=yes'
      */
     public static boolean saveAnswer(String installId, int issueId, String answer) throws IOException, JSONException{
         HttpClient httpClient = new DefaultHttpClient();
