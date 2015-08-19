@@ -121,15 +121,16 @@ public class ActionPathServer {
                 JSONObject jsonResponse = new JSONObject(responseStr);
                 String responseStatus = jsonResponse.getString(RESPONSE_STATUS);
                 if(RESPONSE_STATUS_OK.equals(responseStatus)){
-                    Log.i(TAG,"Told the server to createUser "+installId);
+                    Log.i(TAG,"Told the server to createInstall "+installId);
                     return true;
                 } else {
-                    Log.e(TAG,"Server said it failed to createUser " + installId + "(status="+responseStatus+")");
+                    Log.e(TAG,"Server said it failed to createInstall " + installId + "(status="+responseStatus+")");
                     return false;
                 }
             }
         } catch (JSONException ex){
-            Log.e(TAG, "Failed to parse json in createUser | " + ex.toString());
+            Log.e(TAG, "Failed to parse json in createInstall | " + ex.toString());
+            Log.e(TAG, "  Response was '"+responseStr+"'");
         }
         return false;
     }
