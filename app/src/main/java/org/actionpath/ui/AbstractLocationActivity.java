@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.actionpath.logging.LogMsg;
+import org.actionpath.util.Development;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
 
 /**
@@ -170,6 +171,9 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
     }
 
     protected boolean isLocationAvailable() throws GoogleApiClientNotConnectionException {
+        if(Development.isSimulator()){
+            return true;
+        }
         if(googleApiClient==null || !googleApiClient.isConnected()){
             throw new GoogleApiClientNotConnectionException();
         } else {
