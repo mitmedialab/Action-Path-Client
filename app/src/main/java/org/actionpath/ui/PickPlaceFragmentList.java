@@ -40,6 +40,7 @@ public class PickPlaceFragmentList extends ListFragment {
 
     private OnPlaceSelectedListener listener;
     private View view;
+    private AsyncTask fetchingTask;
 
     public static PickPlaceFragmentList newInstance() {
         PickPlaceFragmentList fragment = new PickPlaceFragmentList();
@@ -70,7 +71,7 @@ public class PickPlaceFragmentList extends ListFragment {
         view = inflater.inflate(R.layout.fragment_pick_place, container, false);
         if(this.getActivity() instanceof AbstractLocationActivity){
             final AbstractLocationActivity parentActivity = (AbstractLocationActivity) this.getActivity();
-            new AsyncTask<Object, Void, Object>() {
+            fetchingTask = new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     AsyncTaskResultsWrapper results = new AsyncTaskResultsWrapper();
@@ -79,7 +80,7 @@ public class PickPlaceFragmentList extends ListFragment {
                     if(!Development.isSimulator()){
                         synchronized (this) {
                             int retries = 0;
-                            while (!parentActivity.hasLocation() && retries < 4) {
+                            while (!isCancelled() && !parentActivity.hasLocation() && retries < 4) {
                                 try {
                                     wait(500);
                                     retries++;
@@ -139,7 +140,8 @@ public class PickPlaceFragmentList extends ListFragment {
                             break;
                     }
                 }
-            }.execute();
+            };
+            fetchingTask.execute();
         } else {
             Log.e(TAG,"BADNESS - you can only use this inside of an AbstractLocationActivity!");
         }
@@ -159,6 +161,9 @@ public class PickPlaceFragmentList extends ListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        if (this.fetchingTask != null) {
+            this.fetchingTask.cancel(true);
+        }
         listener = null;
     }
 

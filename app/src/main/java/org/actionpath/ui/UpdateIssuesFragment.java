@@ -45,7 +45,7 @@ public class UpdateIssuesFragment extends Fragment implements
 
     private OnIssuesUpdatedListener listener;
     private int placeId;
-    private AsyncTask task;
+    private AsyncTask fetchingTask;
 
     public static UpdateIssuesFragment newInstance(int placeId) {
         UpdateIssuesFragment fragment = new UpdateIssuesFragment();
@@ -88,24 +88,11 @@ public class UpdateIssuesFragment extends Fragment implements
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnIssuesUpdatedListener");
         }
-        if (task!=null) {
-            if(task.getStatus()==AsyncTask.Status.PENDING) {
-                Log.d(TAG, "task is pending, won't restart");
-            } else if(task.getStatus()==AsyncTask.Status.RUNNING) {
-                Log.d(TAG,"task is running, won't restart");
-            } else if(task.getStatus()==AsyncTask.Status.FINISHED) {
-                Log.d(TAG,"task is finished, restarting");
-                startTask();
-            }
-        } else {
-            Log.d(TAG,"no task creating anew");
-            startTask();
-        }
     }
 
     private void startTask(){
         final Context context = getActivity().getApplicationContext();
-        task = new AsyncTask<Object, Void, Object>() {
+        fetchingTask = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 Log.d(TAG, "Loading new issues for place "+placeId);
@@ -148,12 +135,15 @@ public class UpdateIssuesFragment extends Fragment implements
                 }
             }
         };
-        task.execute();
+        fetchingTask.execute();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        if (this.fetchingTask != null) {
+            this.fetchingTask.cancel(true);
+        }
         listener = null;
     }
 

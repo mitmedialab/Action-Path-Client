@@ -55,6 +55,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     private boolean fromSurveyNotification;
     private boolean fromUpdateNotification;
 
+    private AsyncTask answeringQuestionTask;
+
     private View.OnClickListener onFollowClickListener;
 
     private FloatingActionButton followFloatingButton;
@@ -239,7 +241,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         changeFollowedAndUpdateUI(view, true, false);
         final View v = view;
         // save the answer to the server
-        new AsyncTask<Object, Void, Object>() {
+        answeringQuestionTask = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
@@ -274,7 +276,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                     Snackbar.make(v, R.string.failed_to_save_answer, Snackbar.LENGTH_LONG).show();
                 }
             }
-        }.execute();
+        };
+        answeringQuestionTask.execute();
     }
 
     @Override
@@ -334,6 +337,14 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     @Override
     public void onGeofenceRemovalFailure(Status status) {
         Log.w(TAG, "Failed to remove geofence for issue " + issue.getId() + " - " + status.getStatus());
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(answeringQuestionTask!=null){
+            answeringQuestionTask.cancel(true);
+        }
     }
 
 }
