@@ -1,6 +1,5 @@
 package org.actionpath.util;
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.actionpath.issues.Issue;
@@ -12,6 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +36,7 @@ public class ActionPathServer {
 
     private static final String RESPONSE_STATUS = "status";
     private static final String RESPONSE_STATUS_OK = "ok";
-    private static final String RESPONSE_STATUS_ERROR = "error";
+    //private static final String RESPONSE_STATUS_ERROR = "error";
 
     /**
      * Ask the server for the latest issues within the specified place
@@ -53,7 +53,7 @@ public class ActionPathServer {
         while ((line = reader.readLine()) != null) {
             result.append(line);
         }
-        Log.v(TAG,"Got latestIssues JSON results:"+result.toString());
+        Log.v(TAG, "Got latestIssues JSON results:" + result.toString());
         JSONArray issuesArray = new JSONArray(result.toString());
         Log.v(TAG, "  first issue" + issuesArray.get(0).toString());
         for(int i=0;i<issuesArray.length();i++){
@@ -74,7 +74,6 @@ public class ActionPathServer {
     public static ArrayList<Place> getPlacesNear(double lat, double lng) throws IOException, JSONException {
         ArrayList<Place> places = new ArrayList<>();
         // fetch json from server
-        String jsonStr = null;
         URL u = new URL(BASE_URL + "/places/near.json?lat="+lat+"&lng="+lng);
         InputStream in = u.openStream();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
@@ -83,7 +82,7 @@ public class ActionPathServer {
         while ((line = reader.readLine()) != null) {
             result.append(line);
         }
-        jsonStr = result.toString();
+        String jsonStr = result.toString();
         Log.i(TAG, "Successfully fetches places from " + BASE_URL);
         // now parse it into Place objects
         JSONArray placesArray = new JSONArray(jsonStr);
@@ -112,7 +111,7 @@ public class ActionPathServer {
             httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
-            responseStr = getHttpResponseAsString(httpResponse);
+            responseStr = EntityUtils.toString(httpResponse.getEntity());
         } catch (IOException e) {
             Log.e(TAG, "Unable to createInstall " + e.toString());
         }
@@ -142,7 +141,6 @@ public class ActionPathServer {
     public static boolean saveAnswer(String installId, int issueId, String answer) throws IOException, JSONException{
         HttpClient httpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(BASE_URL + "/responses/add.json");
-        String responseStr = null;
         List<NameValuePair> nameValuePairs = new ArrayList<>(2);
         nameValuePairs.add(new BasicNameValuePair("issueId", issueId+""));
         nameValuePairs.add(new BasicNameValuePair("installId", installId));
@@ -150,31 +148,16 @@ public class ActionPathServer {
         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
         HttpResponse httpResponse = httpClient.execute(httpPost);
 
-        responseStr = getHttpResponseAsString(httpResponse);
-        if(responseStr!=null){
-            JSONObject jsonResponse = new JSONObject(responseStr);
-            Log.d(TAG, "responseStatus = " + jsonResponse.getString(RESPONSE_STATUS));
-            if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
-                Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
-                return true;
-            } else {
-                Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
-                return false;
-            }
+        String responseStr = EntityUtils.toString(httpResponse.getEntity());
+        JSONObject jsonResponse = new JSONObject(responseStr);
+        Log.d(TAG, "responseStatus = " + jsonResponse.getString(RESPONSE_STATUS));
+        if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
+            Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
+            return true;
+        } else {
+            Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
+            return false;
         }
-        return false;
-    }
-
-    @NonNull
-    private static String getHttpResponseAsString(HttpResponse httpResponse) throws IOException {
-        InputStream inputStream = httpResponse.getEntity().getContent();
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        StringBuilder stringBuilder = new StringBuilder();
-        while (bufferedReader.readLine() != null) {
-            stringBuilder.append(bufferedReader.readLine());
-        }
-        return stringBuilder.toString();
     }
 
 }
