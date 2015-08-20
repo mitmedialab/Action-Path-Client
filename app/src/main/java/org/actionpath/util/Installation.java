@@ -35,7 +35,7 @@ public class Installation {
                 throw new RuntimeException(e);
             }
         } else {
-            Log.i(TAG, "Existing Installation id = " + sID);
+            Log.v(TAG, "Existing Installation id = " + sID);
         }
         return sID;
     }

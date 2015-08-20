@@ -18,7 +18,7 @@ import org.actionpath.R;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
-import org.actionpath.logging.LogSyncService;
+import org.actionpath.sync.SyncService;
 import org.actionpath.logging.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Development;
@@ -43,8 +43,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         // make sure database is instantiated
         IssuesDataSource.getInstance(this);
         // make sure the LogSyncService is running
-        if(!LogSyncService.isRunning()) {
-            Intent i = new Intent(this, LogSyncService.class);
+        if(!SyncService.isRunning()) {
+            Intent i = new Intent(this, SyncService.class);
             this.startService(i);
         }
         // generate a new installId user if we need to

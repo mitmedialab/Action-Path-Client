@@ -2,7 +2,9 @@ package org.actionpath.ui;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,7 +34,9 @@ import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.issues.Issue;
 import org.actionpath.issues.IssuesDataSource;
 import org.actionpath.logging.LogMsg;
+import org.actionpath.responses.ResponsesDataSource;
 import org.actionpath.util.ActionPathServer;
+import org.actionpath.util.GoogleApiClientNotConnectionException;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -240,21 +244,17 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         final String newAnswer = answer;
         changeFollowedAndUpdateUI(view, true, false);
         final View v = view;
-        // save the answer to the server
+        final String answerText = answer;
+        final Context context = getApplicationContext();
+        final Location loc = updateLastLocation();  // gotta call that instead of getLocation to avoid exception
+        // save the answer
         answeringQuestionTask = new AsyncTask<Object, Void, Object>() {
             @Override
             protected Object doInBackground(Object[] params) {
+                ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
+                dataSource.insertResponse(context,issue.getId(),answerText,loc);
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
-                try {
-                    boolean worked = ActionPathServer.saveAnswer(getInstallId(), issue.getId(), newAnswer);
-                    return worked;
-                } catch(IOException ioe){
-                    Log.e(TAG,"Failed to save answer "+ioe.toString());
-                    return false;
-                } catch(JSONException js){
-                    Log.e(TAG,"Failed to parse answer response "+js.toString());
-                    return false;
-                }
+                return true;
             }
             @Override
             protected void onPostExecute(Object o) {

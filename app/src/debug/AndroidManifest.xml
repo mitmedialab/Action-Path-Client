@@ -42,7 +42,7 @@
             android:label="@string/app_name" >
         </service>
         <service
-            android:name=".logging.LogSyncService"
+            android:name=".sync.SyncService"
             android:label="@string/app_name" >
         </service>
 

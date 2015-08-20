@@ -161,7 +161,7 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
         return hasLocation;
     }
 
-    private Location updateLastLocation(){
+    protected Location updateLastLocation(){
         lastLocation = LocationServices.FusedLocationApi.getLastLocation(
                 googleApiClient);
         if(lastLocation!=null){

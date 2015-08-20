@@ -34,8 +34,8 @@ public class ActionPathServer {
     public static final String BASE_URL = "https://api.dev.actionpath.org";
     //public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
 
-    private static final String RESPONSE_STATUS = "status";
-    private static final String RESPONSE_STATUS_OK = "ok";
+    public static final String RESPONSE_STATUS = "status";
+    public static final String RESPONSE_STATUS_OK = "ok";
     //private static final String RESPONSE_STATUS_ERROR = "error";
 
     /**
@@ -155,7 +155,7 @@ public class ActionPathServer {
             Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
             return true;
         } else {
-            Log.e(TAG,"Server said it failed ("+jsonResponse.getString(RESPONSE_STATUS)+") to saveAnswer "+issueId+"/"+answer);
+            Log.e(TAG, "Server said it failed (" + jsonResponse.getString(RESPONSE_STATUS) + ") to saveAnswer " + issueId + "/" + answer);
             return false;
         }
     }
