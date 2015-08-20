@@ -85,12 +85,13 @@ public class UpdateIssuesFragment extends Fragment implements
         super.onAttach(activity);
         try {
             listener = (OnIssuesUpdatedListener) activity;
+            startFetchingTask();
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnIssuesUpdatedListener");
         }
     }
 
-    private void startTask(){
+    private void startFetchingTask(){
         final Context context = getActivity().getApplicationContext();
         fetchingTask = new AsyncTask<Object, Void, Object>() {
             @Override
