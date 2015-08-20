@@ -30,7 +30,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/about_summary_body"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView android:id="@+id/about_team_title"
                 android:paddingTop="@dimen/textview_title_padding"

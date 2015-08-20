@@ -41,7 +41,7 @@
     <string name="issue_question">Is this still a problem?</string>
     <string name="issue_answer_yes">Yes</string>
     <string name="issue_answer_no">No</string>
-    <string name="issue_question_answered">Saved your answer. Following this action.</string>
+    <string name="issue_question_answered">Saved your answer. You are now following this action.</string>
 
     <string name="action_undo">Undo</string>
     <string name="action_follow">Follow</string>
@@ -60,7 +60,7 @@
     <string name="image_description">Image associated with the current action.</string>
 
     <string name="about_summary_title">Summary</string>
-    <string name="about_summary_body">Action Path is a location-based civic engagement platform for Android smartphones that prompts citizens to explore their cities and participate in governance around infrastructure issues and planning. Existing platforms for civic engagement, whether online or offline, are inconvenient and disconnected from the source of issues they are meant to address. They require that citizens leave the places they normally inhabit physically or virtually and commit to a separate space and set of processes.\n\nAction Path answers the challenge: How do you address barriers to effective civic engagement in community matters, and ensure all citizens can have their voice heard on how to improve their local communities? It does so by converting individual actions into collective action and by providing context and a sense of efficacy, which may help citizens become more effective through regular practice and feedback.</string>
+    <string name="about_summary_body">Have something to say on how to improve your local community? Action Path brings the town hall to you.\n\nCreated by the MIT Center for Civic Media, Action Path is a location-based civic engagement platform that prompts you to explore your cities and participate in governance around infrastructure issues and planning.\n\nThe current version allows you to investigate and update issues from SeeClickFix.com. We plan to expand the range of activities in future releases. Thanks for taking action!</string>
 
     <string name="about_team_title">Team</string>
     <string name="about_team_body">Erhardt Graeff\nRahul Bhargava\nEthan Zuckerman</string>
