@@ -41,7 +41,7 @@
     <string name="issue_question">Is this still a problem?</string>
     <string name="issue_answer_yes">Yes</string>
     <string name="issue_answer_no">No</string>
-    <string name="issue_question_answered">Saved your answer. You are now following this action.</string>
+    <string name="issue_question_answered">Saved your answer. You are following this action.</string>
 
     <string name="action_undo">Undo</string>
     <string name="action_follow">Follow</string>

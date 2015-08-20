@@ -302,6 +302,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     public void onAnswerSelected(int answerIndex) {
         logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
         String answerText = "";
+        // TODO: Use constants on this switch
         switch(answerIndex) {
             case 0:
                 answerText = "no";
