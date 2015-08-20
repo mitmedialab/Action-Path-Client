@@ -84,6 +84,7 @@ public class LogSyncService extends Service implements
                         logIds.add(row.getInt(LogsDbHelper.LOGS_ID_COL));
                     }
                 } catch (JSONException e) {
+                    // TODO: Throw this exception and offer a snackbar alert
                     e.printStackTrace();
                 }
                 if (logIds.size() == 0) {   // if not logs to sync, don't send to server
@@ -105,8 +106,10 @@ public class LogSyncService extends Service implements
 
                     @Override
                     public void onFailure(int statusCode, Header[] headers, Throwable error, JSONObject response) {
-                        Log.e(TAG, "Failed to send SQL statusCode" + statusCode);
-                        Log.e(TAG, "Response from server: " + response.toString());
+                        Log.e(TAG, "Failed to send SQL statusCode " + statusCode);
+                        if (response!=null){
+                            Log.e(TAG, "Response from server: " + response.toString());
+                        }
                         // mark that we were not able to sync them
                         for (int logId : logIds) {
                             LogsDataSource.getInstance().updateLogStatus(logId, LogMsg.LOG_STATUS_DID_NOT_SYNC);
