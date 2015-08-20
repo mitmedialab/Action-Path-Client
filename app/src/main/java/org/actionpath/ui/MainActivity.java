@@ -116,12 +116,17 @@ public class MainActivity extends AbstractLocationActivity implements
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
+        // On first load check to see if we have a place selected if so load My Actions Page
+        if(!(getPlaceId()==INVALID_PLACE_ID)){
+            displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+        }
     }
 
     @Override
     public void onResume(){
         super.onResume();
-        // check that we have a place selected
+
+        // On load check to see if we have a place selected else
         if(getPlaceId()==INVALID_PLACE_ID){
             Log.w(TAG,"No place set yet");
             displayPickPlaceFragment();
