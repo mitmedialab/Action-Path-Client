@@ -13,7 +13,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     private static String TAG = IssuesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "issues.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // DB Table consts
     public static final String ISSUES_TABLE_NAME = "issues";
@@ -31,6 +31,13 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public static final String ISSUES_CREATED_AT_COL = "created_at";
     public static final String ISSUES_UPDATED_AT_COL = "updated_at";
     public static final String ISSUES_GEOFENCE_RADIUS_COL = "geofence_radius";
+    public static final String ISSUES_QUESTION_COL = "question";
+    public static final String ISSUES_ANSWER1_COL = "answer1";
+    public static final String ISSUES_ANSWER2_COL = "answer2";
+    public static final String ISSUES_ANSWER3_COL = "answer3";
+    public static final String ISSUES_ANSWER4_COL = "answer4";
+    public static final String ISSUES_ANSWER5_COL = "answer5";
+    public static final String ISSUES_ANSWER6_COL = "answer6";
 
     public static String[] ISSUES_COLUMN_NAMES;
 
@@ -39,7 +46,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
                 {ISSUES_ID_COL,ISSUES_STATUS_COL,ISSUES_SUMMARY_COL,ISSUES_DESCRIPTION_COL,
                         ISSUES_ADDRESS_COL,ISSUES_LATITUDE_COL,ISSUES_LONGITUDE_COL,ISSUES_IMAGE_URL_COL,
                         ISSUES_FOLLOWED_COL,ISSUES_GEOFENCE_CREATED_COL,ISSUES_PLACE_ID_COL,
-                        ISSUES_CREATED_AT_COL,ISSUES_UPDATED_AT_COL, ISSUES_GEOFENCE_RADIUS_COL };
+                        ISSUES_CREATED_AT_COL,ISSUES_UPDATED_AT_COL, ISSUES_GEOFENCE_RADIUS_COL,
+                ISSUES_QUESTION_COL,ISSUES_ANSWER1_COL,ISSUES_ANSWER2_COL,ISSUES_ANSWER3_COL,ISSUES_ANSWER4_COL,ISSUES_ANSWER5_COL,ISSUES_ANSWER6_COL};
     }
 
     // Database creation sql statement
@@ -58,7 +66,14 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_PLACE_ID_COL + " int, " +
             ISSUES_CREATED_AT_COL + " int, " +
             ISSUES_UPDATED_AT_COL + " int, " +
-            ISSUES_GEOFENCE_RADIUS_COL + " int " +
+            ISSUES_GEOFENCE_RADIUS_COL + " int, " +
+            ISSUES_QUESTION_COL + " string," +
+            ISSUES_ANSWER1_COL + " string," +
+            ISSUES_ANSWER2_COL + " string," +
+            ISSUES_ANSWER3_COL + " string," +
+            ISSUES_ANSWER4_COL + " string," +
+            ISSUES_ANSWER5_COL + " string," +
+            ISSUES_ANSWER6_COL + " string " +
             ");";
 
     public IssuesDbHelper(Context context) {
@@ -78,7 +93,16 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         if(oldVersion==1 && newVersion>=2){
             db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_GEOFENCE_RADIUS_COL+" int default 500;");
-            Log.i(TAG,"Upgraded "+ISSUES_TABLE_NAME+" from v1 to v2");
+            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v1 to v2");
+        } else if(oldVersion==2 && newVersion==3){
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_QUESTION_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER1_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER2_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER3_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER4_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER5_COL+" text;");
+            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER6_COL+" text;");
+            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v2 to v3");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
             onCreate(db);

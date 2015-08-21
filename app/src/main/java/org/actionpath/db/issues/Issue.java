@@ -38,6 +38,13 @@ public class Issue extends AbstractModel {
     Date createdAt;
     Date updatedAt;
     int placeId;
+    String question;
+    String answer1;
+    String answer2;
+    String answer3;
+    String answer4;
+    String answer5;
+    String answer6;
     float radius = 500;   // geofence radius to use, in meters
     boolean test = false;   // is this a test issue we have inserted?
 
@@ -59,13 +66,6 @@ public class Issue extends AbstractModel {
                  Date createdAt,
                  Date updatedAt,
                  int placeId){
-        this(id,status,summary,description,latitude,longitude,address,imageUrl,createdAt,updatedAt,placeId,false,false);
-    }
-
-    public Issue(int id, String status, String summary,
-            String description,float latitude,float longitude,
-            String address, String imageUrl,Date createdAt,Date updatedAt,
-            int placeId, boolean followed, boolean geofenceCreated){
         this.id = id;
         this.status = status;
         this.summary = summary;
@@ -77,8 +77,6 @@ public class Issue extends AbstractModel {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.placeId = placeId;
-        this.followed = followed;
-        this.geofenceCreated = geofenceCreated;
     }
 
     public String getIssueSummary(){
@@ -154,27 +152,34 @@ public class Issue extends AbstractModel {
     }
 
     public static Issue fromCursor(Cursor cursor){
-        Issue issue = new Issue(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),       // id
-                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL)),    // status
-                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL)),    // summary
-                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL)),    // description
-                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)),     // latitude
-                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)),     // longitude
-                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ADDRESS_COL)),    // address
-                cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_IMAGE_URL_COL)),    // imageUrl
-                new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000),    // createdAt
-                new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000),    // updatedAt
-                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL)),    // placeId
-                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1,   // followed
-                cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1 // geofenceCreated
-        );
+        Issue i = new Issue();
+        i.id = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL));
+        i.status = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL));
+        i.summary = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL));
+        i.description = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL));
+        i.latitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL));
+        i.longitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL));
+        i.address = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ADDRESS_COL));
+        i.imageUrl = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_IMAGE_URL_COL));
+        i.createdAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000);
+        i.updatedAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000);
+        i.placeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL));
+        i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1;
+        i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1;
+        i.question = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_QUESTION_COL));
+        i.answer1 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER1_COL));
+        i.answer2 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER2_COL));
+        i.answer3 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER3_COL));
+        i.answer4 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER4_COL));
+        i.answer5 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER5_COL));
+        i.answer6 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER6_COL));
         Log.v(TAG, "Parsed cursor issue at loc (" +
                 cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)) + "," +
                 cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)) + ")");
         Log.v(TAG, "  as (" +
-                issue.latitude + "," +
-                issue.longitude + ")");
-        return issue;
+                i.latitude + "," +
+                i.longitude + ")");
+        return i;
     }
 
     public static Issue fromJson(JSONObject object) throws JSONException{
@@ -194,6 +199,13 @@ public class Issue extends AbstractModel {
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");
         i.radius = object.getInt("geofence_radius");
+        i.question = object.getString("question");
+        i.answer1 = object.getString("answer1");
+        i.answer2 = object.getString("answer2");
+        i.answer3 = object.getString("answer3");
+        i.answer4 = object.getString("answer4");
+        i.answer5 = object.getString("answer5");
+        i.answer6 = object.getString("answer6");
         Log.v(TAG, "  "+i.id+": parse lat/lng/radius (" + i.latitude + "," + i.longitude + " + "+i.radius+")");
         Log.v(TAG, "  "+i.id+": image_url = "+i.imageUrl);
         return i;
@@ -214,7 +226,13 @@ public class Issue extends AbstractModel {
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
         cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
-        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
+        cv.put(IssuesDbHelper.ISSUES_QUESTION_COL, question);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER1_COL, answer1);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER2_COL, answer2);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER3_COL, answer3);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER4_COL, answer4);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER5_COL, answer5);
+        cv.put(IssuesDbHelper.ISSUES_ANSWER6_COL, answer6);
         if(!justServerFields) {
             cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ? 1 : 0);
             cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
