@@ -25,6 +25,7 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_CLICKED_PICK_PLACE = "ClickedPickPlace";
     public static final String ACTION_CLICKED_HOME = "ClickedHome";
     public static final String ACTION_CLICKED_ON_UPDATE_NOTIFICATION="ClicksOnUpdateNotification";
+    public static final String ACTION_SAVING_DEBUG_INFO = "SaveDebugInfo";
 
     public static final Integer NO_ISSUE = -1;
 

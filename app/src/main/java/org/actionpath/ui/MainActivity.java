@@ -90,6 +90,11 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
                         return true;
+                    case R.id.nav_save_debug_info:
+                        logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
+                        // TODO: write any unsyned stuff to a file under /action-path or something like that which is accessible
+                        displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+                        return true;
                     default:
                         Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
                         return true;
@@ -129,7 +134,7 @@ public class MainActivity extends AbstractLocationActivity implements
             displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
         } else {
             Log.w(TAG,"No place set yet");
-            Log.i(TAG,"Defaulting to Mexico City");
+            Log.i(TAG, "Defaulting to Mexico City");
             onPlaceSelected(Development.PLACE_MEXICO_CITY_ID, Development.PLACE_MEXICO_CITY_NAME);
             //displayPickPlaceFragment();
         }

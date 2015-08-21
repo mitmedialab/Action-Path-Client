@@ -129,7 +129,11 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             }
         });
 
-        showQuestionUiFragment();
+        if(issue.hasCustomQuestion()) {
+            // TODO: add another fragment option here that pulls from issue.question and issue.answerX
+        } else {
+            showDefaultQuestionUiFragment();
+        }
 
         onFollowClickListener = new View.OnClickListener() {
             @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
@@ -287,7 +291,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     }
 
-    private void showQuestionUiFragment(){
+    private void showDefaultQuestionUiFragment(){
         Fragment fragment = IssueQuestionFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);

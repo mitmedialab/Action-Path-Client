@@ -79,4 +79,6 @@
     <string name="failed_to_fetch_places_near">Problem finding places near you</string>
     <string name="failed_to_parse_places_near">Server error retrieving places</string>
 
+    <string name="nav_save_debug_info">Save Debug Info</string>
+
 </resources>

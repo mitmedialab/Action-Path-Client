@@ -258,6 +258,10 @@ public class Issue extends AbstractModel {
         return "http://seeclickfix.com/issues/"+getId();
     }
 
+    public boolean hasCustomQuestion(){
+        return question!=null;
+    }
+
 }
 
 
