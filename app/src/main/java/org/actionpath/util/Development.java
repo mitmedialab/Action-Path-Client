@@ -7,6 +7,9 @@ import android.os.Build;
  */
 public class Development {
 
+    public static final int PLACE_MEXICO_CITY_ID = 20090;
+    public static final String PLACE_MEXICO_CITY_NAME = "Mexico City";
+
     public static final double MIT_LAT = 42.36;
     public static final double MIT_LNG = -71.05;
 

@@ -22,6 +22,7 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.util.Development;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -79,10 +80,12 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
                         displayUpdateIssuesFragment();
                         return true;
+                    /*
                     case R.id.nav_pick_place:
                         logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
                         displayPickPlaceFragment();
                         return true;
+                        */
                     case R.id.nav_about:
                         logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
@@ -118,7 +121,8 @@ public class MainActivity extends AbstractLocationActivity implements
 
         // On first load check to see if we have a place selected if so load My Actions Page
         if(!(getPlaceId()==INVALID_PLACE_ID)){
-            displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+            onPlaceSelected(Development.PLACE_MEXICO_CITY_ID,Development.PLACE_MEXICO_CITY_NAME);
+            //displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
         }
     }
 
@@ -187,17 +191,21 @@ public class MainActivity extends AbstractLocationActivity implements
         startActivity(intent);
     }
 
-    @Override
-    public void onPlaceSelected(int placeId, String placeName) {
-        Log.d(TAG, "clicked place id: " + placeId);
-        // now save that we set the place
+    private void savePlaceIdAndName(int placeId, String placeName){
+        Log.i(TAG, "Set place to: " + placeId+" = "+placeName);
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(MainActivity.PREF_PLACE_ID, placeId);
         editor.putString(MainActivity.PREF_PLACE_NAME, placeName);
         editor.apply();
-        Log.i(TAG, "Saved place " + placeId);
         logMsg(LogMsg.ACTION_PICKED_PLACE);
+    }
+
+    @Override
+    public void onPlaceSelected(int placeId, String placeName) {
+        Log.d(TAG, "clicked place id: " + placeId);
+        // now save that we set the place
+        savePlaceIdAndName(placeId,placeName);
         // and jump to update the issues
         displayUpdateIssuesFragment();
     }
