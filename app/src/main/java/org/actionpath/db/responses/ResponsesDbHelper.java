@@ -15,7 +15,7 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
     private static String TAG = ResponsesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "responses.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // DB Table consts
     public static final String TABLE_NAME = "responses";
@@ -25,8 +25,8 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
 
     static {
         RESPONSES_COLUMNS = new String [] {
-                ID_COL, ISSUE_ID_COL, INSTALLATION_ID_COL, ANSWER_COL,
-                TIMESTAMP_COL, STATUS_COL
+                ID_COL, ISSUE_ID_COL, ANSWER_COL,
+                INSTALLATION_ID_COL, ISSUE_ID_COL, TIMESTAMP_COL, LATITUDE_COL, LONGITUDE_COL, STATUS_COL
         };
     }
 

@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 /**
- * Created by rahulb on 8/20/15.
+ * Helpers for accessing device info
  */
 public class DeviceUtil {
 

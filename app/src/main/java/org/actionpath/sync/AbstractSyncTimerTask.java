@@ -82,10 +82,11 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
         try {
             JSONObject jsonResponse = ActionPathServer.syncToServer(syncUrl, sendJSON, installId);
             if (ActionPathServer.RESPONSE_STATUS_OK.equals(jsonResponse.getString(ActionPathServer.RESPONSE_STATUS))) {
-                Log.d(TAG, "Sent all loggable actions to " + ActionPathServer.BASE_URL);
+                Log.d(TAG, "Sent all records to " + ActionPathServer.BASE_URL);
+                Log.d(TAG, "Need to delete "+ids.size()+" records");
                 // delete sync'ed log items
-                for (int logId : ids) {
-                    LogsDataSource.getInstance().delete(logId);
+                for (int id : ids) {
+                    dataSource.delete(id);
                 }
             }
             worked = true;
@@ -98,7 +99,7 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
         }
         if(!worked){
             for (int logId : ids) {
-                LogsDataSource.getInstance().updateStatus(logId, AbstractSyncableModel.STATUS_DID_NOT_SYNC);
+                dataSource.updateStatus(logId, AbstractSyncableModel.STATUS_DID_NOT_SYNC);
             }
         }
     }

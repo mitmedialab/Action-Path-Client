@@ -25,8 +25,8 @@ public class LogsDbHelper extends SQLiteOpenHelper implements SyncableDbHelper {
 
     static {
         LOGS_COLUMNS = new String [] {
-                ID_COL, ACTION_TYPE_COL, INSTALLATION_ID_COL, ISSUE_ID_COL,
-                TIMESTAMP_COL, LATITUDE_COL, LONGITUDE_COL, STATUS_COL
+                ID_COL, ACTION_TYPE_COL,
+                INSTALLATION_ID_COL, ISSUE_ID_COL, TIMESTAMP_COL, LATITUDE_COL, LONGITUDE_COL, STATUS_COL
         };
     }
 
