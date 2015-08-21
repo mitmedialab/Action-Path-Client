@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.util.Log;
 
 import org.actionpath.ui.IssueDetailActivity;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
+import org.actionpath.db.issues.Issue;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.logs.LogMsg;
 import org.actionpath.R;
-import org.actionpath.logging.LogsDataSource;
+import org.actionpath.db.logs.LogsDataSource;
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
@@ -23,7 +23,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         for(String str:issueIds){
             int issueId = Integer.parseInt(str);
             sendNotification(issueId);
-            LogsDataSource.getInstance(getApplicationContext()).insertLog(
+            LogsDataSource.getInstance(getApplicationContext()).insert(
                     getApplicationContext(), issueId, LogMsg.ACTION_ENTERED_GEOFENCE, null);
         }
     }

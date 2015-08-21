@@ -19,10 +19,10 @@ import org.actionpath.geofencing.GeofencingRegisterer;
 import org.actionpath.geofencing.GeofencingRegistrationListener;
 import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
-import org.actionpath.logging.LogsDataSource;
+import org.actionpath.db.issues.Issue;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONException;
 
@@ -109,7 +109,7 @@ public class UpdateIssuesFragment extends Fragment implements
                             }
                             dataSource.updateIssue(i,true);
                         } else {
-                            LogsDataSource.getInstance(context).insertLog(context, LogMsg.ACTION_CREATED_ISSUE,null);
+                            LogsDataSource.getInstance(context).insert(context, LogMsg.ACTION_CREATED_ISSUE, null);
                             dataSource.insertIssue(i);
                         }
                     }

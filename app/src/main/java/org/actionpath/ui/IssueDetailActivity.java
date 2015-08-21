@@ -31,15 +31,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.actionpath.R;
 import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
-import org.actionpath.responses.ResponsesDataSource;
-import org.actionpath.util.ActionPathServer;
-import org.actionpath.util.GoogleApiClientNotConnectionException;
-import org.json.JSONException;
+import org.actionpath.db.issues.Issue;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.responses.ResponsesDataSource;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -252,7 +248,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             @Override
             protected Object doInBackground(Object[] params) {
                 ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
-                dataSource.insertResponse(context,issue.getId(),answerText,loc);
+                dataSource.insert(context, issue.getId(), answerText, loc);
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
                 return true;
             }

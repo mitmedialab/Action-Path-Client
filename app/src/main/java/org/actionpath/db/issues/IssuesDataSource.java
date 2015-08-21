@@ -1,4 +1,4 @@
-package org.actionpath.issues;
+package org.actionpath.db.issues;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,9 +8,6 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
-import org.actionpath.logging.LogMsg;
-import org.actionpath.logging.LogsDataSource;
 
 import java.sql.SQLException;
 

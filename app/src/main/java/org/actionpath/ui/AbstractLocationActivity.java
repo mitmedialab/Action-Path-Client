@@ -1,25 +1,19 @@
 package org.actionpath.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
-import org.actionpath.R;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.actionpath.logging.LogMsg;
+import org.actionpath.db.logs.LogMsg;
 import org.actionpath.util.Development;
+import org.actionpath.util.DeviceUtil;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
 
 /**
@@ -54,41 +48,17 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
                 .build();
     }
 
-    private void verifyLocationServicesEnabled(){
-        LocationManager lm = (LocationManager)getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        boolean gpsOk = false;
-        boolean networkOk = false;
-
-        try {
-            if(lm.getAllProviders().contains(LocationManager.GPS_PROVIDER)){
-                gpsOk = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            } else {
-                gpsOk = true;
-            }
-        } catch(Exception ex) {}
-
-        try {
-            if(lm.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
-                networkOk = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            } else {
-                networkOk = true;
-            }
-        } catch(Exception ex) {}
-
-        Log.i(TAG,"LocationManager - GPS: "+gpsOk+", Network:"+networkOk);
-
-        if(!gpsOk && !networkOk) {
-            Log.e(TAG, "Location GPS or Network not available :-(");
-            // notify user via a dialog alert, linking to a
-            // new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        }
-    }
 
     @Override
     public void onStart(){
         super.onStart();
-        verifyLocationServicesEnabled();
-        googleApiClient.connect();
+        boolean locationServicesOk = DeviceUtil.isLocationServicesEnabled(this);
+        if(!locationServicesOk) {
+            Log.e(TAG, "Location GPS or Network not available :-(");
+            // TODO: notify user via a dialog alert, linking to a new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS); to fix it
+        } else {
+            googleApiClient.connect();
+        }
     }
 
     @Override

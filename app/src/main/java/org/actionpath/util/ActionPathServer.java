@@ -1,8 +1,9 @@
 package org.actionpath.util;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.actionpath.issues.Issue;
+import org.actionpath.db.issues.Issue;
 import org.actionpath.places.Place;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -134,30 +135,20 @@ public class ActionPathServer {
         return false;
     }
 
-    /**
-     * Tell the server that we have a new installation (ie. a new user)
-     * To test run:  wget https://api.dev.actionpath.org/responses/add --post-data='issueId=1234&installId=23409fsd9f&answer=yes'
-     */
-    public static boolean saveAnswer(String installId, int issueId, String answer) throws IOException, JSONException{
-        HttpClient httpClient = new DefaultHttpClient();
-        HttpPost httpPost = new HttpPost(BASE_URL + "/responses/add.json");
+    @NonNull
+    public static JSONObject syncToServer(String syncUrl,JSONArray jsonObject, String installId) throws IOException, JSONException {
+        Log.d(TAG,"Trying to sync "+jsonObject.length()+" records to "+syncUrl);
+        HttpPost httpPost = new HttpPost(syncUrl);
         List<NameValuePair> nameValuePairs = new ArrayList<>(2);
-        nameValuePairs.add(new BasicNameValuePair("issueId", issueId+""));
-        nameValuePairs.add(new BasicNameValuePair("installId", installId));
-        nameValuePairs.add(new BasicNameValuePair("answer", answer));
+        nameValuePairs.add(new BasicNameValuePair("data", jsonObject.toString()));
+        nameValuePairs.add(new BasicNameValuePair("install_id", installId));
         httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpPost);
-
         String responseStr = EntityUtils.toString(httpResponse.getEntity());
         JSONObject jsonResponse = new JSONObject(responseStr);
-        Log.d(TAG, "responseStatus = " + jsonResponse.getString(RESPONSE_STATUS));
-        if(RESPONSE_STATUS_OK.equals(jsonResponse.getString(RESPONSE_STATUS))){
-            Log.i(TAG,"Told the server to saveAnswer "+issueId+"/"+answer);
-            return true;
-        } else {
-            Log.e(TAG, "Server said it failed (" + jsonResponse.getString(RESPONSE_STATUS) + ") to saveAnswer " + issueId + "/" + answer);
-            return false;
-        }
+        Log.v(TAG, "responseStatus = " + jsonResponse.getString(ActionPathServer.RESPONSE_STATUS));
+        return jsonResponse;
     }
 
 }

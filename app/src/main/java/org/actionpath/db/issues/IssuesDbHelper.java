@@ -1,4 +1,4 @@
-package org.actionpath.issues;
+package org.actionpath.db.issues;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

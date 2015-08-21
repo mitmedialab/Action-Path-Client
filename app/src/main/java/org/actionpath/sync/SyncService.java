@@ -11,8 +11,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.actionpath.logging.LogsDataSource;
-import org.actionpath.responses.ResponsesDataSource;
+import org.actionpath.db.logs.LogsDataSource;
+import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.Installation;
 
 import java.util.Timer;
@@ -55,11 +55,11 @@ public class SyncService extends Service implements
                 .build();
         googleApiClient.connect();
         // set up and start the log sync task
-        TimerTask logSyncer = new LogSyncTimerTask(getInstallationId(),googleApiClient,this.getApplicationContext());
+        TimerTask logSyncer = new LogSyncTimerTask(this,getInstallationId(),googleApiClient);
         logTimer = new Timer();
         logTimer.schedule(logSyncer, 0, LOG_SYNC_INTERVAL);
         // set up and start the response sync task
-        TimerTask responseSyncer = new ResponseSyncTimerTask(getInstallationId(),googleApiClient,this.getApplicationContext());
+        TimerTask responseSyncer = new ResponseSyncTimerTask(this,getInstallationId(),googleApiClient);
         responseTimer = new Timer();
         responseTimer.schedule(responseSyncer, 0, RESPONSE_SYNC_INTERVAL);
         return Service.START_REDELIVER_INTENT;
@@ -91,9 +91,9 @@ public class SyncService extends Service implements
     public void onConnectionFailed(ConnectionResult result) {
         Log.e(TAG, "connection to google services failed (errorCode=" + result.getErrorCode() + ")");
         if (result.hasResolution()) {
-            Log.e(TAG,"has a resolution");
+            Log.e(TAG, "has a resolution");
         } else {
-            Log.e(TAG,"no a resolution");
+            Log.e(TAG, "no a resolution");
         }
     }
 
@@ -135,5 +135,6 @@ public class SyncService extends Service implements
     private synchronized void setRunning(boolean r){
         running = r;
     }
+
 
 }

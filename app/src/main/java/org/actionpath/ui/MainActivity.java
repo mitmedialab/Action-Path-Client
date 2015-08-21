@@ -19,9 +19,9 @@ import android.view.View;
 import android.net.Uri;
 
 import org.actionpath.R;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
+import org.actionpath.db.issues.Issue;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.logs.LogMsg;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id

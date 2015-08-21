@@ -15,11 +15,11 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import org.actionpath.R;
-import org.actionpath.issues.Issue;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.logging.LogMsg;
+import org.actionpath.db.issues.Issue;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.logs.LogMsg;
 import org.actionpath.sync.SyncService;
-import org.actionpath.logging.LogsDataSource;
+import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
@@ -86,7 +86,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     }
 
     protected void logMsg(int issueId, String action, Location loc){
-        LogsDataSource.getInstance(getApplicationContext()).insertLog(
+        LogsDataSource.getInstance(getApplicationContext()).insert(
                 getApplicationContext(), issueId, action, loc);
     }
 
@@ -113,11 +113,13 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
 
     public int getPlaceId(){
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return settings.getInt(PREF_PLACE_ID,INVALID_PLACE_ID);
+        return settings.getInt(PREF_PLACE_ID, INVALID_PLACE_ID);
     }
 
     public String getPlaceName(){
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         return settings.getString(PREF_PLACE_NAME, "Unknown City");
     }
+
+
 }

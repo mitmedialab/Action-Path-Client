@@ -1,19 +1,19 @@
-package org.actionpath.issues;
+package org.actionpath.db.issues;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.util.Log;
 
+import org.actionpath.db.AbstractModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Issue implements Serializable {
+public class Issue extends AbstractModel {
 
     private static String TAG = Issue.class.getName();
 

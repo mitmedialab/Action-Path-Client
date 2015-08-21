@@ -13,8 +13,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import org.actionpath.R;
-import org.actionpath.issues.IssuesDataSource;
-import org.actionpath.issues.IssuesDbHelper;
+import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.issues.IssuesDbHelper;
 
 /**
  * A fragment representing a list of followed issues.

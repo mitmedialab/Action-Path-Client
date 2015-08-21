@@ -1,18 +1,11 @@
-package org.actionpath.logging;
+package org.actionpath.db.logs;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 
-import java.io.Serializable;
+import org.actionpath.db.AbstractSyncableModel;
 
-public class LogMsg implements Serializable {
-
-    public static final int INVALID_ID = -1;
-
-    public static final Integer LOG_STATUS_READY_TO_SYNC = 0;
-    public static final Integer LOG_STATUS_SYNCING = 1;
-    public static final Integer LOG_STATUS_DID_NOT_SYNC = 2;
-    public static final Integer LOG_STATUS_NEEDS_LOCATION = 3;
+public class LogMsg extends AbstractSyncableModel {
 
     public static final String ACTION_CLICKED_ON_ISSUE_IN_LIST = "ClickOnIssueInList";
     public static final String ACTION_FOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "FollowedIssueFromFollowButton";
@@ -62,25 +55,25 @@ public class LogMsg implements Serializable {
 
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
-        values.put(LogsDbHelper.LOGS_ACTION_TYPE_COL, actionType);
-        values.put(LogsDbHelper.LOGS_INSTALLATION_ID_COL, installationId);
-        values.put(LogsDbHelper.LOGS_ISSUE_ID_COL, issueId);
-        values.put(LogsDbHelper.LOGS_TIMESTAMP_COL, timestamp);
-        values.put(LogsDbHelper.LOGS_LATITUDE_COL, latitude);
-        values.put(LogsDbHelper.LOGS_LONGITUDE_COL, longitude);
-        values.put(LogsDbHelper.LOGS_STATUS_COL, status);
+        values.put(LogsDbHelper.ACTION_TYPE_COL, actionType);
+        values.put(LogsDbHelper.INSTALLATION_ID_COL, installationId);
+        values.put(LogsDbHelper.ISSUE_ID_COL, issueId);
+        values.put(LogsDbHelper.TIMESTAMP_COL, timestamp);
+        values.put(LogsDbHelper.LATITUDE_COL, latitude);
+        values.put(LogsDbHelper.LONGITUDE_COL, longitude);
+        values.put(LogsDbHelper.STATUS_COL, status);
         return values;
     }
 
     public static LogMsg fromCursor(Cursor c) {
-        int id = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_ID_COL));
-        String actionType = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_ACTION_TYPE_COL));
-        String installationId = c.getString(c.getColumnIndex(LogsDbHelper.LOGS_INSTALLATION_ID_COL));
-        int issueId = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_ISSUE_ID_COL));
-        long timestamp = c.getLong(c.getColumnIndex(LogsDbHelper.LOGS_TIMESTAMP_COL));
-        Double latitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LOGS_LATITUDE_COL));
-        Double longitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LOGS_LONGITUDE_COL));
-        int status = c.getInt(c.getColumnIndex(LogsDbHelper.LOGS_STATUS_COL));
+        int id = c.getInt(c.getColumnIndex(LogsDbHelper.ID_COL));
+        String actionType = c.getString(c.getColumnIndex(LogsDbHelper.ACTION_TYPE_COL));
+        String installationId = c.getString(c.getColumnIndex(LogsDbHelper.INSTALLATION_ID_COL));
+        int issueId = c.getInt(c.getColumnIndex(LogsDbHelper.ISSUE_ID_COL));
+        long timestamp = c.getLong(c.getColumnIndex(LogsDbHelper.TIMESTAMP_COL));
+        Double latitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LATITUDE_COL));
+        Double longitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LONGITUDE_COL));
+        int status = c.getInt(c.getColumnIndex(LogsDbHelper.STATUS_COL));
 
         return new LogMsg(id,actionType,installationId,issueId,timestamp,latitude,longitude,status);
     }
