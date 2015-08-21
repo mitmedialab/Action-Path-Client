@@ -255,7 +255,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             @Override
             protected void onPostExecute(Object o) {
                 boolean success = (boolean) o;
-                Log.d(TAG,"saved answer to server "+success);
+                Log.d(TAG,"saved answer to db "+success);
                 if(success) {
                     // show some snackbar feedback
                     int feedbackStringId = R.string.issue_question_answered;
