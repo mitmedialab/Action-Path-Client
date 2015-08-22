@@ -10,12 +10,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.actionpath.db.AbstractSyncableModel;
-import org.actionpath.db.SyncableDataSource;
+import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.SyncableDbHelper;
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.responses.Response;
 import org.actionpath.db.responses.ResponsesDataSource;
-import org.actionpath.db.responses.ResponsesDbHelper;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +29,12 @@ import java.util.TimerTask;
  */
 public abstract class AbstractSyncTimerTask extends TimerTask {
 
-    private final String TAG = this.getClass().getName();
+    public static String TAG = AbstractSyncTimerTask.class.getName();
 
     protected GoogleApiClient googleApiClient;
     protected String installId;
     protected ContextWrapper contextWrapper;
-    protected SyncableDataSource dataSource;
+    protected AbstractSyncableDataSource dataSource;
 
     public AbstractSyncTimerTask(ContextWrapper contextWrapper, GoogleApiClient googleApiClient, Context context, String installId) {
         this.contextWrapper = contextWrapper;
@@ -62,30 +61,22 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
             }
         }
         // first assemble all the data
-        JSONArray sendJSON = getUnsyncedDataAsJson();
-        final ArrayList<Integer> ids = new ArrayList<>();
-        try {
-            for (int i = 0; i < sendJSON.length(); i++) {
-                JSONObject row = sendJSON.getJSONObject(i);
-                ids.add(row.getInt(SyncableDbHelper.ID_COL));
-            }
-        } catch (JSONException e) {
-            // TODO: Throw this exception and offer a snackbar alert
-            e.printStackTrace();
-        }
-        if (ids.size() == 0) {   // if not logs to sync, don't send to server
+        JSONArray recordsToSync = getUnsyncedDataAsJson();
+        if (recordsToSync.length() == 0) {   // if not logs to sync, don't send to server
             return;
         }
         // now send off the data to the server
         Boolean worked = false;
         String syncUrl = getUploadUrl();
         try {
-            JSONObject jsonResponse = ActionPathServer.syncToServer(syncUrl, sendJSON, installId);
+            JSONObject jsonResponse = ActionPathServer.syncToServer(syncUrl, recordsToSync, installId);
             if (ActionPathServer.RESPONSE_STATUS_OK.equals(jsonResponse.getString(ActionPathServer.RESPONSE_STATUS))) {
                 Log.d(TAG, "Sent all records to " + ActionPathServer.BASE_URL);
-                Log.d(TAG, "Need to delete "+ids.size()+" records");
+                Log.d(TAG, "Need to delete "+recordsToSync.length()+" records");
                 // delete sync'ed log items
-                for (int id : ids) {
+                for (int i = 0; i < recordsToSync.length(); i++) {
+                    JSONObject obj = recordsToSync.getJSONObject(i);
+                    int id = obj.getInt(SyncableDbHelper.ID_COL);
                     dataSource.delete(id);
                 }
             }
@@ -98,8 +89,14 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
             worked = false;
         }
         if(!worked){
-            for (int logId : ids) {
-                dataSource.updateStatus(logId, AbstractSyncableModel.STATUS_DID_NOT_SYNC);
+            try {
+                for (int i = 0; i < recordsToSync.length(); i++) {
+                    JSONObject obj = recordsToSync.getJSONObject(i);
+                    int id = obj.getInt(SyncableDbHelper.ID_COL);
+                    dataSource.updateStatus(id, AbstractSyncableModel.STATUS_DID_NOT_SYNC);
+                }
+            } catch (JSONException jse){
+                Log.e(TAG,"wasn't able to mark the records to sync as "+AbstractSyncableModel.STATUS_DID_NOT_SYNC);
             }
         }
     }
@@ -111,43 +108,30 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
 
     private JSONArray getUnsyncedDataAsJson(){
         Cursor cursor = ResponsesDataSource.getInstance().getDataToSyncCursor();
-        JSONArray resultSet = new JSONArray();
-        ArrayList<Integer> ids = new ArrayList<>();
+        JSONArray recordsToSync = new JSONArray();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            // TODO: move this into a LogMsg.getJson helper method that uses GSON to serialize itself
-            int totalColumn = cursor.getColumnCount();
-            JSONObject rowObject = new JSONObject();
-            for( int i=0 ;  i< totalColumn ; i++ ){
-                if( cursor.getColumnName(i) != null ){
-                    if(cursor.getColumnName(i).equals(ResponsesDbHelper.ID_COL)){
-                        ids.add(cursor.getInt(i));
-                    }
-                    try{
-                        if( cursor.getString(i) != null ){
-                            //Log.d("LogSyncService", "  "+cursor.getString(i));
-                            rowObject.put(cursor.getColumnName(i), cursor.getString(i));
-                        }else{
-                            rowObject.put( cursor.getColumnName(i) ,  "" );
-                        }
-                    }catch( Exception e ){
-                        Log.e(TAG, e.getMessage());
-                    }
-                }
-            }
-            resultSet.put(rowObject);
+            JSONObject jsonObject = dataSource.cursorToJsonObject(cursor);
+            recordsToSync.put(jsonObject);
             cursor.moveToNext();
         }
         cursor.close();
-        if(ids.size()==0){   // if nothing to sync, don't send to server
-            return resultSet;
+        // build a list of the ids for deletion later
+        if(recordsToSync.length()==0){   // if nothing to sync, don't send to server
+            return recordsToSync;
         }
         // update the issues saying we are trying to sync
-        for(int id:ids){
-            LogsDataSource.getInstance().updateStatus(id, Response.STATUS_SYNCING);
+        try {
+            for (int i = 0; i < recordsToSync.length(); i++) {
+                JSONObject obj = recordsToSync.getJSONObject(i);
+                int id = obj.getInt(SyncableDbHelper.ID_COL);
+                dataSource.updateStatus(id, AbstractSyncableModel.STATUS_SYNCING);
+            }
+        } catch(JSONException jse){
+            Log.e(TAG,"wasn't able to mark the records to sync as "+AbstractSyncableModel.STATUS_SYNCING);
         }
-        Log.v(TAG, "JSON TO UPLOAD: " + resultSet.toString());
-        return resultSet;
+        Log.v(TAG, "JSON TO UPLOAD: " + recordsToSync.toString());
+        return recordsToSync;
     }
 
 }

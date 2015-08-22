@@ -9,7 +9,7 @@ import android.location.Location;
 import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
-import org.actionpath.db.SyncableDataSource;
+import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.util.Installation;
 
 import java.sql.SQLException;
@@ -17,9 +17,7 @@ import java.sql.SQLException;
 /**
  * Use this as a singleton to access the responses database.
  */
-public class ResponsesDataSource implements SyncableDataSource {
-
-    public static String TAG = ResponsesDataSource.class.getName();
+public class ResponsesDataSource extends AbstractSyncableDataSource {
 
     private SQLiteDatabase db;
     private ResponsesDbHelper dbHelper;
@@ -35,7 +33,6 @@ public class ResponsesDataSource implements SyncableDataSource {
 
     public static synchronized ResponsesDataSource getInstance(Context context){
         if(instance==null){
-            Log.i(TAG,"Creating new ResponsesDataSource");
             instance = new ResponsesDataSource(context);
         }
         return instance;
@@ -43,6 +40,7 @@ public class ResponsesDataSource implements SyncableDataSource {
 
     private ResponsesDataSource(Context context) {
         try {
+            Log.i(TAG,"Creating new ResponsesDataSource");
             dbHelper = new ResponsesDbHelper(context);
             this.open(true);
         } catch (SQLException e) {
@@ -52,7 +50,7 @@ public class ResponsesDataSource implements SyncableDataSource {
     }
 
     @Override
-    public void open(boolean writable) throws SQLException {
+    public void open(boolean writable) throws SQLException{
         if(writable) {
             db = dbHelper.getWritableDatabase();
         } else {

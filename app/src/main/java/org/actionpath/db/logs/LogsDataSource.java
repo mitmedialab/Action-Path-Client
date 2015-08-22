@@ -9,7 +9,7 @@ import android.location.Location;
 import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
-import org.actionpath.db.SyncableDataSource;
+import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.util.Installation;
 
 import java.sql.SQLException;
@@ -18,9 +18,7 @@ import java.sql.SQLException;
  * Use this as a singleton to access the issues database.  MainActivity should create this for the
  * first time.
  */
-public class LogsDataSource implements SyncableDataSource {
-
-    public static String TAG = LogsDataSource.class.getName();
+public class LogsDataSource extends AbstractSyncableDataSource {
 
     private SQLiteDatabase db;
     private LogsDbHelper dbHelper;
@@ -36,7 +34,6 @@ public class LogsDataSource implements SyncableDataSource {
 
     public static synchronized LogsDataSource getInstance(Context context){
         if(instance==null){
-            Log.i(TAG,"Creating new LogsDataSource");
             instance = new LogsDataSource(context);
         }
         return instance;
@@ -44,6 +41,7 @@ public class LogsDataSource implements SyncableDataSource {
 
     private LogsDataSource(Context context) {
         try {
+            Log.i(TAG,"Creating new LogsDataSource");
             dbHelper = new LogsDbHelper(context);
             this.open(true);
         } catch (SQLException e) {

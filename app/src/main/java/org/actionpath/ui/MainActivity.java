@@ -5,7 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -19,10 +21,23 @@ import android.view.View;
 import android.net.Uri;
 
 import org.actionpath.R;
+import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.logs.LogsDataSource;
+import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.Development;
+import org.actionpath.util.DeviceUtil;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 //TODO: create account page at start & send data
 // include: city following (account page where this can be edited), user_id
@@ -92,7 +107,18 @@ public class MainActivity extends AbstractLocationActivity implements
                         return true;
                     case R.id.nav_save_debug_info:
                         logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
-                        // TODO: write any unsyned stuff to a file under /action-path or something like that which is accessible
+                        try {
+                            ArrayList<String> filePaths = new ArrayList<String>();
+                            String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
+                            String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
+                            if(logsFilePath!=null) filePaths.add(logsFilePath);
+                            if(responsesFilePath!=null) filePaths.add(responsesFilePath);
+                            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
+                            sendEmailWithUnsyncedRecords(filePaths);
+                        } catch (IOException ioe) {
+                            Log.e(TAG, "Unable to backup unsynced records " + ioe.toString());
+                            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
+                        }
                         displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
                         return true;
                     default:
@@ -123,6 +149,51 @@ public class MainActivity extends AbstractLocationActivity implements
 
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
+    }
+
+    private void sendEmailWithUnsyncedRecords(ArrayList<String> filePaths) {
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        for (String file : filePaths) {
+            File fileIn = new File(file);
+            Uri u = Uri.fromFile(fileIn);
+            uris.add(u);
+        }
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
+        emailIntent.setType("plain/text");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, "rahulbot@gmail.com");
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "backups from "+getInstallId());
+        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        startActivity(emailIntent);
+    }
+
+    private String saveUnsyncedRecordsToFileSystem(AbstractSyncableDataSource dataSource, String fileName) throws IOException {
+        if(dataSource.countDataToSync()==0){
+            return null;
+        }
+        // assemble the json
+        String jsonToSave = dataSource.getUnsyncedRecordsAsJson().toString();
+        // write it out
+        File file = getPublicBackupFile(fileName);
+        if(file==null){
+            throw new IOException("Unable to create file");
+        }
+        PrintWriter printWriter = new PrintWriter(file);
+        printWriter.write(jsonToSave);
+        printWriter.close();
+        Log.i(TAG, "Wrote unsynced records to " + file.getCanonicalPath());
+        return file.getAbsolutePath();
+    }
+
+    private File getPublicBackupFile(String name){
+        if(!DeviceUtil.isExternalStorageWritable()){
+            Log.e(TAG,"Tried to saveUnsyncedRecordsToFileSystem but file system isn't writable - fail");
+            return null;
+        }
+        String path = Environment.getExternalStorageDirectory().toString();
+        String timestamp = new SimpleDateFormat("yyyyMMddhhmm").format(new Date());
+        File file = new File(path,getInstallId()+"-"+timestamp+"-"+name);
+        Log.i(TAG,"File created at "+file.getAbsolutePath());
+        return file;
     }
 
     @Override

@@ -80,5 +80,7 @@
     <string name="failed_to_parse_places_near">Server error retrieving places</string>
 
     <string name="nav_save_debug_info">Save Debug Info</string>
+    <string name="backup_unsynced_records_worked">Backing up unsynced records worked</string>
+    <string name="backup_unsynced_records_failed">Backing up unsynced records failed</string>
 
 </resources>
