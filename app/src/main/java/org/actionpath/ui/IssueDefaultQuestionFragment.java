@@ -15,7 +15,7 @@ import org.actionpath.R;
  * Activities containing this fragment MUST implement the {@link OnAnswerSelectedListener}
  * interface.
  */
-public class IssueDefaultQuestionFragment extends Fragment {
+public class IssueDefaultQuestionFragment extends AbstractIssueQuestionFragment {
 
     private static String TAG = IssueDefaultQuestionFragment.class.getName();
 
@@ -51,14 +51,14 @@ public class IssueDefaultQuestionFragment extends Fragment {
         answerYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAnswerSelected(1);
+                listener.onAnswerSelected("yes");
             }
         });
         Button answerNo = (Button) view.findViewById(R.id.issue_detail_no);
         answerNo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onAnswerSelected(0);
+                listener.onAnswerSelected("no");
             }
         });
 
@@ -79,10 +79,6 @@ public class IssueDefaultQuestionFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
-    }
-
-    public interface OnAnswerSelectedListener {
-        void onAnswerSelected(int answerIndex);
     }
 
 }

@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -91,6 +92,21 @@ public class Issue extends AbstractModel {
 
     public double getLatitude(){
         return this.latitude;
+    }
+
+    public String getQuestion(){
+        return this.question;
+    }
+
+    public ArrayList<String> getAnswers(){
+        ArrayList<String> answers = new ArrayList<String>();
+        if(answer1!=null && answer1.length()>0) answers.add(answer1);
+        if(answer2!=null && answer2.length()>0) answers.add(answer2);
+        if(answer3!=null && answer3.length()>0) answers.add(answer3);
+        if(answer4!=null && answer4.length()>0) answers.add(answer4);
+        if(answer5!=null && answer5.length()>0) answers.add(answer5);
+        if(answer6!=null && answer6.length()>0) answers.add(answer6);
+        return answers;
     }
 
     public double getLongitude(){

@@ -41,7 +41,7 @@ import java.util.List;
 
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
-        OnMapReadyCallback, IssueDefaultQuestionFragment.OnAnswerSelectedListener,
+        OnMapReadyCallback, AbstractIssueQuestionFragment.OnAnswerSelectedListener,
         GeofencingRemovalListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
@@ -130,7 +130,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         });
 
         if(issue.hasCustomQuestion()) {
-            // TODO: add another fragment option here that pulls from issue.question and issue.answerX
+            showCustomQuestionUiFragment();
         } else {
             showDefaultQuestionUiFragment();
         }
@@ -291,6 +291,13 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     }
 
+    private void showCustomQuestionUiFragment(){
+        Fragment fragment = IssueCustomQuestionFragment.newInstance(issue.getQuestion(),issue.getAnswers());
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
+        fragmentTransaction.commit();
+    }
+
     private void showDefaultQuestionUiFragment(){
         Fragment fragment = IssueDefaultQuestionFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -299,18 +306,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     @Override
-    public void onAnswerSelected(int answerIndex) {
+    public void onAnswerSelected(String answerText) {
         logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
-        String answerText = "";
-        // TODO: Use constants on this switch
-        switch(answerIndex) {
-            case 0:
-                answerText = "no";
-                break;
-            case 1:
-                answerText = "yes";
-                break;
-        }
         answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
         if(fromSurveyNotification) {
             // only remove the geofence if we got an alert and then answered a question
