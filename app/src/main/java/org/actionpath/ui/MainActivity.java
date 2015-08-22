@@ -160,7 +160,7 @@ public class MainActivity extends AbstractLocationActivity implements
         }
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("plain/text");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, "rahulbot@gmail.com");
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, "erhardt@media.mit.edu");
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "backups from "+getInstallId());
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         startActivity(emailIntent);
