@@ -49,6 +49,11 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
         Log.d(TAG, "Timer says we should sync now!");
         Log.d(TAG, "  " + dataSource.countDataToSync() + " to sync");
         Log.d(TAG, "  " + dataSource.countDataNeedingLocation() + " needing location");
+        // first assemble all the data
+        JSONArray recordsToSync = getUnsyncedDataAsJson();
+        if (recordsToSync.length() == 0) {   // if not logs to sync, don't send to server
+            return;
+        }
         // check if we have a location or not
         if (googleApiClient.isConnected()) {
             Location loc = getLocation();
@@ -59,11 +64,6 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
             if (!googleApiClient.isConnecting()) {
                 googleApiClient.connect();  // try to reconnect!
             }
-        }
-        // first assemble all the data
-        JSONArray recordsToSync = getUnsyncedDataAsJson();
-        if (recordsToSync.length() == 0) {   // if not logs to sync, don't send to server
-            return;
         }
         // now send off the data to the server
         Boolean worked = false;
