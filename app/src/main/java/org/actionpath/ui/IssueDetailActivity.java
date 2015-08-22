@@ -41,7 +41,7 @@ import java.util.List;
 
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
-        OnMapReadyCallback, IssueQuestionFragment.OnAnswerSelectedListener,
+        OnMapReadyCallback, IssueDefaultQuestionFragment.OnAnswerSelectedListener,
         GeofencingRemovalListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
@@ -292,7 +292,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     private void showDefaultQuestionUiFragment(){
-        Fragment fragment = IssueQuestionFragment.newInstance();
+        Fragment fragment = IssueDefaultQuestionFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
         fragmentTransaction.commit();

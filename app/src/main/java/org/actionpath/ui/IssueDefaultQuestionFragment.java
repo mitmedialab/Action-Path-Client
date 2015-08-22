@@ -10,23 +10,19 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import org.actionpath.R;
-import org.actionpath.geofencing.GeofencingRemover;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Activities containing this fragment MUST implement the {@link OnAnswerSelectedListener}
  * interface.
  */
-public class IssueQuestionFragment extends Fragment {
+public class IssueDefaultQuestionFragment extends Fragment {
 
-    private static String TAG = IssueQuestionFragment.class.getName();
+    private static String TAG = IssueDefaultQuestionFragment.class.getName();
 
     private OnAnswerSelectedListener listener;
 
-    public static IssueQuestionFragment newInstance() {
-        IssueQuestionFragment fragment = new IssueQuestionFragment();
+    public static IssueDefaultQuestionFragment newInstance() {
+        IssueDefaultQuestionFragment fragment = new IssueDefaultQuestionFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -36,7 +32,7 @@ public class IssueQuestionFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public IssueQuestionFragment() {
+    public IssueDefaultQuestionFragment() {
     }
 
     @Override
@@ -49,7 +45,7 @@ public class IssueQuestionFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG, "Building Issue Question Fragment UI");
-        View view = inflater.inflate(R.layout.fragment_issue_question, container, false);
+        View view = inflater.inflate(R.layout.fragment_issue_default_question, container, false);
 
         Button answerYes = (Button) view.findViewById(R.id.issue_detail_yes);
         answerYes.setOnClickListener(new View.OnClickListener() {
