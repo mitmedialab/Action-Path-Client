@@ -72,6 +72,7 @@
                 android:paddingTop="@dimen/textview_title_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/issue_detail_description_header"
                 android:text="@string/issue_detail_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
             <TextView

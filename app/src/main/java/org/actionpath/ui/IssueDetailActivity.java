@@ -101,8 +101,16 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
         TextView summary = (TextView) findViewById(R.id.issue_detail_summary);
         summary.setText(issue.getIssueSummary());
+
         TextView description = (TextView) findViewById(R.id.issue_detail_description);
-        description.setText(issue.getIssueDescription());
+        if (!issue.getIssueDescription().equals("")) {
+            description.setText(issue.getIssueDescription());
+        } else {
+            // hide description if there is none like in a custom question
+            findViewById(R.id.issue_detail_description_header).setVisibility(View.GONE);
+            description.setVisibility(View.GONE);
+        }
+
         TextView status = (TextView) findViewById(R.id.issue_detail_status);
         status.setText(issue.getStatus());
         TextView location = (TextView) findViewById(R.id.issue_detail_location);
@@ -241,7 +249,6 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     private void answerQuestion(View view, String answer){
         Log.i(TAG, "Answered '" + answer + "' on issue " + issue.getId());
         // update the UI
-        final String newAnswer = answer;
         changeFollowedAndUpdateUI(view, true, false);
         final View v = view;
         final String answerText = answer;
