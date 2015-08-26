@@ -26,6 +26,8 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
 
     private static final String ARG_QUESTION = "ARG_QUESTION";
     private static final String ARG_ANSWERS = "ARG_ANSWERS";
+    private static final int RADIO_BUTTON_VERTICAL_PADDING = 32;
+    private static final int RADIO_BUTTON_HORIZONTAL_PADDING = 16;
 
     private String question;
     private ArrayList answers;
@@ -70,6 +72,7 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
             RadioButton button = new RadioButton(this.getActivity());
             button.setText(answer.toString());
             button.setOnClickListener(this);
+            button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
             radioGroup.addView(button);
         }
 

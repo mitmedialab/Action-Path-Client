@@ -11,4 +11,5 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="textview_title_padding">16dp</dimen>
     <dimen name="button_margin">16dp</dimen>
+    <dimen name="radio_button_group_padding">16dp</dimen>
 </resources>
