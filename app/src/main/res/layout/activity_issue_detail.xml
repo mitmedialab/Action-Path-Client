@@ -88,16 +88,19 @@
                 android:id="@+id/issue_detail_question_container"
                 />
 
+            <!-- TODO: Remove visibility=gone to bring back status in normal app -->
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/issue_detail_status"
+                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_status"
+                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
