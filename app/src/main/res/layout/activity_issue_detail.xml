@@ -126,12 +126,14 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
+                <!-- TODO: Remove visibility=gone on normal app when url available -->
                 <Button style="@style/Widget.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/issue_detail_view_online"
                     android:id="@+id/issue_detail_view_online"
                     android:enabled="true"
+                    android:visibility="gone"
                     android:layout_weight="1.0" />
 
                 <Button style="@style/Widget.AppCompat.Button"
