@@ -27,25 +27,18 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_CLICKED_ON_UPDATE_NOTIFICATION="ClicksOnUpdateNotification";
     public static final String ACTION_SAVING_DEBUG_INFO = "SaveDebugInfo";
 
-    public static final Integer NO_ISSUE = -1;
-
     // Fields
-    public int id = INVALID_ID;
     public String actionType;
-    public String installationId;
-    public int issueId;
-    public long timestamp;
-    public double latitude;
-    public double longitude;
-    public int status;
+    public String details;
 
-    public LogMsg(String actionType, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
-        this(INVALID_ID, actionType, installationId, issueId, timestamp, latitude, longitude, status);
+    public LogMsg(String actionType, String details, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
+        this(INVALID_ID, actionType, details, installationId, issueId, timestamp, latitude, longitude, status);
     }
 
-    public LogMsg(int id, String actionType, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
+    public LogMsg(int id, String actionType, String details, String installationId, int issueId, long timestamp, double latitude, double longitude, int status) {
         this.id = id;
         this.actionType = actionType;
+        this.details = details;
         this.installationId = installationId;
         this.issueId = issueId;
         this.timestamp = timestamp;
@@ -55,20 +48,16 @@ public class LogMsg extends AbstractSyncableModel {
     }
 
     public ContentValues getContentValues() {
-        ContentValues values = new ContentValues();
+        ContentValues values = super.getContentValues();
         values.put(LogsDbHelper.ACTION_TYPE_COL, actionType);
-        values.put(LogsDbHelper.INSTALLATION_ID_COL, installationId);
-        values.put(LogsDbHelper.ISSUE_ID_COL, issueId);
-        values.put(LogsDbHelper.TIMESTAMP_COL, timestamp);
-        values.put(LogsDbHelper.LATITUDE_COL, latitude);
-        values.put(LogsDbHelper.LONGITUDE_COL, longitude);
-        values.put(LogsDbHelper.STATUS_COL, status);
+        values.put(LogsDbHelper.DETAILS_COL, details);
         return values;
     }
 
     public static LogMsg fromCursor(Cursor c) {
         int id = c.getInt(c.getColumnIndex(LogsDbHelper.ID_COL));
         String actionType = c.getString(c.getColumnIndex(LogsDbHelper.ACTION_TYPE_COL));
+        String details = c.getString(c.getColumnIndex(LogsDbHelper.DETAILS_COL));
         String installationId = c.getString(c.getColumnIndex(LogsDbHelper.INSTALLATION_ID_COL));
         int issueId = c.getInt(c.getColumnIndex(LogsDbHelper.ISSUE_ID_COL));
         long timestamp = c.getLong(c.getColumnIndex(LogsDbHelper.TIMESTAMP_COL));
@@ -76,7 +65,7 @@ public class LogMsg extends AbstractSyncableModel {
         Double longitude = c.getDouble(c.getColumnIndex(LogsDbHelper.LONGITUDE_COL));
         int status = c.getInt(c.getColumnIndex(LogsDbHelper.STATUS_COL));
 
-        return new LogMsg(id,actionType,installationId,issueId,timestamp,latitude,longitude,status);
+        return new LogMsg(id,actionType,details, installationId,issueId,timestamp,latitude,longitude,status);
     }
 
     @Override

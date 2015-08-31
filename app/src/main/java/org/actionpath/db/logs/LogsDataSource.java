@@ -82,8 +82,8 @@ public class LogsDataSource extends AbstractSyncableDataSource {
 
     public long countDataToSync(){
         return DatabaseUtils.queryNumEntries(db, LogsDbHelper.TABLE_NAME,
-                LogsDbHelper.STATUS_COL + "=? OR "+LogsDbHelper.STATUS_COL + "=?",
-                new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC +"",""+ AbstractSyncableModel.STATUS_DID_NOT_SYNC});
+                LogsDbHelper.STATUS_COL + "=? OR " + LogsDbHelper.STATUS_COL + "=?",
+                new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC + "", "" + AbstractSyncableModel.STATUS_DID_NOT_SYNC});
     }
 
     public long countDataNeedingLocation(){
@@ -132,10 +132,14 @@ public class LogsDataSource extends AbstractSyncableDataSource {
     }
 
     public void insert(Context context, String action, Location loc) {
-        insert(context, LogMsg.NO_ISSUE, action, loc);
+        insert(context, LogMsg.NO_ISSUE, action, "", loc);
     }
 
-    public void insert(Context context, int issueId, String action, Location loc){
+    public void insert(Context context, int issueId, String action, Location loc) {
+        insert(context,issueId,action,"",loc);
+    }
+
+    public void insert(Context context, int issueId, String action, String details, Location loc){
         double latitude = 0;
         double longitude = 0;
         if(loc!=null) {
@@ -143,7 +147,7 @@ public class LogsDataSource extends AbstractSyncableDataSource {
             longitude = loc.getLongitude();
         }
         int status = (loc==null) ? AbstractSyncableModel.STATUS_NEEDS_LOCATION : AbstractSyncableModel.STATUS_READY_TO_SYNC;
-        LogMsg logMsg = new LogMsg(action, Installation.id(context), issueId,
+        LogMsg logMsg = new LogMsg(action, details, Installation.id(context), issueId,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
                 status);

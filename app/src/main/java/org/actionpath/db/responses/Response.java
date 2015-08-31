@@ -7,14 +7,7 @@ import org.actionpath.db.AbstractSyncableModel;
 
 public class Response extends AbstractSyncableModel {
 
-    public int id = INVALID_ID;
-    public String installationId;
-    public int issueId;
     public String answerText;
-    public long timestamp;
-    public double latitude;
-    public double longitude;
-    public int status;
 
     public Response(int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status) {
         this(INVALID_ID, issueId, installationId, answerText, timestamp, latitude, longitude, status);
@@ -32,14 +25,8 @@ public class Response extends AbstractSyncableModel {
     }
 
     public ContentValues getContentValues() {
-        ContentValues values = new ContentValues();
-        values.put(ResponsesDbHelper.ISSUE_ID_COL, issueId);
-        values.put(ResponsesDbHelper.INSTALLATION_ID_COL, installationId);
+        ContentValues values = super.getContentValues();
         values.put(ResponsesDbHelper.ANSWER_COL, answerText);
-        values.put(ResponsesDbHelper.TIMESTAMP_COL, timestamp);
-        values.put(ResponsesDbHelper.LATITUDE_COL, latitude);
-        values.put(ResponsesDbHelper.LONGITUDE_COL, longitude);
-        values.put(ResponsesDbHelper.STATUS_COL, status);
         return values;
     }
 

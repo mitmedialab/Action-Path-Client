@@ -86,8 +86,12 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     }
 
     protected void logMsg(int issueId, String action, Location loc){
+        logMsg(issueId,action,"",loc);
+    }
+
+    protected void logMsg(int issueId, String action, String details, Location loc){
         LogsDataSource.getInstance(getApplicationContext()).insert(
-                getApplicationContext(), issueId, action, loc);
+                getApplicationContext(), issueId, action, details, loc);
     }
 
     private void addTestIssues(){

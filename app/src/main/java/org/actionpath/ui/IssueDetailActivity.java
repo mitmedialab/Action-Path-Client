@@ -314,7 +314,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     @Override
     public void onAnswerSelected(String answerText) {
-        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
+        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING,answerText);
         answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
         if(fromSurveyNotification) {
             // only remove the geofence if we got an alert and then answered a question
