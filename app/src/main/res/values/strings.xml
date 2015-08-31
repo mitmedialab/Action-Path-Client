@@ -79,7 +79,7 @@
     <string name="failed_to_fetch_places_near">Problem finding places near you</string>
     <string name="failed_to_parse_places_near">Server error retrieving places</string>
 
-    <string name="nav_save_debug_info">Save Debug Info</string>
+    <string name="nav_save_debug_info">Save Debug Info (%1$d/%2$d)</string>
     <string name="backup_unsynced_records_worked">Backing up unsynced records worked</string>
     <string name="backup_unsynced_records_failed">Backing up unsynced records failed</string>
 

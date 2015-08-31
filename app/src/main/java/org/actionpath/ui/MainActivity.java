@@ -48,6 +48,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private NavigationView navView;
 
     private static String TAG = MainActivity.class.getName();
 
@@ -63,10 +64,10 @@ public class MainActivity extends AbstractLocationActivity implements
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navView = (NavigationView) findViewById(R.id.navigation_view);
 
         //Setting Navigation View Item Selected Listener to handle the item click of the navigation menu
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
             // This method will trigger on item Click of navigation menu
             @Override
@@ -111,8 +112,8 @@ public class MainActivity extends AbstractLocationActivity implements
                             ArrayList<String> filePaths = new ArrayList<String>();
                             String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
                             String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
-                            if(logsFilePath!=null) filePaths.add(logsFilePath);
-                            if(responsesFilePath!=null) filePaths.add(responsesFilePath);
+                            if (logsFilePath != null) filePaths.add(logsFilePath);
+                            if (responsesFilePath != null) filePaths.add(responsesFilePath);
                             Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
                             sendEmailWithUnsyncedRecords(filePaths);
                         } catch (IOException ioe) {
@@ -161,7 +162,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND_MULTIPLE);
         emailIntent.setType("plain/text");
         emailIntent.putExtra(Intent.EXTRA_EMAIL, "erhardt@media.mit.edu");
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "backups from "+getInstallId());
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "backups from " + getInstallId());
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
         startActivity(emailIntent);
     }
@@ -186,7 +187,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private File getPublicBackupFile(String name){
         if(!DeviceUtil.isExternalStorageWritable()){
-            Log.e(TAG,"Tried to saveUnsyncedRecordsToFileSystem but file system isn't writable - fail");
+            Log.e(TAG, "Tried to saveUnsyncedRecordsToFileSystem but file system isn't writable - fail");
             return null;
         }
         String path = Environment.getExternalStorageDirectory().toString();
@@ -199,7 +200,6 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onResume(){
         super.onResume();
-
         // On first load check to see if we have a place selected if so load My Actions Page
         if(!(getPlaceId()==INVALID_PLACE_ID)){
             displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
@@ -208,6 +208,15 @@ public class MainActivity extends AbstractLocationActivity implements
             Log.i(TAG, "Defaulting to Mexico City");
             onPlaceSelected(Development.PLACE_MEXICO_CITY_ID, Development.PLACE_MEXICO_CITY_NAME);
             //displayPickPlaceFragment();
+        }
+        // now update the dynamic nav menu text
+        long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
+        long logsToUpload = LogsDataSource.getInstance(this).countDataToSync() + LogsDataSource.getInstance(this).countDataNeedingLocation();
+        if((responsesToUpload + logsToUpload) > 0){
+            MenuItem debugMenuItem = (MenuItem) navView.getMenu().findItem(R.id.nav_save_debug_info);
+            String strToFormat = getResources().getString(R.string.nav_save_debug_info);
+            String formattedStr = String.format(strToFormat, logsToUpload, responsesToUpload);
+            debugMenuItem.setTitle(formattedStr);
         }
     }
 
