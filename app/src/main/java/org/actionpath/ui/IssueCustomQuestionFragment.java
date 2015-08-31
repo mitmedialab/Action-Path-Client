@@ -1,6 +1,7 @@
 package org.actionpath.ui;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
     private static final String ARG_ANSWERS = "ARG_ANSWERS";
     private static final int RADIO_BUTTON_VERTICAL_PADDING = 32;
     private static final int RADIO_BUTTON_HORIZONTAL_PADDING = 16;
+    private static final int RADIO_BUTTON_HORIZONTAL_PADDING_V16 = 50;  // see: http://stackoverflow.com/questions/2134591/add-margin-between-a-radiobutton-and-its-label-in-android
 
     private String question;
     private ArrayList answers;
@@ -72,7 +74,11 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
             RadioButton button = new RadioButton(this.getActivity());
             button.setText(answer.toString());
             button.setOnClickListener(this);
-            button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
+            if(Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
+            } else {
+                button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING_V16, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
+            }
             radioGroup.addView(button);
         }
 
