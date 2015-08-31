@@ -74,7 +74,7 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
             RadioButton button = new RadioButton(this.getActivity());
             button.setText(answer.toString());
             button.setOnClickListener(this);
-            if(Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            if(Build.VERSION.SDK_INT>=android.os.Build.VERSION_CODES.JELLY_BEAN_MR1) {  // padding defaults changed in API v17
                 button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
             } else {
                 button.setPadding(RADIO_BUTTON_HORIZONTAL_PADDING_V16, RADIO_BUTTON_VERTICAL_PADDING, 0, RADIO_BUTTON_VERTICAL_PADDING);
