@@ -1,9 +1,13 @@
 package org.actionpath.ui;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -11,6 +15,7 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.actionpath.R;
 import org.actionpath.db.logs.LogMsg;
 import org.actionpath.util.Development;
 import org.actionpath.util.DeviceUtil;
@@ -48,16 +53,32 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
                 .build();
     }
 
-
     @Override
-    public void onStart(){
-        super.onStart();
+    public void onResume(){
+        super.onResume();
         boolean locationServicesOk = DeviceUtil.isLocationServicesEnabled(this);
         if(!locationServicesOk) {
             Log.e(TAG, "Location GPS or Network not available :-(");
             // TODO: notify user via a dialog alert, linking to a new Intent( Settings.ACTION_LOCATION_SOURCE_SETTINGS); to fix it
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setMessage(this.getResources().getString(R.string.location_not_enabled));
+            dialog.setPositiveButton(this.getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(this.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO: what to do?
+                }
+            });
+            dialog.show();
         } else {
-            googleApiClient.connect();
+            if(googleApiClient!=null && !googleApiClient.isConnected())
+                googleApiClient.connect();
         }
     }
 

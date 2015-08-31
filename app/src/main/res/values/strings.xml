@@ -83,4 +83,9 @@
     <string name="backup_unsynced_records_worked">Backing up unsynced records worked</string>
     <string name="backup_unsynced_records_failed">Backing up unsynced records failed</string>
 
+    <string name="location_not_enabled">Your GPS is not turned on! Please turn it on, otherwise ActionPath is kind of useless.</string>
+    <string name="open_location_settings">Turn on your GPS</string>
+
+    <string name="cancel">Cancel</string>
+
 </resources>
