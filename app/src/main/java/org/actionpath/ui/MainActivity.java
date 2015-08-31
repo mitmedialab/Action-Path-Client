@@ -307,6 +307,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     @Override
     public void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus){
+        Log.d(TAG,"status change alert on issue "+issueId+": "+oldStatus+" -> "+newStatus);
         // Fire a low priority notification
         sendNotification(issueId, newStatus);
 

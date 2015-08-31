@@ -10,6 +10,7 @@ import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
+import org.actionpath.db.SyncableDbHelper;
 import org.actionpath.util.Installation;
 
 import java.sql.SQLException;
@@ -63,64 +64,42 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
     }
 
     @Override
-    public Cursor getDataNeedingLocation(){
-        return this.db.query(ResponsesDbHelper.TABLE_NAME, ResponsesDbHelper.RESPONSES_COLUMNS,
-                ResponsesDbHelper.STATUS_COL + " = ?", new String[]{"" + Response.STATUS_NEEDS_LOCATION},
-                null, null, null);
-    }
-
-    @Override
     public Cursor getDataToSyncCursor(){
         return this.db.query(ResponsesDbHelper.TABLE_NAME, ResponsesDbHelper.RESPONSES_COLUMNS,
-                ResponsesDbHelper.STATUS_COL + " = ? OR " + ResponsesDbHelper.STATUS_COL + " = ?",
-                new String[]{"" + Response.STATUS_READY_TO_SYNC, "" + Response.STATUS_DID_NOT_SYNC},
+                SyncableDbHelper.STATUS_COL + " = ? OR " + SyncableDbHelper.STATUS_COL + " = ?",
+                new String[]{"" + AbstractSyncableModel.STATUS_READY_TO_SYNC, "" + Response.STATUS_DID_NOT_SYNC},
                 null, null, null);
     }
 
     @Override
     public long countDataToSync(){
         return DatabaseUtils.queryNumEntries(db, ResponsesDbHelper.TABLE_NAME,
-                ResponsesDbHelper.STATUS_COL + "=? OR "+ResponsesDbHelper.STATUS_COL + "=?",
-                new String[]{Response.STATUS_READY_TO_SYNC +"",""+Response.STATUS_DID_NOT_SYNC});
+                SyncableDbHelper.STATUS_COL + "=? OR "+SyncableDbHelper.STATUS_COL + "=?",
+                new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC +"",""+Response.STATUS_DID_NOT_SYNC});
     }
 
     @Override
     public long countDataNeedingLocation(){
         return DatabaseUtils.queryNumEntries(db, ResponsesDbHelper.TABLE_NAME,
-                ResponsesDbHelper.STATUS_COL +"=?",
+                SyncableDbHelper.STATUS_COL +"=?",
                 new String[] {""+Response.STATUS_NEEDS_LOCATION});
     }
 
     @Override
     public void updateDataNeedingLocation(double latitude, double longitude){
-        // Update anything in database that doesn't have a location
-        Cursor cursor = getDataNeedingLocation();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            Response response = Response.fromCursor(cursor);
-            Log.d(TAG, "adding location to response " + response.id);
-            updateLocation(response.id, latitude, longitude);
-            cursor.moveToNext();
-        }
-        cursor.close();
-    }
-
-    @Override
-    public void updateLocation(int id, double latitude, double longitude){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ResponsesDbHelper.STATUS_COL, Response.STATUS_READY_TO_SYNC);
-        contentValues.put(ResponsesDbHelper.LATITUDE_COL, latitude);
-        contentValues.put(ResponsesDbHelper.LONGITUDE_COL, longitude);
+        contentValues.put(SyncableDbHelper.STATUS_COL, AbstractSyncableModel.STATUS_READY_TO_SYNC);
+        contentValues.put(SyncableDbHelper.LATITUDE_COL, latitude);
+        contentValues.put(SyncableDbHelper.LONGITUDE_COL, longitude);
         this.db.update(ResponsesDbHelper.TABLE_NAME,
                 contentValues,
-                ResponsesDbHelper.ID_COL + "=?",
-                new String[]{id + ""});
-    }
+                SyncableDbHelper.STATUS_COL + "=?",
+                new String[]{"" + AbstractSyncableModel.STATUS_NEEDS_LOCATION});    }
 
     @Override
     public void updateStatus(int id, Integer responseStatus) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(ResponsesDbHelper.STATUS_COL, responseStatus);
+        contentValues.put(SyncableDbHelper.STATUS_COL, responseStatus);
         this.db.update(ResponsesDbHelper.TABLE_NAME,
                 contentValues,
                 ResponsesDbHelper.ID_COL + "=?",

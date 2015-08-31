@@ -104,7 +104,7 @@ public class UpdateIssuesFragment extends Fragment implements
                     for(Issue i:newIssues){
                         if(dataSource.issueExists(i.getId())){
                             Issue existingIssue = dataSource.getIssue(i.getId());
-                            if(existingIssue.isFollowed() && existingIssue.getStatus()!=i.getStatus()){
+                            if(existingIssue.isFollowed() && existingIssue.hasStatus() && !existingIssue.getStatus().equals(i.getStatus())){
                                 listener.onFollowedIssueStatusChanged(i.getId(), existingIssue.getStatus(), i.getStatus());
                             }
                             dataSource.updateIssue(i,true);

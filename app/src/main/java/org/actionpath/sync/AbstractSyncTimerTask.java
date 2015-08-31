@@ -12,16 +12,12 @@ import com.google.android.gms.location.LocationServices;
 import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.SyncableDbHelper;
-import org.actionpath.db.logs.LogsDataSource;
-import org.actionpath.db.responses.Response;
-import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
@@ -29,7 +25,7 @@ import java.util.TimerTask;
  */
 public abstract class AbstractSyncTimerTask extends TimerTask {
 
-    public static String TAG = AbstractSyncTimerTask.class.getName();
+    public String TAG = this.getClass().getName();
 
     protected GoogleApiClient googleApiClient;
     protected String installId;
@@ -49,21 +45,28 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
         Log.d(TAG, "Timer says we should sync now!");
         Log.d(TAG, "  " + dataSource.countDataToSync() + " to sync");
         Log.d(TAG, "  " + dataSource.countDataNeedingLocation() + " needing location");
-        // first assemble all the data
-        JSONArray recordsToSync = getUnsyncedDataAsJson();
-        if (recordsToSync.length() == 0) {   // if not logs to sync, don't send to server
-            return;
-        }
         // check if we have a location or not
         if (googleApiClient.isConnected()) {
-            Location loc = getLocation();
-            if (loc != null) {
-                dataSource.updateDataNeedingLocation(loc.getLatitude(), loc.getLongitude());
+            if(dataSource.countDataNeedingLocation()>0) {
+                Log.d(TAG, "adding location");
+                Location loc = getLocation();
+                if (loc != null) {
+                    dataSource.updateDataNeedingLocation(loc.getLatitude(), loc.getLongitude());
+                } else {
+                    Log.d(TAG,"tried to add location by got a null loc");
+                }
             }
         } else {
+            Log.d(TAG, "unable to add location");
             if (!googleApiClient.isConnecting()) {
                 googleApiClient.connect();  // try to reconnect!
             }
+        }
+        // now assemble all the data
+        JSONArray recordsToSync = getUnsyncedDataAsJson();
+        if (recordsToSync.length() == 0) {   // if nothing to sync, don't send to server
+            Log.v(TAG,"Nothing to sync!");
+            return;
         }
         // now send off the data to the server
         Boolean worked = false;
@@ -82,10 +85,10 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
             }
             worked = true;
         } catch (IOException ioe){
-            Log.e(TAG, "Server said it failed to sync logs: "+ioe.toString());
+            Log.e(TAG, "Server said it failed to sync: "+ioe.toString());
             worked = false;
         } catch (JSONException jse){
-            Log.e(TAG, "Server said it failed to sync logs: "+jse.toString());
+            Log.e(TAG, "Server said it failed to sync: "+jse.toString());
             worked = false;
         }
         if(!worked){
@@ -107,7 +110,7 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
     }
 
     private JSONArray getUnsyncedDataAsJson(){
-        Cursor cursor = ResponsesDataSource.getInstance().getDataToSyncCursor();
+        Cursor cursor = dataSource.getDataToSyncCursor();
         JSONArray recordsToSync = new JSONArray();
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

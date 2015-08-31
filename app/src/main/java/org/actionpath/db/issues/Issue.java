@@ -133,6 +133,8 @@ public class Issue extends AbstractModel {
 
     public String getStatus() { return status; }
 
+    public boolean hasStatus() { return status!=null && status.length()>0; }
+
     public Date getCreatedAt() {
         return createdAt;
     }

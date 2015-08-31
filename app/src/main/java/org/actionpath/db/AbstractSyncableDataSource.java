@@ -17,8 +17,6 @@ public abstract class AbstractSyncableDataSource {
 
     public abstract void open(boolean writable) throws SQLException;
 
-    public abstract Cursor getDataNeedingLocation();
-
     public abstract Cursor getDataToSyncCursor();
 
     public abstract long countDataToSync();
@@ -26,8 +24,6 @@ public abstract class AbstractSyncableDataSource {
     public abstract long countDataNeedingLocation();
 
     public abstract void updateDataNeedingLocation(double latitude, double longitude);
-
-    public abstract void updateLocation(int id, double latitude, double longitude);
 
     public abstract void updateStatus(int id, Integer responseStatus);
 

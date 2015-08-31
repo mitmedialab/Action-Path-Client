@@ -260,7 +260,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             protected Object doInBackground(Object[] params) {
                 ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
                 dataSource.insert(context, issue.getId(), answerText, loc);
-                logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION);
+                logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION, answerText);
                 return true;
             }
             @Override

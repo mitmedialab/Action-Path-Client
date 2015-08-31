@@ -10,6 +10,7 @@ import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
+import org.actionpath.db.SyncableDbHelper;
 import org.actionpath.util.Installation;
 
 import java.sql.SQLException;
@@ -67,67 +68,48 @@ public class LogsDataSource extends AbstractSyncableDataSource {
         this.db.insert(LogsDbHelper.TABLE_NAME, null, logMsg.getContentValues());
     }
 
-    public Cursor getDataNeedingLocation(){
-        return this.db.query(LogsDbHelper.TABLE_NAME, LogsDbHelper.LOGS_COLUMNS,
-                LogsDbHelper.STATUS_COL + " = ?", new String[]{"" + AbstractSyncableModel.STATUS_NEEDS_LOCATION},
-                null, null, null);
-    }
-
     public Cursor getDataToSyncCursor(){
         return this.db.query(LogsDbHelper.TABLE_NAME, LogsDbHelper.LOGS_COLUMNS,
-                LogsDbHelper.STATUS_COL + " = ? OR " + LogsDbHelper.STATUS_COL + " = ?",
+                SyncableDbHelper.STATUS_COL + " = ? OR " + SyncableDbHelper.STATUS_COL + " = ?",
                 new String[]{"" + AbstractSyncableModel.STATUS_READY_TO_SYNC, "" + AbstractSyncableModel.STATUS_DID_NOT_SYNC},
                 null, null, null);
     }
 
     public long countDataToSync(){
         return DatabaseUtils.queryNumEntries(db, LogsDbHelper.TABLE_NAME,
-                LogsDbHelper.STATUS_COL + "=? OR " + LogsDbHelper.STATUS_COL + "=?",
+                SyncableDbHelper.STATUS_COL + "=? OR " + SyncableDbHelper.STATUS_COL + "=?",
                 new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC + "", "" + AbstractSyncableModel.STATUS_DID_NOT_SYNC});
     }
 
     public long countDataNeedingLocation(){
         return DatabaseUtils.queryNumEntries(db, LogsDbHelper.TABLE_NAME,
-                LogsDbHelper.STATUS_COL +"=?",
+                SyncableDbHelper.STATUS_COL +"=?",
                 new String[] {""+ AbstractSyncableModel.STATUS_NEEDS_LOCATION});
     }
 
     public void updateDataNeedingLocation(double latitude, double longitude){
-        // Update anything in database that doesn't have a location
-        Cursor cursor = getDataNeedingLocation();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            LogMsg logMsg = LogMsg.fromCursor(cursor);
-            Log.d(TAG, "adding location to loc msg " + logMsg.id);
-            updateLocation(logMsg.id, latitude, longitude);
-            cursor.moveToNext();
-        }
-        cursor.close();
-    }
-
-    public void updateLocation(int id, double latitude, double longitude){
         ContentValues contentValues = new ContentValues();
-        contentValues.put(LogsDbHelper.STATUS_COL, AbstractSyncableModel.STATUS_READY_TO_SYNC);
-        contentValues.put(LogsDbHelper.LATITUDE_COL, latitude);
-        contentValues.put(LogsDbHelper.LONGITUDE_COL, longitude);
+        contentValues.put(SyncableDbHelper.STATUS_COL, AbstractSyncableModel.STATUS_READY_TO_SYNC);
+        contentValues.put(SyncableDbHelper.LATITUDE_COL, latitude);
+        contentValues.put(SyncableDbHelper.LONGITUDE_COL, longitude);
         this.db.update(LogsDbHelper.TABLE_NAME,
                 contentValues,
-                LogsDbHelper.ID_COL + "=?",
-                new String[]{id + ""});
+                SyncableDbHelper.STATUS_COL +"=?",
+                new String[] {""+ AbstractSyncableModel.STATUS_NEEDS_LOCATION});
     }
 
     public void updateStatus(int id, Integer logStatusSyncing) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(LogsDbHelper.STATUS_COL, logStatusSyncing);
+        contentValues.put(SyncableDbHelper.STATUS_COL, logStatusSyncing);
         this.db.update(LogsDbHelper.TABLE_NAME,
                 contentValues,
-                LogsDbHelper.ID_COL + "=?",
+                SyncableDbHelper.ID_COL + "=?",
                 new String[]{id + ""});
     }
 
     public void delete(int id) {
         this.db.delete(LogsDbHelper.TABLE_NAME,
-                LogsDbHelper.ID_COL + "=?",
+                SyncableDbHelper.ID_COL + "=?",
                 new String[]{id + ""});
     }
 

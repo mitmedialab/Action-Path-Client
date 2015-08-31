@@ -26,7 +26,7 @@ public class SyncService extends Service implements
 
     private static boolean running = false;
 
-    private static int LOG_SYNC_INTERVAL = 5 * 60 * 1000;
+    private static int LOG_SYNC_INTERVAL = 1 * 60 * 1000;
     private static int RESPONSE_SYNC_INTERVAL = 1 * 60 * 1000;
 
     private GoogleApiClient googleApiClient;
