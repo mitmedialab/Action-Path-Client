@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
@@ -116,12 +117,15 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
     public void insert(Context context, int issueId, String answerText, Location loc){
         double latitude = 0;
         double longitude = 0;
+
+        String answerTextEncoded = TextUtils.htmlEncode(answerText);
+
         if(loc!=null) {
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
         }
         int status = (loc==null) ? AbstractSyncableModel.STATUS_NEEDS_LOCATION : AbstractSyncableModel.STATUS_READY_TO_SYNC;
-        Response response = new Response(issueId, Installation.id(context), answerText,
+        Response response = new Response(issueId, Installation.id(context), answerTextEncoded,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
                 status);

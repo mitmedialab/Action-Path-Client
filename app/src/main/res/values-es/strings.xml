@@ -21,10 +21,10 @@
     <string name="about_header">Acerca de ENCDMX</string>
 
     <string name="issue_detail_summary">Sumario</string>
-    <string name="issue_detail_description">Descripci�n</string>
+    <string name="issue_detail_description">Descripci&#xF3;n</string>
     <string name="issue_detail_status">Estado</string>
-    <string name="issue_detail_location">Ubicaci�n</string>
-    <string name="issue_detail_view_online">Ver en l�nea</string>
+    <string name="issue_detail_location">Ubicaci&#xF3;n</string>
+    <string name="issue_detail_view_online">Ver en l&#xED;nea</string>
 
     <string name="followed_issue_feedback">Siguiendo iniciativa</string>
     <string name="unfollowed_issue_feedback">Ya no sigues la iniciativa</string>
