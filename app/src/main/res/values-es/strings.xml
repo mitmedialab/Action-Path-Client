@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ENCDMX</string>
+
+    <string name="action_settings">Ajustes</string>
+    <string name="places_list_header">Elige tu <City> </City></string>
+
+    <!-- Items that show up in the main nav drawer menu -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_followed_issues">Iniciativas seguidas</string>
+    <string name="nav_all_issues">Todas las iniciativas</string>
+    <string name="nav_update_issues">Actualizar iniciativas</string>
+    <string name="nav_pick_place">Elige una ciudad</string>
+    <string name="nav_about">Acerca de</string>
+
+    <string name="all_issues_header">Todas las iniciativas en %s</string>
+    <string name="followed_issues_header">Iniciativas en seguidas %s</string>
+    <string name="pick_place_header">Elige tu ciudad</string>
+    <string name="update_issues_header">Iniciativas seguidas en %s</string>
+    <string name="about_header">Acerca de ENCDMX</string>
+
+    <string name="issue_detail_summary">Sumario</string>
+    <string name="issue_detail_description">Descripci�n</string>
+    <string name="issue_detail_status">Estado</string>
+    <string name="issue_detail_location">Ubicaci�n</string>
+    <string name="issue_detail_view_online">Ver en l�nea</string>
+
+    <string name="followed_issue_feedback">Siguiendo iniciativa</string>
+    <string name="unfollowed_issue_feedback">Ya no sigues la iniciativa</string>
+
+    <string name="walk_there">Ll&#xE9;vame ah&#xED;</string>
+
+    <string name="drawer_close">Navigation View</string>
+    <string name="drawer_open">Navigation View Closed</string>
+
+    <string name="loading">Cargando&#8230;</string>
+
+    <string name="no_issues_to_show">No hay iniciativas que mostrar</string>
+
+    <string name="issue_question">&#xBF;A&#xFA;n es un problema?</string>
+    <string name="issue_answer_yes">S&#xED;</string>
+    <string name="issue_answer_no">No</string>
+    <string name="issue_question_answered">Se guard&#xF3; tu respuesta. Ahora sigues este problema</string>
+
+    <string name="action_undo">Deshacer</string>
+    <string name="action_follow">Seguir</string>
+    <string name="action_unfollow">Dejar de seguir</string>
+
+    <plurals name="updated_issues">
+        <item quantity="one">Iniciativa %d actualizada</item>
+        <item quantity="other">Iniciativas %d actualizadas</item>
+    </plurals>
+    <string name="issues_update_failed">Fall&#xF3; la actualizaci&#xF3;n de iniciativas</string>
+    <string name="title_activity_maps">Mapa</string>
+
+    <string name="created_new_user">Nuevo usuario creado</string>
+    <string name="placeholder">Texto provisional</string>
+
+    <string name="image_description">Imagen asociada con la iniciativa actual</string>
+
+    <string name="about_summary_title">Sumario</string>
+    <string name="about_summary_body">&#xBF;Tienes algo que decir acerca de como mejorar tu comunidad? ENCDMX te trae a las instituciones.\n\nCreado por el MIT Center for Civic Media en colaboraci&#xF3;n con LabCDMX, ENCDMX es una herramienta para acercar a las personas con las instituciones encargadas de planeaci&#xF3;n e infrestructura.</string>
+
+    <string name="about_team_title">Equipo</string>
+    <string name="about_team_body">Erhardt Graeff\nRahul Bhargava\nEthan Zuckerman</string>
+
+    <string name="about_contact_title">Contacto</string>
+    <string name="about_contact_body">actionpath.org\nerhardt@media.mit.edu</string>
+
+    <string name="image_description_medialab_logo">MIT Media Lab logo</string>
+    <string name="image_description_civicmedia_logo">MIT Center for Civic Media logo</string>
+
+    <string name="nearby_notification">Iniciativa cercana</string>
+    <string name="update_notification">Iniciativa actualizada</string>
+
+    <string name="failed_to_save_answer">Problema guardando tu respuesta</string>
+    <string name="failed_to_get_location">Problema determinando tu ubicaci&#xF3;n</string>
+    <string name="failed_to_fetch_places_near">Problema encontrando lugares cercanos</string>
+    <string name="failed_to_parse_places_near">Error en el servidor al regresar lugares cercanos</string>
+
+    <string name="nav_save_debug_info">Guardar informaci&#xF3;n de debug (%1$d/%2$d)</string>
+    <string name="backup_unsynced_records_worked">Finalizo el respaldo de informaci&#xF3;n</string>
+    <string name="backup_unsynced_records_failed">Fall&#xF3; el respaldo de informaci&#xF3;n</string>
+
+    <string name="location_not_enabled">Tu GPS no est&#xE1; act&#xED;valo, por favor pr&#xE9;ndelo para que funcione la aplicaci&#xF3;n</string>
+    <string name="open_location_settings">Prender GPS</string>
+
+    <string name="cancel">Cancelar</string>
+
+    <string name="other_hint">otro</string>
+
+</resources>

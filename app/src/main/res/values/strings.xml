@@ -88,4 +88,6 @@
 
     <string name="cancel">Cancel</string>
 
+    <string name="other_hint">other</string>
+
 </resources>

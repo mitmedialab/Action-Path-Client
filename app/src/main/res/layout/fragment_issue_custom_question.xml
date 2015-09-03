@@ -11,13 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/issue_custom_answer_group"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/radio_button_group_padding"
-        android:paddingBottom="@dimen/radio_button_group_padding">
-    </RadioGroup>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/issue_custom_answer_group"
+            android:paddingTop="@dimen/radio_button_group_padding">
+        </RadioGroup>
+        <EditText
+            android:id="@+id/other_textbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/issue_custom_answer_group"
+            android:layout_marginLeft="35dip"
+            android:visibility="gone"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
+            android:textSize="@dimen/abc_text_size_body_1_material"
+            android:hint="@string/other_hint" />
+    </RelativeLayout>
 
 </LinearLayout>
