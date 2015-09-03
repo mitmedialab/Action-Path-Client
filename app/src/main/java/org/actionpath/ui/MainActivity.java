@@ -207,7 +207,7 @@ public class MainActivity extends AbstractLocationActivity implements
             Log.w(TAG,"No place set yet");
             Log.i(TAG, "Defaulting to Mexico City");
             onPlaceSelected(Development.PLACE_MEXICO_CITY_ID, Development.PLACE_MEXICO_CITY_NAME);
-            //displayPickPlaceFragment();
+            displayUpdateIssuesFragment();
         }
         // now update the dynamic nav menu text
         long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();

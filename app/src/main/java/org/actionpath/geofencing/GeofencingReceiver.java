@@ -17,6 +17,7 @@ import org.actionpath.db.logs.LogsDataSource;
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     public String TAG = this.getClass().getName();
+    private int nid = 0;
 
     @Override
     protected void onEnteredGeofences(String[] issueIds) {
@@ -79,7 +80,9 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, true)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        return PendingIntent.getActivity(this, 0, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        nid++;
+
+        return PendingIntent.getActivity(this, nid, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private NotificationManager getNotificationManager() {
