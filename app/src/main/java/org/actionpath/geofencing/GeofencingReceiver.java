@@ -17,7 +17,8 @@ import org.actionpath.db.logs.LogsDataSource;
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
     public String TAG = this.getClass().getName();
-    private int nid = 0;
+
+    private String GEOFENCE_NOTIFICATION_TAG = "geofence";
 
     @Override
     protected void onEnteredGeofences(String[] issueIds) {
@@ -30,8 +31,12 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
     }
 
     @Override
-    protected void onExitedGeofences(String[] strings) {
-        //TODO: remove pop-up from screen
+    protected void onExitedGeofences(String[] issueIds) {
+        for (String str:issueIds){
+            int issueId = Integer.parseInt(str);
+            Log.d(TAG,"left geofence for "+issueId+" - canceling notification");
+            getNotificationManager().cancel(GEOFENCE_NOTIFICATION_TAG, issueId);
+        }
     }
 
     @Override
@@ -66,7 +71,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Notification notification = notificationBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.notify(1, notification);
+        notificationManager.notify(GEOFENCE_NOTIFICATION_TAG, issueId, notification);
     }
 
     private PendingIntent getPendingIntent(int issueId) {
@@ -80,9 +85,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
                 .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, true)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        nid++;
-
-        return PendingIntent.getActivity(this, nid, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getActivity(this, issueId, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private NotificationManager getNotificationManager() {
