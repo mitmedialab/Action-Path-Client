@@ -118,14 +118,14 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
         double latitude = 0;
         double longitude = 0;
 
-        String answerTextEncoded = TextUtils.htmlEncode(answerText);
+        //String answerTextEncoded = TextUtils.htmlEncode(answerText);
 
         if(loc!=null) {
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
         }
         int status = (loc==null) ? AbstractSyncableModel.STATUS_NEEDS_LOCATION : AbstractSyncableModel.STATUS_READY_TO_SYNC;
-        Response response = new Response(issueId, Installation.id(context), answerTextEncoded,
+        Response response = new Response(issueId, Installation.id(context), answerText,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
                 status);
