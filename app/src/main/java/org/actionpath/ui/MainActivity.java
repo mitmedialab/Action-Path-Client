@@ -52,6 +52,8 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private static String TAG = MainActivity.class.getName();
 
+    private static String ISSUE_CHANGE_NOTIFICATION_TAG = "issueChange";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -309,7 +311,7 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus){
         Log.d(TAG,"status change alert on issue "+issueId+": "+oldStatus+" -> "+newStatus);
         // Fire a low priority notification
-        sendNotification(issueId, newStatus);
+        sendNotification(ISSUE_CHANGE_NOTIFICATION_TAG, issueId, newStatus);
 
         // TODO: Mark issue as having something "new" on fav list (a UI indication)
     }
@@ -320,7 +322,7 @@ public class MainActivity extends AbstractLocationActivity implements
      * param transitionType The type of transition that occurred.
      * For now, ActionPath only handles enter transitionTypes
      */
-    private void sendNotification(int issueId, String newStatus) {
+    private void sendNotification(String notificationTag, int issueId, String newStatus) {
         Log.d(TAG,"Sending notification for issueId: "+issueId);
 
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
@@ -341,7 +343,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Notification notification = notificationBuilder.build();
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         NotificationManager notificationManager = getNotificationManager();
-        notificationManager.notify(1, notification);
+        notificationManager.notify(notificationTag, issueId, notification);
     }
 
     private PendingIntent getPendingIntent(int issueId) {
