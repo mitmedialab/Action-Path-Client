@@ -109,7 +109,7 @@ public class ActionPathServer {
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<>(2);
             nameValuePairs.add(new BasicNameValuePair("id", installId));
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
             responseStr = EntityUtils.toString(httpResponse.getEntity());
@@ -142,7 +142,7 @@ public class ActionPathServer {
         List<NameValuePair> nameValuePairs = new ArrayList<>(2);
         nameValuePairs.add(new BasicNameValuePair("data", jsonObject.toString()));
         nameValuePairs.add(new BasicNameValuePair("install_id", installId));
-        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+        httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
         HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpPost);
         String responseStr = EntityUtils.toString(httpResponse.getEntity());
