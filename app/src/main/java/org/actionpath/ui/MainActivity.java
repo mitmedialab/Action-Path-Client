@@ -204,7 +204,11 @@ public class MainActivity extends AbstractLocationActivity implements
         super.onResume();
         // On first load check to see if we have a place selected if so load My Actions Page
         if(!(getPlaceId()==INVALID_PLACE_ID)){
-            displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+            if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlaceId())>0){
+                displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+            } else {
+                displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+            }
         } else {
             Log.w(TAG,"No place set yet");
             Log.i(TAG, "Defaulting to Mexico City");

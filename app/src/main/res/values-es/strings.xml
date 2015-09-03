@@ -60,16 +60,17 @@
     <string name="image_description">Imagen asociada con la iniciativa actual</string>
 
     <string name="about_summary_title">Sumario</string>
-    <string name="about_summary_body">&#xBF;Tienes algo que decir acerca de como mejorar tu comunidad? ENCDMX te trae a las instituciones.\n\nCreado por el MIT Center for Civic Media en colaboraci&#xF3;n con LabCDMX, ENCDMX es una herramienta para acercar a las personas con las instituciones encargadas de planeaci&#xF3;n e infrestructura.</string>
+    <string name="about_summary_body">&#xBF;Tienes algo que decir acerca de como mejorar tu comunidad? ENCDMX lleva tu opini&#xF3;n a quien tiene que escucharla.\n\nCreado por el MIT Center for Civic Media en colaboraci&#xF3;n con LabCDMX, ENCDMX es una herramienta para acercar a las personas con las instituciones encargadas de planeaci&#xF3;n e infrestructura.</string>
 
     <string name="about_team_title">Equipo</string>
-    <string name="about_team_body">Erhardt Graeff\nRahul Bhargava\nEthan Zuckerman</string>
+    <string name="about_team_body">Erhardt Graeff\nRahul Bhargava\nEmilie Reiser</string>
 
     <string name="about_contact_title">Contacto</string>
-    <string name="about_contact_body">actionpath.org\nerhardt@media.mit.edu</string>
+    <string name="about_contact_body">encuesta.labcd.mx\nactionpath.org\nerhardt@media.mit.edu</string>
 
     <string name="image_description_medialab_logo">MIT Media Lab logo</string>
     <string name="image_description_civicmedia_logo">MIT Center for Civic Media logo</string>
+    <string name="image_description_labcdmx_logo">Laboratorio para la Ciudad logo</string>
 
     <string name="nearby_notification">Iniciativa cercana</string>
     <string name="update_notification">Iniciativa actualizada</string>
