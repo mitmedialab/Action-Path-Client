@@ -182,6 +182,7 @@ public class Issue extends AbstractModel {
         i.createdAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000);
         i.updatedAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000);
         i.placeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL));
+        i.radius = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL));
         i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1;
         i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1;
         i.question = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_QUESTION_COL));
@@ -196,7 +197,7 @@ public class Issue extends AbstractModel {
                 cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)) + ")");
         Log.v(TAG, "  as (" +
                 i.latitude + "," +
-                i.longitude + ")");
+                i.longitude + ") / radius = "+i.getRadius());
         return i;
     }
 
@@ -243,6 +244,7 @@ public class Issue extends AbstractModel {
         cv.put(IssuesDbHelper.ISSUES_CREATED_AT_COL,createdAtSecs);
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
         cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
+        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
         cv.put(IssuesDbHelper.ISSUES_QUESTION_COL, question);
         cv.put(IssuesDbHelper.ISSUES_ANSWER1_COL, answer1);

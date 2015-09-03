@@ -79,6 +79,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Log.i(TAG, "Showing details for issue " + issueID);
         issue = IssuesDataSource.getInstance(this).getIssue(issueID);
         Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
+        Log.v(TAG, "  geofenced = " + issue.isGeofenceCreated()+" (radius="+issue.getRadius()+")");
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
