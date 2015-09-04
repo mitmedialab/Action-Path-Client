@@ -5,6 +5,8 @@ import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import org.actionpath.ui.IssueDetailActivity;
@@ -60,10 +62,20 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);
+
+        // Create a version of the ic_launcher that scaled to the notification size
+        Bitmap largeIcon = BitmapFactory.decodeResource(this.getResources(),
+                R.drawable.ic_launcher);
+
+        int height = (int) this.getResources().getDimension(android.R.dimen.notification_large_icon_height);
+        int width = (int) this.getResources().getDimension(android.R.dimen.notification_large_icon_width);
+        Bitmap largeIconScaled = Bitmap.createScaledBitmap(largeIcon, width, height, false);
+
         notificationBuilder
                 .setPriority(Notification.PRIORITY_HIGH)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setLargeIcon(largeIconScaled)
                 .setContentTitle(getResources().getString(R.string.nearby_notification))
                 .setContentText(summary)
                 .setContentIntent(pi);
