@@ -98,12 +98,10 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
                         displayUpdateIssuesFragment();
                         return true;
-                    /*
                     case R.id.nav_pick_place:
                         logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
                         displayPickPlaceFragment();
                         return true;
-                        */
                     case R.id.nav_about:
                         logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
@@ -210,10 +208,8 @@ public class MainActivity extends AbstractLocationActivity implements
                 displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
             }
         } else {
-            Log.w(TAG,"No place set yet");
-            Log.i(TAG, "Defaulting to Mexico City");
-            onPlaceSelected(Development.PLACE_MEXICO_CITY_ID, Development.PLACE_MEXICO_CITY_NAME);
-            displayUpdateIssuesFragment();
+            Log.w(TAG, "No place set yet");
+            displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
         }
         // now update the dynamic nav menu text
         long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();

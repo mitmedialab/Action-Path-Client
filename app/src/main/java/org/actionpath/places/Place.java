@@ -34,16 +34,30 @@ public class Place implements Serializable {
         p.id = object.getInt("id");
         p.name = object.getString("name");
         p.urlName = object.getString("url_name");
-        p.county = object.getString("county");
         p.state = object.getString("state");
-        JSONArray coordinates = object.getJSONObject("center").getJSONArray("coordinates");
-        p.latitude = coordinates.getDouble(1);
-        p.longitude = coordinates.getDouble(0);
-        p.placeType = object.getString("place_type");
-        p.squareAvatarUrl = object.getJSONObject("avatar").getString("square");
-        p.url = object.getString("url");
-        p.htmlUrl = object.getString("html_url");
-        p.htmlReportUrl = object.getString("html_report_url");
+        if(object.has("county")) {
+            p.county = object.getString("county");
+        }
+        if(object.has("center")) {
+            JSONArray coordinates = object.getJSONObject("center").getJSONArray("coordinates");
+            p.latitude = coordinates.getDouble(1);
+            p.longitude = coordinates.getDouble(0);
+        }
+        if(object.has("place_type")) {
+            p.placeType = object.getString("place_type");
+        }
+        if(object.has("avatar")) {
+            p.squareAvatarUrl = object.getJSONObject("avatar").getString("square");
+        }
+        if(object.has("url")) {
+            p.url = object.getString("url");
+        }
+        if(object.has("html_url")) {
+            p.htmlUrl = object.getString("html_url");
+        }
+        if(object.has("html_report_url")) {
+            p.htmlReportUrl = object.getString("html_report_url");
+        }
         return p;
     }
 

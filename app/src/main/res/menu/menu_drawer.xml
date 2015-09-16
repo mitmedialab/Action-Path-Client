@@ -23,11 +23,11 @@
             android:checked="false"
             android:icon="@drawable/ic_launcher"
             android:title="@string/nav_update_issues"/>
-<!--        <item
+        <item
             android:id="@+id/nav_pick_place"
             android:checked="false"
             android:icon="@drawable/ic_launcher"
-            android:title="@string/nav_pick_place"/> -->
+            android:title="@string/nav_pick_place"/>
         <item
             android:id="@+id/nav_save_debug_info"
             android:checked="false"
