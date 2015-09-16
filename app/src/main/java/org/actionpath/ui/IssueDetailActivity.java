@@ -137,6 +137,13 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                 startActivity(urlIntent);
             }
         });
+        // show the view online button if doesn't have a custom question - not the best
+        // proxy but it'll work for now
+        if(issue.hasCustomQuestion()){
+            viewOnlineButton.setVisibility(View.GONE);
+        } else {
+            viewOnlineButton.setVisibility(View.VISIBLE);
+        }
 
         if(issue.hasCustomQuestion()) {
             showCustomQuestionUiFragment();

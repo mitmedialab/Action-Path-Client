@@ -279,7 +279,7 @@ public class Issue extends AbstractModel {
     }
 
     public boolean hasCustomQuestion(){
-        return question!=null;
+        return question!=null && !question.equals("null");
     }
 
 }

@@ -88,19 +88,16 @@
                 android:id="@+id/issue_detail_question_container"
                 />
 
-            <!-- TODO: Remove visibility=gone to bring back status in normal app -->
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/issue_detail_status"
-                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_status"
-                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
             <TextView
@@ -129,14 +126,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <!-- TODO: Remove visibility=gone on normal app when url available -->
                 <Button style="@style/Widget.AppCompat.Button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/issue_detail_view_online"
                     android:id="@+id/issue_detail_view_online"
                     android:enabled="true"
-                    android:visibility="gone"
                     android:layout_weight="1.0" />
 
                 <Button style="@style/Widget.AppCompat.Button"
