@@ -117,9 +117,6 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
     public void insert(Context context, int issueId, String answerText, Location loc){
         double latitude = 0;
         double longitude = 0;
-
-        //String answerTextEncoded = TextUtils.htmlEncode(answerText);
-
         if(loc!=null) {
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
