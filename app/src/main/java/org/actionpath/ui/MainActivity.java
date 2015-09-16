@@ -3,11 +3,12 @@ package org.actionpath.ui;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -18,37 +19,26 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.net.Uri;
 
 import org.actionpath.R;
-import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.responses.ResponsesDataSource;
-import org.actionpath.util.Development;
-import org.actionpath.util.DeviceUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.actionpath.tasks.UpdateIssuesAsyncTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
-//TODO: create account page at start & send data
-// include: city following (account page where this can be edited), user_id
-
+/**
+ * The entry point for the app, handles menu nav too
+ */
 public class MainActivity extends AbstractLocationActivity implements
         IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
-        UpdateIssuesFragment.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
+        UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private UpdateIssuesAsyncTask updateIssuesTask;
 
     private static String TAG = MainActivity.class.getName();
 
@@ -152,6 +142,7 @@ public class MainActivity extends AbstractLocationActivity implements
         actionBarDrawerToggle.syncState();
     }
 
+    /*
     private void sendEmailWithUnsyncedRecords(ArrayList<String> filePaths) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         for (String file : filePaths) {
@@ -196,6 +187,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Log.i(TAG,"File created at "+file.getAbsolutePath());
         return file;
     }
+    */
 
     @Override
     public void onResume(){
@@ -260,8 +252,16 @@ public class MainActivity extends AbstractLocationActivity implements
         displayFragment(fragment);
     }
 
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
+        // make sure to cancel the issue update task if it is running
+        if(updateIssuesTask!=null && updateIssuesTask.getStatus()!= AsyncTask.Status.FINISHED){
+            updateIssuesTask.cancel(true);
+        }
+    }
+
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -293,6 +293,11 @@ public class MainActivity extends AbstractLocationActivity implements
         savePlaceIdAndName(placeId,placeName);
         // and jump to update the issues
         displayUpdateIssuesFragment();
+    }
+
+    @Override
+    public Context getContext() {
+        return this.getApplicationContext();
     }
 
     @Override
@@ -368,5 +373,11 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onFragmentInteraction(Uri uri) {
     }
 
+    public void updateIssues(){
+        updateIssuesTask = new UpdateIssuesAsyncTask(this);
+        updateIssuesTask.execute();
+    }
+
 }
+
 
