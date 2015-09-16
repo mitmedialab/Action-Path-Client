@@ -209,7 +209,7 @@ public class MainActivity extends AbstractLocationActivity implements
             }
         } else {
             Log.w(TAG, "No place set yet");
-            displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+            displayPickPlaceFragment();
         }
         // now update the dynamic nav menu text
         long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
