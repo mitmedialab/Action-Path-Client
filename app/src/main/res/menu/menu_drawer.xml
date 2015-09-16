@@ -28,11 +28,11 @@
             android:checked="false"
             android:icon="@drawable/ic_launcher"
             android:title="@string/nav_pick_place"/>
-        <item
+        <!--<item
             android:id="@+id/nav_save_debug_info"
             android:checked="false"
             android:icon="@drawable/ic_launcher"
-            android:title="@string/nav_save_debug_info"/>
+            android:title="@string/nav_save_debug_info"/>-->
         <item
             android:id="@+id/nav_about"
             android:checked="false"

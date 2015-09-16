@@ -106,7 +106,7 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
                         return true;
-                    case R.id.nav_save_debug_info:
+                    /*case R.id.nav_save_debug_info:
                         logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
                         try {
                             ArrayList<String> filePaths = new ArrayList<String>();
@@ -121,7 +121,7 @@ public class MainActivity extends AbstractLocationActivity implements
                             Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
                         }
                         displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
-                        return true;
+                        return true;*/
                     default:
                         Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
                         return true;
@@ -214,12 +214,12 @@ public class MainActivity extends AbstractLocationActivity implements
         // now update the dynamic nav menu text
         long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
         long logsToUpload = LogsDataSource.getInstance(this).countDataToSync() + LogsDataSource.getInstance(this).countDataNeedingLocation();
-        if((responsesToUpload + logsToUpload) > 0){
+        /*if((responsesToUpload + logsToUpload) > 0){
             MenuItem debugMenuItem = (MenuItem) navView.getMenu().findItem(R.id.nav_save_debug_info);
             String strToFormat = getResources().getString(R.string.nav_save_debug_info);
             String formattedStr = String.format(strToFormat, logsToUpload, responsesToUpload);
             debugMenuItem.setTitle(formattedStr);
-        }
+        }*/
     }
 
     private void displayFragment(Fragment fragment){
