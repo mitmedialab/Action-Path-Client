@@ -140,6 +140,8 @@ public class MainActivity extends AbstractLocationActivity implements
 
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
+
+        updateIssues();
     }
 
     /*
@@ -277,7 +279,7 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     private void savePlaceIdAndName(int placeId, String placeName){
-        Log.i(TAG, "Set place to: " + placeId+" = "+placeName);
+        Log.i(TAG, "Set place to: " + placeId + " = " + placeName);
         SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         editor.putInt(MainActivity.PREF_PLACE_ID, placeId);
@@ -290,7 +292,7 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onPlaceSelected(int placeId, String placeName) {
         Log.d(TAG, "clicked place id: " + placeId);
         // now save that we set the place
-        savePlaceIdAndName(placeId,placeName);
+        savePlaceIdAndName(placeId, placeName);
         // and jump to update the issues
         displayUpdateIssuesFragment();
     }
@@ -373,9 +375,11 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onFragmentInteraction(Uri uri) {
     }
 
-    public void updateIssues(){
-        updateIssuesTask = new UpdateIssuesAsyncTask(this);
-        updateIssuesTask.execute();
+    private void updateIssues(){
+        if(updateIssuesTask==null || updateIssuesTask.isCancelled() || updateIssuesTask.getStatus()==AsyncTask.Status.FINISHED) {
+            updateIssuesTask = new UpdateIssuesAsyncTask(this);
+            updateIssuesTask.execute();
+        }
     }
 
 }
