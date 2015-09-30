@@ -66,7 +66,7 @@
     <string name="about_team_body">Erhardt Graeff\nRahul Bhargava\nEmilie Reiser</string>
 
     <string name="about_contact_title">Contact</string>
-    <string name="about_contact_body">actionpath.org\nerhardt@media.mit.edu</string>
+    <string name="about_contact_body">If you have any questions or concerns about the research, please feel free to contact Erhardt Graeff at erhardt@media.mit.edu or 1-717-919-3145, or Ethan Zuckerman at ethanz@media.mit.edu or 1-617-253-3962.</string>
 
     <string name="image_description_medialab_logo">MIT Media Lab logo</string>
     <string name="image_description_civicmedia_logo">MIT Center for Civic Media logo</string>
@@ -89,5 +89,9 @@
     <string name="cancel">Cancel</string>
 
     <string name="other_hint">other</string>
+
+    <string name="about_privacy_title">Privacy Statement</string>
+    <string name="about_privacy_body">Any information that is obtained in connection with this study and that can be identified with you will remain confidential and will be disclosed only with your permission or as required by law.\n\nData collected from app usage will be connected to personal accounts, which may contain personally identifiable information. However, access to those servers will be restricted to primary researchers and only connected to survey and interview data through subject number codes. Personally identifiable information will be stored separately from that research data, and all data will be digitally locked with a password, which only primary researchers will have.</string>
+
 
 </resources>

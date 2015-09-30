@@ -46,6 +46,20 @@
                 android:text="@string/about_team_body"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1"/>
 
+            <TextView android:id="@+id/about_privacy_title"
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_privacy_title"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView android:id="@+id/about_privacy_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_privacy_body"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:linksClickable="true"
+                android:autoLink="email|web" />
+
             <TextView android:id="@+id/about_contact_title"
                 android:paddingTop="@dimen/textview_title_padding"
                 android:layout_width="match_parent"
@@ -71,6 +85,7 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/activity_top_padding"
                     android:layout_weight="1">
 
                     <LinearLayout
