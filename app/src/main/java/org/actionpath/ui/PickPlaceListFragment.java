@@ -29,21 +29,21 @@ import java.util.ArrayList;
  * Activities containing this fragment MUST implement the {@link OnPlaceSelectedListener}
  * interface.
  */
-public class PickPlaceFragmentList extends ListFragment {
+public class PickPlaceListFragment extends ListFragment {
 
     public static final int STATUS_LOCATION_SERVICES_TOTAL_FAILURE = 0;
     public static final int STATUS_LOCATION_SERVICES_SUCCESS = 1;
     public static final int STATUS_LOCATION_SERVICES_GET_FAILURE = 2;
     public static final int STATUS_LOCATION_SERVICES_PARSE_FAILURE = 3;
 
-    private static String TAG = PickPlaceFragmentList.class.getName();
+    private static String TAG = PickPlaceListFragment.class.getName();
 
     private OnPlaceSelectedListener listener;
     private View view;
     private AsyncTask fetchingTask;
 
-    public static PickPlaceFragmentList newInstance() {
-        PickPlaceFragmentList fragment = new PickPlaceFragmentList();
+    public static PickPlaceListFragment newInstance() {
+        PickPlaceListFragment fragment = new PickPlaceListFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -53,7 +53,7 @@ public class PickPlaceFragmentList extends ListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public PickPlaceFragmentList() {
+    public PickPlaceListFragment() {
     }
 
     @Override

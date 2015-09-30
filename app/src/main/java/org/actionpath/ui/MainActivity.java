@@ -24,8 +24,6 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
-import org.actionpath.db.logs.LogsDataSource;
-import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
 
@@ -33,7 +31,7 @@ import org.actionpath.util.Config;
  * The entry point for the app, handles menu nav too
  */
 public class MainActivity extends AbstractLocationActivity implements
-        IssuesFragmentList.OnIssueSelectedListener, PickPlaceFragmentList.OnPlaceSelectedListener,
+        IssuesFragmentList.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
         UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
 
     private Toolbar toolbar;
@@ -239,7 +237,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private void displayPickPlaceFragment(){
         toolbar.setTitle(R.string.pick_place_header);
-        PickPlaceFragmentList fragment = PickPlaceFragmentList.newInstance();
+        PickPlaceListFragment fragment = PickPlaceListFragment.newInstance();
         displayFragment(fragment);
     }
 
