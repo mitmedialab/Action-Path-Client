@@ -17,7 +17,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <Button
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/issue_answer_yes"
@@ -25,7 +24,6 @@
             android:enabled="true"
             android:layout_weight="1.0" />
         <Button
-            android:background="@android:drawable/dialog_holo_light_frame"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/issue_answer_no"
