@@ -27,6 +27,7 @@ import org.actionpath.db.logs.LogMsg;
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
+import org.actionpath.util.Config;
 
 /**
  * The entry point for the app, handles menu nav too
@@ -197,21 +198,25 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onResume(){
         super.onResume();
-        // On first load check to see if we have a place selected if so load My Actions Page
-        if(!(getPlaceId()==INVALID_PLACE_ID)){
-            if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlaceId())>0){
-                displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+        if (Config.getInstance().isPickPlaceMode()) {
+            // On first load check to see if we have a place selected if so load My Actions Page
+            if(!(getPlaceId()==INVALID_PLACE_ID)){
+                if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlaceId())>0){
+                    displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+                } else {
+                    displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+                }
             } else {
-                displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+                Log.w(TAG, "onResume: No place set yet");
+                displayPickPlaceFragment();
             }
-        } else {
-            Log.w(TAG, "No place set yet");
-            displayPickPlaceFragment();
+        } else if(Config.getInstance().isAssignRequestTypeMode()){
+
         }
         // now update the dynamic nav menu text
-        long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
+        /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
         long logsToUpload = LogsDataSource.getInstance(this).countDataToSync() + LogsDataSource.getInstance(this).countDataNeedingLocation();
-        /*if((responsesToUpload + logsToUpload) > 0){
+        if((responsesToUpload + logsToUpload) > 0){
             MenuItem debugMenuItem = (MenuItem) navView.getMenu().findItem(R.id.nav_save_debug_info);
             String strToFormat = getResources().getString(R.string.nav_save_debug_info);
             String formattedStr = String.format(strToFormat, logsToUpload, responsesToUpload);

@@ -21,6 +21,7 @@ import org.actionpath.db.logs.LogMsg;
 import org.actionpath.sync.SyncService;
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
+import org.actionpath.util.Config;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
 
@@ -79,6 +80,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         }
         // create the issue database
         addTestIssues();
+        // make sure the config is initialized
+        Config.getInstance(this);
     }
 
     protected String getInstallId(){
