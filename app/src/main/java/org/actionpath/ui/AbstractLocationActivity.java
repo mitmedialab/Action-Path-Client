@@ -152,12 +152,15 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
                 googleApiClient);
         if(lastLocation!=null){
             hasLocation = true;
+        } else {
+            Log.w(TAG,"couldn't get location from FusedLocationApi in updateLastLocation!");
+            if(Development.isSimulator()){
+                lastLocation = new Location("development");
+                lastLocation.setLatitude(Development.NEW_HAVEN_LAT);
+                lastLocation.setLongitude(Development.NEW_HAVEN_LON);
+            }
         }
         return lastLocation;
-    }
-
-    protected void logMsg(String action){
-        logMsg(LogMsg.NO_ISSUE, action);
     }
 
     protected void logMsg(int issueId, String action){

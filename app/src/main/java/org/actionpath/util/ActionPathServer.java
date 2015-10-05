@@ -9,9 +9,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +24,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -149,6 +154,38 @@ public class ActionPathServer {
         JSONObject jsonResponse = new JSONObject(responseStr);
         Log.v(TAG, "responseStatus = " + jsonResponse.getString(ActionPathServer.RESPONSE_STATUS));
         return jsonResponse;
+    }
+
+    /**
+     * Get the latest issues near this location, of this request type
+     * @param latitude
+     * @param longitude
+     * @param requestTypeId
+     * @return
+     */
+    public static ArrayList<Issue> getIssuesNear(double latitude, double longitude, int requestTypeId) throws URISyntaxException, IOException, JSONException{
+        ArrayList<Issue> newIssues = new ArrayList<>();
+        String responseStr = "";
+        URL u = new URL(BASE_URL + "/issues/near.json");
+        HttpGet httpGet = new HttpGet(u.toURI());
+        HttpParams params = new BasicHttpParams();
+        params.setDoubleParameter("lat", latitude);
+        params.setDoubleParameter("lng", longitude);
+        params.setIntParameter("request_type", requestTypeId);
+        httpGet.setParams(params);
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        responseStr = EntityUtils.toString(httpResponse.getEntity());
+        Log.v(TAG,"Server said issues/near = "+responseStr);
+        JSONArray issuesArray = new JSONArray(responseStr);
+        Log.v(TAG, "  first issue" + issuesArray.get(0).toString());
+        for (int i = 0; i < issuesArray.length(); i++) {
+            JSONObject object = issuesArray.getJSONObject(i);
+            Issue issue = Issue.fromJson(object);
+            newIssues.add(issue);
+        }
+        Log.i(TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+requestTypeId);
+        return newIssues;
     }
 
 }

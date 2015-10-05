@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import org.actionpath.db.RequestType;
+import org.actionpath.places.Place;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +17,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -76,12 +81,39 @@ public class Config {
         }
     }
 
+    public Place getPlace(){
+        Place place = new Place();
+        try{
+            JSONObject placeInfo = appConfig.getJSONObject("place");
+            place.id = placeInfo.getInt("id");
+            place.name = placeInfo.getString("name");
+            place.url = placeInfo.getString("url");
+        } catch (JSONException e){
+            Log.e(TAG,"couldn't read place from app config");
+        }
+        return place;
+    }
+
     public boolean isPickPlaceMode(){
         return MODE_PICK_PLACE.equals(getMode());
     }
 
     public boolean isAssignRequestTypeMode(){
         return MODE_ASSIGN_REQUEST_TYPE.equals(getMode());
+    }
+
+    public List<RequestType> getValidRequestTypes(){
+        ArrayList<RequestType> requestTypes = new ArrayList<RequestType>();
+        try {
+            JSONArray validRequestTypes = appConfig.getJSONArray("validRequestTypes");
+            for (int i = 0; i < validRequestTypes.length(); i++) {
+                JSONObject info = validRequestTypes.getJSONObject(i);
+                requestTypes.add(RequestType.fromJSONObject(info));
+            }
+        } catch(Exception e){
+            Log.e(TAG,"Unable to parse request types");
+        }
+        return requestTypes;
     }
 
 }

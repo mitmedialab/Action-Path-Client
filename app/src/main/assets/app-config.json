@@ -1,3 +1,17 @@
 {
-  "mode": "pick-place"
+  "mode": "assign-request-type",
+  "place": {
+    "id":0,
+    "name": "New Haven",
+    "url": "new-haven"
+  },
+  "validRequestTypes": [
+    {"id":122, "name": "Graffiti", "nickname": "Graffiti Gofer"},
+    {"id":1250, "name": "Illegal Dumping", "nickname": "Dumping Doctor"},
+    {"id":126, "name": "Parks Request", "nickname": "Parks Protagonist"},
+    {"id":116, "name": "Potholes", "nickname": "Potholes Patron"},
+    {"id":1249, "name": "Public Space, Streets and Drains", "nickname": "Public Space Saver"},
+    {"id":117, "name": "Sidewalks and Curb damage", "nickname": "Sidewalk Sheriff"},
+    {"id":51, "name": "Traffic Signal / Pedestrian Signal", "nickname": "Signal Sorter"}
+  ]
 }

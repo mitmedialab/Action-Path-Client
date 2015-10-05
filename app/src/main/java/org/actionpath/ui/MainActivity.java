@@ -21,18 +21,23 @@ import android.view.MenuItem;
 import android.view.View;
 
 import org.actionpath.R;
+import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.places.Place;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * The entry point for the app, handles menu nav too
  */
 public class MainActivity extends AbstractLocationActivity implements
         IssuesFragmentList.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
-        UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener {
+        UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener,
+        AssignRequestTypeFragment.OnRequestTypeAssignedListener {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -141,8 +146,12 @@ public class MainActivity extends AbstractLocationActivity implements
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
-        if (!(getPlaceId() == INVALID_PLACE_ID)) {
+        // automatically update issues (if we have all the info we need to)
+        if( (Config.getInstance().isPickPlaceMode() && (getPlaceId() != INVALID_PLACE_ID))
+                || (Config.getInstance().isAssignRequestTypeMode() && getAssignedRequestType()!=null)){
             updateIssues();
+        } else {
+            Log.v(TAG,"not enough info to update issues now, skipping");
         }
     }
 
@@ -209,7 +218,11 @@ public class MainActivity extends AbstractLocationActivity implements
                 displayPickPlaceFragment();
             }
         } else if(Config.getInstance().isAssignRequestTypeMode()){
-
+            if(getPlaceId()==INVALID_PLACE_ID){
+                Place place = Config.getInstance().getPlace();
+                savePlaceIdAndName(place.id, place.name);
+            }
+            displayAssignRequestTypeFragment();
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
@@ -238,6 +251,12 @@ public class MainActivity extends AbstractLocationActivity implements
     private void displayPickPlaceFragment(){
         toolbar.setTitle(R.string.pick_place_header);
         PickPlaceListFragment fragment = PickPlaceListFragment.newInstance();
+        displayFragment(fragment);
+    }
+
+    private void displayAssignRequestTypeFragment(){
+        toolbar.setTitle(R.string.assign_request_type_header);
+        AssignRequestTypeFragment fragment = AssignRequestTypeFragment.newInstance();
         displayFragment(fragment);
     }
 
@@ -278,20 +297,19 @@ public class MainActivity extends AbstractLocationActivity implements
         logMsg(issueId, LogMsg.ACTION_CLICKED_ON_ISSUE_IN_LIST);
         // Then you start a new Activity via Intent
         Intent intent = new Intent()
-            .setClass(MainActivity.this, IssueDetailActivity.class)
+            .setClass(this, IssueDetailActivity.class)
             .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
             .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
         startActivity(intent);
     }
 
-    private void savePlaceIdAndName(int placeId, String placeName){
+    protected void savePlaceIdAndName(int placeId, String placeName){
         Log.i(TAG, "Set place to: " + placeId + " = " + placeName);
-        SharedPreferences settings = getSharedPreferences(MainActivity.PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(MainActivity.PREF_PLACE_ID, placeId);
-        editor.putString(MainActivity.PREF_PLACE_NAME, placeName);
+        editor.putInt(PREF_PLACE_ID, placeId);
+        editor.putString(PREF_PLACE_NAME, placeName);
         editor.apply();
-        logMsg(LogMsg.ACTION_PICKED_PLACE);
     }
 
     @Override
@@ -299,6 +317,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Log.d(TAG, "clicked place id: " + placeId);
         // now save that we set the place
         savePlaceIdAndName(placeId, placeName);
+        logMsg(LogMsg.NO_ISSUE, LogMsg.ACTION_PICKED_PLACE);
         // and jump to update the issues
         displayUpdateIssuesFragment();
     }
@@ -382,10 +401,42 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     private void updateIssues(){
+        Log.d(TAG,"request to update issues");
         if(updateIssuesTask==null || updateIssuesTask.isCancelled() || updateIssuesTask.getStatus()==AsyncTask.Status.FINISHED) {
             updateIssuesTask = new UpdateIssuesAsyncTask(this);
             updateIssuesTask.execute();
         }
+    }
+
+    @Override
+    public void onRequestTypeAssigned(RequestType requestType){
+        Log.d(TAG,"user was assigned "+requestType);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        try {
+            editor.putString(PREF_REQUEST_TYPE, requestType.toJSONObject().toString());
+            editor.apply();
+        } catch (JSONException e){
+            Log.e(TAG,"Unable to save request type to shared preferences");
+        }
+        displayUpdateIssuesFragment();
+    }
+
+    @Override
+    public RequestType getAssignedRequestType() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        try {
+            if (settings.contains(PREF_REQUEST_TYPE)) {
+                return RequestType.fromJSONObject(new JSONObject(settings.getString(PREF_REQUEST_TYPE, "")));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Unable to load request type to shared preferences");
+        }
+        return null;
+    }
+
+    protected void logMsg(String action){
+        logMsg(LogMsg.NO_ISSUE, action);
     }
 
 }

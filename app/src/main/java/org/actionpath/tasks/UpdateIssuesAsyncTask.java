@@ -2,11 +2,13 @@ package org.actionpath.tasks;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
 
+import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
@@ -16,9 +18,12 @@ import org.actionpath.geofencing.GeofencingRegistrationListener;
 import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.util.ActionPathServer;
+import org.actionpath.util.Config;
+import org.actionpath.util.GoogleApiClientNotConnectionException;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,10 +43,25 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
 
     @Override
     protected Object doInBackground(Object[] params) {
-        Log.d(TAG, "Loading new issues for place " + listener.getPlaceId());
-        ArrayList<Issue> newIssues = null;
+        ArrayList<Issue> newIssues = new ArrayList<Issue>();
         try {
-            newIssues = ActionPathServer.getLatestIssues(listener.getPlaceId());
+            if(Config.getInstance(listener.getContext()).isPickPlaceMode()) {
+                Log.d(TAG, "Loading new issues for place " + listener.getPlaceId());
+                newIssues = ActionPathServer.getLatestIssues(listener.getPlaceId());
+            } else if(Config.getInstance(listener.getContext()).isAssignRequestTypeMode()) {
+                Log.d(TAG,"fetching issues by location and request type");
+                try {
+                    Location loc = listener.getLocation();
+                    if(loc==null){
+                        Log.e(TAG,"unable to get location so we can't get issues near me!");
+                    } else {
+                        RequestType requestType = listener.getAssignedRequestType();
+                        newIssues = ActionPathServer.getIssuesNear(loc.getLatitude(), loc.getLongitude(), requestType.id);
+                    }
+                } catch (GoogleApiClientNotConnectionException nce){
+                    Log.e(TAG,"Unable to get location for fetching issues near me :-(");
+                }
+            }
             IssuesDataSource dataSource = IssuesDataSource.getInstance();
             for (Issue i : newIssues) {
                 if (dataSource.issueExists(i.getId())) {
@@ -59,13 +79,14 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
             Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + listener.getPlaceId());
             removeExistingGeofencesExcept(newIssues);
             buildGeofences();
-            return newIssues;
+        } catch (URISyntaxException ex) {
+            Log.e(TAG, "Failed to pull new issues | " + ex.toString());
         } catch (IOException ex) {
-            Log.e(TAG, "Failed to pull new issues for " + listener.getPlaceId() + " | " + ex.toString());
+            Log.e(TAG, "Failed to pull new issues | " + ex.toString());
         } catch (JSONException ex) {
-            Log.e(TAG, "Failed to parse issues json from server for " + listener.getPlaceId() + " | " + ex);
+            Log.e(TAG, "Failed to parse issues json from server | " + ex);
         }
-        return null;
+        return newIssues;
     }
 
     private void removeExistingGeofencesExcept(ArrayList<Issue> issuesNeedingGeofences) {
@@ -173,5 +194,7 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
         void onIssuesUpdateSucceeded(int newIssueCount);
         void onIssueUpdateFailed();
         void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus);
+        Location getLocation() throws GoogleApiClientNotConnectionException;
+        RequestType getAssignedRequestType();
     }
 }

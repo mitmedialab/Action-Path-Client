@@ -92,6 +92,8 @@
 
     <string name="about_privacy_title">Privacy Statement</string>
     <string name="about_privacy_body">Any information that is obtained in connection with this study and that can be identified with you will remain confidential and will be disclosed only with your permission or as required by law.\n\nData collected from app usage will be connected to personal accounts, which may contain personally identifiable information. However, access to those servers will be restricted to primary researchers and only connected to survey and interview data through subject number codes. Personally identifiable information will be stored separately from that research data, and all data will be digitally locked with a password, which only primary researchers will have.</string>
+    <string name="assign_request_type_header">Get Your Assignment!</string>
+    <string name="got_it">Got It!</string>
 
 
 </resources>

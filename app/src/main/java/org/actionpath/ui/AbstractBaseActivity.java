@@ -33,6 +33,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     public static final String PREFS_NAME = "ActionPathPrefs";
     public static final String PREF_PLACE_ID = "placeId";
     public static final String PREF_PLACE_NAME = "placeName";
+    public static final String PREF_REQUEST_TYPE = "assignedRequestTypeJSON";
+
     protected static int INVALID_PLACE_ID = -1;
 
     /**
@@ -88,15 +90,6 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         return Installation.id(this.getApplicationContext());
     }
 
-    protected void logMsg(int issueId, String action, Location loc){
-        logMsg(issueId,action,"",loc);
-    }
-
-    protected void logMsg(int issueId, String action, String details, Location loc){
-        LogsDataSource.getInstance(getApplicationContext()).insert(
-                getApplicationContext(), issueId, action, details, loc);
-    }
-
     private void addTestIssues(){
         final float mediaLabLat = 42.360396f;
         final float mediaLabLng= -71.087233f;
@@ -128,5 +121,22 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         return settings.getString(PREF_PLACE_NAME, "Unknown City");
     }
 
+    protected void savePlaceIdAndName(int placeId, String placeName){
+        Log.i(TAG, "Set place to: " + placeId + " = " + placeName);
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putInt(PREF_PLACE_ID, placeId);
+        editor.putString(PREF_PLACE_NAME, placeName);
+        editor.apply();
+    }
+
+    protected void logMsg(int issueId, String action, Location loc){
+        logMsg(issueId, action, "", loc);
+    }
+
+    protected void logMsg(int issueId, String action, String details, Location loc) {
+        LogsDataSource.getInstance(getApplicationContext()).insert(
+                getApplicationContext(), issueId, action, details, loc);
+    }
 
 }
