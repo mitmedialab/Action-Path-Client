@@ -147,7 +147,7 @@ public class MainActivity extends AbstractLocationActivity implements
         actionBarDrawerToggle.syncState();
 
         // automatically update issues (if we have all the info we need to)
-        if( (Config.getInstance().isPickPlaceMode() && (getPlaceId() != INVALID_PLACE_ID))
+        if( (Config.getInstance().isPickPlaceMode() && (getPlace() == null))
                 || (Config.getInstance().isAssignRequestTypeMode() && getAssignedRequestType()!=null)){
             updateIssues();
         } else {
@@ -207,8 +207,8 @@ public class MainActivity extends AbstractLocationActivity implements
         super.onResume();
         if (Config.getInstance().isPickPlaceMode()) {
             // On first load check to see if we have a place selected if so load My Actions Page
-            if(!(getPlaceId()==INVALID_PLACE_ID)){
-                if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlaceId())>0){
+            if(hasPlaceSet()){
+                if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
                     displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
                 } else {
                     displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
@@ -218,9 +218,9 @@ public class MainActivity extends AbstractLocationActivity implements
                 displayPickPlaceFragment();
             }
         } else if(Config.getInstance().isAssignRequestTypeMode()){
-            if(getPlaceId()==INVALID_PLACE_ID){
+            if(!hasPlaceSet()){
                 Place place = Config.getInstance().getPlace();
-                savePlaceIdAndName(place.id, place.name);
+                savePlace(place);
             }
             displayAssignRequestTypeFragment();
         }
@@ -242,9 +242,9 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     private void displayUpdateIssuesFragment(){
-        toolbar.setTitle(String.format(getResources().getString(R.string.update_issues_header), getPlaceName()));
+        toolbar.setTitle(String.format(getResources().getString(R.string.update_issues_header), getPlace().name));
         logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
-        UpdateIssuesFragment fragment = UpdateIssuesFragment.newInstance(getPlaceId());
+        UpdateIssuesFragment fragment = UpdateIssuesFragment.newInstance(getPlace().id);
         displayFragment(fragment);
     }
 
@@ -263,10 +263,20 @@ public class MainActivity extends AbstractLocationActivity implements
     private void displayIssuesListFragment(int type){
         switch(type){
             case IssuesFragmentList.ALL_ISSUES:
-                toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlaceName()));
+                if(Config.getInstance().isPickPlaceMode()) {
+                    toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlace().name));
+                } else if(Config.getInstance().isAssignRequestTypeMode()) {
+                    toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_of_request_type_header),
+                            getAssignedRequestType().nickname, getPlace().name));
+                }
                 break;
             case IssuesFragmentList.FOLLOWED_ISSUES:
-                toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlaceName()));
+                if(Config.getInstance().isPickPlaceMode()) {
+                    toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlace().name));
+                } else if(Config.getInstance().isAssignRequestTypeMode()) {
+                    toolbar.setTitle(String.format(getResources().getString(R.string.all_followed_issues_of_request_type_header),
+                            getAssignedRequestType().nickname, getPlace().name));
+                }
                 break;
         }
         IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
@@ -299,24 +309,20 @@ public class MainActivity extends AbstractLocationActivity implements
         Intent intent = new Intent()
             .setClass(this, IssueDetailActivity.class)
             .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-            .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+                .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
         startActivity(intent);
     }
 
-    protected void savePlaceIdAndName(int placeId, String placeName){
-        Log.i(TAG, "Set place to: " + placeId + " = " + placeName);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(PREF_PLACE_ID, placeId);
-        editor.putString(PREF_PLACE_NAME, placeName);
-        editor.apply();
+    @Override
+    public int getPlaceId() {
+        return getPlace().id;
     }
 
     @Override
-    public void onPlaceSelected(int placeId, String placeName) {
-        Log.d(TAG, "clicked place id: " + placeId);
+    public void onPlaceSelected(Place place) {
+        Log.d(TAG, "clicked place id: " + place.id);
         // now save that we set the place
-        savePlaceIdAndName(placeId, placeName);
+        savePlace(place);
         logMsg(LogMsg.NO_ISSUE, LogMsg.ACTION_PICKED_PLACE);
         // and jump to update the issues
         displayUpdateIssuesFragment();
@@ -414,7 +420,7 @@ public class MainActivity extends AbstractLocationActivity implements
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         try {
-            editor.putString(PREF_REQUEST_TYPE, requestType.toJSONObject().toString());
+            editor.putString(PREF_ITEM_REQUEST_TYPE_JSON, requestType.toJSONObject().toString());
             editor.apply();
         } catch (JSONException e){
             Log.e(TAG,"Unable to save request type to shared preferences");
@@ -426,8 +432,8 @@ public class MainActivity extends AbstractLocationActivity implements
     public RequestType getAssignedRequestType() {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         try {
-            if (settings.contains(PREF_REQUEST_TYPE)) {
-                return RequestType.fromJSONObject(new JSONObject(settings.getString(PREF_REQUEST_TYPE, "")));
+            if (settings.contains(PREF_ITEM_REQUEST_TYPE_JSON)) {
+                return RequestType.fromJSONObject(new JSONObject(settings.getString(PREF_ITEM_REQUEST_TYPE_JSON, "")));
             }
         } catch (JSONException e) {
             Log.e(TAG, "Unable to load request type to shared preferences");

@@ -99,7 +99,7 @@ public class Issue extends AbstractModel {
     }
 
     public ArrayList<String> getAnswers(){
-        ArrayList<String> answers = new ArrayList<String>();
+        ArrayList<String> answers = new ArrayList<>();
         if(answer1!=null && answer1.length()>0) answers.add(answer1);
         if(answer2!=null && answer2.length()>0) answers.add(answer2);
         if(answer3!=null && answer3.length()>0) answers.add(answer3);
@@ -210,10 +210,18 @@ public class Issue extends AbstractModel {
         i.latitude = Float.parseFloat(object.getString("lat"));
         i.longitude = Float.parseFloat(object.getString("lng"));
         i.address = object.getString("address");
-        String custom_image_url = object.getString("custom_image_url");
-        String scf_image_url = object.getString("scf_image_url");
-        if(scf_image_url.equals("null")) scf_image_url = null;    // catch for server data inconsistency
-        i.imageUrl = (custom_image_url.length()>0) ? custom_image_url : scf_image_url;
+        String custom_image_url = null;
+        if(object.has("custom_image_url")) {
+            custom_image_url = object.getString("custom_image_url");
+        }
+        String scf_image_url = null;
+        if(object.has("scf_image_url")) {
+            scf_image_url = object.getString("scf_image_url");
+            if (scf_image_url.equals("null")){
+                scf_image_url = null;    // catch for server data inconsistency
+            }
+        }
+        i.imageUrl = ((custom_image_url!=null) && (custom_image_url.length() > 0)) ? custom_image_url : scf_image_url;
         i.createdAt = serverJsonDateFormat.parse(object.getString("created_at"), zeroParsePosition);
         i.updatedAt  = serverJsonDateFormat.parse(object.getString("updated_at"), zeroParsePosition);
         i.placeId = object.getInt("place_id");

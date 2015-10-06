@@ -33,8 +33,12 @@ public class Place implements Serializable {
         Place p = new Place();
         p.id = object.getInt("id");
         p.name = object.getString("name");
-        p.urlName = object.getString("url_name");
-        p.state = object.getString("state");
+        if(object.has("url_name")) {
+            p.urlName = object.getString("url_name");
+        }
+        if(object.has("state")) {
+            p.state = object.getString("state");
+        }
         if(object.has("county")) {
             p.county = object.getString("county");
         }
@@ -70,6 +74,14 @@ public class Place implements Serializable {
             Log.e(TAG, "Object not a place.");
             return false;
         }
+    }
+
+    public JSONObject toJSONObject() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("id",id);
+        obj.put("name",name);
+        obj.put("urlName",urlName);
+        return obj;
     }
 
     @Override

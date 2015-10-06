@@ -14,7 +14,9 @@
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
 
+    <string name="all_issues_of_request_type_header">%1$s: All in %2$s</string>
     <string name="all_issues_header">All Actions in %s</string>
+    <string name="all_followed_issues_of_request_type_header">%1$s: Mine in %2$s</string>
     <string name="followed_issues_header">My Actions in %s</string>
     <string name="pick_place_header">Choose Your City</string>
     <string name="update_issues_header">Updating Actions in %s</string>

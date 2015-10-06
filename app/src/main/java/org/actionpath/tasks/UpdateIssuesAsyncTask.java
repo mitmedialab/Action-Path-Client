@@ -49,13 +49,13 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
                 Log.d(TAG, "Loading new issues for place " + listener.getPlaceId());
                 newIssues = ActionPathServer.getLatestIssues(listener.getPlaceId());
             } else if(Config.getInstance(listener.getContext()).isAssignRequestTypeMode()) {
-                Log.d(TAG,"fetching issues by location and request type");
+                RequestType requestType = listener.getAssignedRequestType();
+                Log.d(TAG,"Loading new issues by location for request type "+requestType.id);
                 try {
                     Location loc = listener.getLocation();
                     if(loc==null){
                         Log.e(TAG,"unable to get location so we can't get issues near me!");
                     } else {
-                        RequestType requestType = listener.getAssignedRequestType();
                         newIssues = ActionPathServer.getIssuesNear(loc.getLatitude(), loc.getLongitude(), requestType.id);
                     }
                 } catch (GoogleApiClientNotConnectionException nce){

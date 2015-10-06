@@ -18,12 +18,15 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.places.Place;
 import org.actionpath.sync.SyncService;
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Config;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
@@ -31,9 +34,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     private final String TAG = this.getClass().getName();
 
     public static final String PREFS_NAME = "ActionPathPrefs";
-    public static final String PREF_PLACE_ID = "placeId";
-    public static final String PREF_PLACE_NAME = "placeName";
-    public static final String PREF_REQUEST_TYPE = "assignedRequestTypeJSON";
+    public static final String PREF_ITEM_REQUEST_TYPE_JSON = "assignedRequestTypeJSON";
+    public static final String PREF_ITEM_PLACE_JSON = "placeJSON";
 
     protected static int INVALID_PLACE_ID = -1;
 
@@ -111,23 +113,33 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         dataSource.updateIssueFollowed(2345, true);
     }
 
-    public int getPlaceId(){
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return settings.getInt(PREF_PLACE_ID, INVALID_PLACE_ID);
-    }
-
-    public String getPlaceName(){
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        return settings.getString(PREF_PLACE_NAME, "Unknown City");
-    }
-
-    protected void savePlaceIdAndName(int placeId, String placeName){
-        Log.i(TAG, "Set place to: " + placeId + " = " + placeName);
+    protected void savePlace(Place place){
+        Log.i(TAG, "Set place to: " + place.id + " = " + place.name);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(PREF_PLACE_ID, placeId);
-        editor.putString(PREF_PLACE_NAME, placeName);
-        editor.apply();
+        try {
+            editor.putString(PREF_ITEM_PLACE_JSON, place.toJSONObject().toString());
+            editor.apply();
+        } catch (JSONException e){
+            Log.e(TAG,"Unable to save place to shared preferences");
+        }
+    }
+
+    public Place getPlace() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        try {
+            if (settings.contains(PREF_ITEM_PLACE_JSON)) {
+                return Place.fromJson(new JSONObject(settings.getString(PREF_ITEM_PLACE_JSON, null)));
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Unable to load place from shared preferences");
+        }
+        Log.w(TAG,"Warning, no place is set so I'm returning null!");
+        return null;
+    }
+
+    public boolean hasPlaceSet(){
+        return getPlace()!=null;
     }
 
     protected void logMsg(int issueId, String action, Location loc){

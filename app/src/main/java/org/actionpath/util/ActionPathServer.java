@@ -1,5 +1,6 @@
 package org.actionpath.util;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -11,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
@@ -166,13 +168,14 @@ public class ActionPathServer {
     public static ArrayList<Issue> getIssuesNear(double latitude, double longitude, int requestTypeId) throws URISyntaxException, IOException, JSONException{
         ArrayList<Issue> newIssues = new ArrayList<>();
         String responseStr = "";
-        URL u = new URL(BASE_URL + "/issues/near.json");
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("lat", Double.toString(latitude)));
+        params.add(new BasicNameValuePair("lng", Double.toString(longitude)));
+        params.add(new BasicNameValuePair("request_type", Integer.toString(requestTypeId)));
+        String paramString = URLEncodedUtils.format(params, "UTF-8");
+        URL u = new URL(BASE_URL + "/issues/near.json?" + paramString);
+        Log.v(TAG,"Fetching from "+u);
         HttpGet httpGet = new HttpGet(u.toURI());
-        HttpParams params = new BasicHttpParams();
-        params.setDoubleParameter("lat", latitude);
-        params.setDoubleParameter("lng", longitude);
-        params.setIntParameter("request_type", requestTypeId);
-        httpGet.setParams(params);
         HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpGet);
         responseStr = EntityUtils.toString(httpResponse.getEntity());
