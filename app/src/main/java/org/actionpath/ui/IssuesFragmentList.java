@@ -13,8 +13,10 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import org.actionpath.R;
+import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.issues.IssuesDbHelper;
+import org.actionpath.util.Config;
 
 /**
  * A fragment representing a list of followed issues.
@@ -82,11 +84,19 @@ public class IssuesFragmentList extends ListFragment {
         switch(type){
             case ALL_ISSUES:
                 Log.d(TAG,"Showing All Issues Fragment for Place "+placeId);
-                cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId);
+                if(Config.getInstance().isPickPlaceMode()) {
+                    cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId);
+                } else if(Config.getInstance().isAssignRequestTypeMode()){
+                    cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId,listener.getAssignedRequestTypeId());
+                }
                 break;
             case FOLLOWED_ISSUES:
                 Log.d(TAG,"Showing Followed Issues Fragment for Place "+placeId);
-                cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId);
+                if(Config.getInstance().isPickPlaceMode()) {
+                    cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId);
+                } else if(Config.getInstance().isAssignRequestTypeMode()){
+                    cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId,listener.getAssignedRequestTypeId());
+                }
                 break;
         }
         adapter = new SimpleCursorAdapter(
@@ -129,6 +139,7 @@ public class IssuesFragmentList extends ListFragment {
     public interface OnIssueSelectedListener {
         void onIssueSelected(int issueId);
         int getPlaceId();
+        int getAssignedRequestTypeId();
     }
 
 }

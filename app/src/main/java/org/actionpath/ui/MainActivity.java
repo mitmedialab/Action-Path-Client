@@ -429,6 +429,11 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     @Override
+    public int getAssignedRequestTypeId(){
+        return getAssignedRequestType().id;
+    }
+
+    @Override
     public RequestType getAssignedRequestType() {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         try {

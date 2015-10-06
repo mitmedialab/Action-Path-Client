@@ -84,11 +84,45 @@ public class IssuesDataSource {
         return cursor;
     }
 
+    public Cursor getFollowedIssuesCursor(int placeId, int requestTypeId){
+        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
+                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
+                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL+"=?",
+                new String[] {"1",placeId+"",requestTypeId+""}, null, null,
+                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Get a list of all the issues in this place we have in the db
+     * @param placeId
+     * @return
+     */
     public Cursor getAllIssuesCursor(int placeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
                 new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
                 IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?",
                 new String[] {placeId+""}, null, null,
+                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    /**
+     * Get a list of all the issues in this place, of this requestType, that we have in the db
+     * @param placeId
+     * @return
+     */
+    public Cursor getAllIssuesCursor(int placeId, int requestTypeId){
+        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
+                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
+                IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL+"=?",
+                new String[] {placeId+"",requestTypeId+""}, null, null,
                 IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
