@@ -39,6 +39,7 @@ public class Issue extends AbstractModel {
     Date createdAt;
     Date updatedAt;
     int placeId;
+    int requestTypeId;
     String question;
     String answer1;
     String answer2;
@@ -147,6 +148,10 @@ public class Issue extends AbstractModel {
         return placeId;
     }
 
+    public void setPlaceId(int placeId){
+        this.placeId = placeId;
+    }
+
     public boolean isFollowed() {
         return followed;
     }
@@ -182,6 +187,7 @@ public class Issue extends AbstractModel {
         i.createdAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000);
         i.updatedAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000);
         i.placeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL));
+        i.requestTypeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL));
         i.radius = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL));
         i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1;
         i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1;
@@ -233,8 +239,8 @@ public class Issue extends AbstractModel {
         i.answer4 = object.getString("answer4");
         i.answer5 = object.getString("answer5");
         i.answer6 = object.getString("answer6");
-        Log.v(TAG, "  "+i.id+": parse lat/lng/radius (" + i.latitude + "," + i.longitude + " + "+i.radius+")");
-        Log.v(TAG, "  "+i.id+": image_url = "+i.imageUrl);
+        Log.v(TAG, "  " + i.id + ": parse lat/lng/radius (" + i.latitude + "," + i.longitude + " + " + i.radius + ")");
+        Log.v(TAG, "  " + i.id + ": image_url = " + i.imageUrl);
         return i;
     }
 
@@ -255,6 +261,7 @@ public class Issue extends AbstractModel {
         cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
         cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
         cv.put(IssuesDbHelper.ISSUES_QUESTION_COL, question);
+        cv.put(IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL, requestTypeId);
         cv.put(IssuesDbHelper.ISSUES_ANSWER1_COL, answer1);
         cv.put(IssuesDbHelper.ISSUES_ANSWER2_COL, answer2);
         cv.put(IssuesDbHelper.ISSUES_ANSWER3_COL, answer3);
@@ -290,6 +297,8 @@ public class Issue extends AbstractModel {
         return question!=null && !question.equals("null");
     }
 
+    public void setRequestTypeId(int requestTypeId) {
+        this.requestTypeId = requestTypeId;
+    }
+
 }
-
-

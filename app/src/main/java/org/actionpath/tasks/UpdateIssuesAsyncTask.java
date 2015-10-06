@@ -46,17 +46,23 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
         ArrayList<Issue> newIssues = new ArrayList<Issue>();
         try {
             if(Config.getInstance(listener.getContext()).isPickPlaceMode()) {
+                // fetch all the issues for this place
                 Log.d(TAG, "Loading new issues for place " + listener.getPlaceId());
                 newIssues = ActionPathServer.getLatestIssues(listener.getPlaceId());
             } else if(Config.getInstance(listener.getContext()).isAssignRequestTypeMode()) {
+                // fetch all the issues near me with this request type
                 RequestType requestType = listener.getAssignedRequestType();
-                Log.d(TAG,"Loading new issues by location for request type "+requestType.id);
+                Log.d(TAG, "Loading new issues by location for request type " + requestType.id);
                 try {
                     Location loc = listener.getLocation();
                     if(loc==null){
                         Log.e(TAG,"unable to get location so we can't get issues near me!");
                     } else {
                         newIssues = ActionPathServer.getIssuesNear(loc.getLatitude(), loc.getLongitude(), requestType.id);
+                        for(Issue i : newIssues){   // force them to have the "right" place id (ie. from the config file)
+                            i.setPlaceId(listener.getPlaceId());
+                            i.setRequestTypeId(requestType.id);
+                        }
                     }
                 } catch (GoogleApiClientNotConnectionException nce){
                     Log.e(TAG,"Unable to get location for fetching issues near me :-(");

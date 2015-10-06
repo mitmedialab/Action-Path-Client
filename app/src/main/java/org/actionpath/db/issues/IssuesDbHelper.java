@@ -13,7 +13,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     private static String TAG = IssuesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "issues.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // DB Table consts
     public static final String ISSUES_TABLE_NAME = "issues";
@@ -28,6 +28,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public static final String ISSUES_FOLLOWED_COL = "favorited";
     public static final String ISSUES_GEOFENCE_CREATED_COL = "geofence_created";
     public static final String ISSUES_PLACE_ID_COL = "place_id";
+    public static final String ISSUES_REQUEST_TYPE_ID_COL = "request_type_id";
     public static final String ISSUES_CREATED_AT_COL = "created_at";
     public static final String ISSUES_UPDATED_AT_COL = "updated_at";
     public static final String ISSUES_GEOFENCE_RADIUS_COL = "geofence_radius";
@@ -45,7 +46,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         ISSUES_COLUMN_NAMES = new String[]
                 {ISSUES_ID_COL,ISSUES_STATUS_COL,ISSUES_SUMMARY_COL,ISSUES_DESCRIPTION_COL,
                         ISSUES_ADDRESS_COL,ISSUES_LATITUDE_COL,ISSUES_LONGITUDE_COL,ISSUES_IMAGE_URL_COL,
-                        ISSUES_FOLLOWED_COL,ISSUES_GEOFENCE_CREATED_COL,ISSUES_PLACE_ID_COL,
+                        ISSUES_FOLLOWED_COL,ISSUES_GEOFENCE_CREATED_COL,ISSUES_PLACE_ID_COL, ISSUES_REQUEST_TYPE_ID_COL,
                         ISSUES_CREATED_AT_COL,ISSUES_UPDATED_AT_COL, ISSUES_GEOFENCE_RADIUS_COL,
                 ISSUES_QUESTION_COL,ISSUES_ANSWER1_COL,ISSUES_ANSWER2_COL,ISSUES_ANSWER3_COL,ISSUES_ANSWER4_COL,ISSUES_ANSWER5_COL,ISSUES_ANSWER6_COL};
     }
@@ -64,6 +65,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_FOLLOWED_COL + " int, " +
             ISSUES_GEOFENCE_CREATED_COL + " int, " +
             ISSUES_PLACE_ID_COL + " int, " +
+            ISSUES_REQUEST_TYPE_ID_COL + "int, "+
             ISSUES_CREATED_AT_COL + " int, " +
             ISSUES_UPDATED_AT_COL + " int, " +
             ISSUES_GEOFENCE_RADIUS_COL + " int, " +
@@ -94,15 +96,17 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         if(oldVersion==1 && newVersion>=2){
             db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_GEOFENCE_RADIUS_COL+" int default 500;");
             Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v1 to v2");
-        } else if(oldVersion==2 && newVersion==3){
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_QUESTION_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER1_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER2_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER3_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER4_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER5_COL+" text;");
-            db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_ANSWER6_COL+" text;");
+        } else if(oldVersion==2 && newVersion>=3) {
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_QUESTION_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER1_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER2_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER3_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER4_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER5_COL + " text;");
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER6_COL + " text;");
             Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v2 to v3");
+        } else if(oldVersion==3 && newVersion>=3){
+            db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_REQUEST_TYPE_ID_COL + " int;");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
             onCreate(db);
