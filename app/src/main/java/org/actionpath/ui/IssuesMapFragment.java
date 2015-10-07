@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +46,7 @@ public class IssuesMapFragment extends Fragment implements
     private double myLatitude;
     private double myLongitude;
     private HashMap<String,Issue> markerIdToIssueLookup;
+    private Bundle savedInstanceState;
 
     public static IssuesMapFragment newInstance(int type, int placeId, int requestTypeId, double latitude, double longitude) {
         IssuesMapFragment fragment = new IssuesMapFragment();
@@ -70,6 +72,7 @@ public class IssuesMapFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.savedInstanceState = savedInstanceState;
         if (getArguments() != null) {
             type = getArguments().getInt(ARG_TYPE);
             placeId = getArguments().getInt(ARG_PLACE_ID);
@@ -135,8 +138,24 @@ public class IssuesMapFragment extends Fragment implements
             markerIdToIssueLookup.put(marker.getId(), i);
         }
         // set up the infowindow stuff
-        IssueInfoWindow infoWindow = new IssueInfoWindow();
-        map.setInfoWindowAdapter(infoWindow);
+        map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+            @Override
+            public View getInfoWindow(Marker marker) {
+                return null;
+            }
+            @Override
+            public View getInfoContents(Marker marker) {
+                // Getting view from the layout file info_window_layout
+                View v = getLayoutInflater(savedInstanceState).inflate(R.layout.issue_info_window, null);
+                Issue i = markerIdToIssueLookup.get(marker.getId());
+                // Getting reference to the TextView to set latitude
+                TextView summary = (TextView) v.findViewById(R.id.info_issue_summary);
+                summary.setText(i.getSummary());
+                TextView description = (TextView) v.findViewById(R.id.info_issue_description);
+                description.setText(i.getDescription().substring(0,100));
+                return v;
+            }
+        });
         map.setOnInfoWindowClickListener(this);
         // center the camera on my current location
         CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(myLatitude, myLongitude));
