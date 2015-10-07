@@ -125,7 +125,8 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
             LatLng issueLatLng = new LatLng(i.getLatitude(), i.getLongitude());
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(issueLatLng)
-                    .title(i.getIssueSummary()));
+                    .title(i.getIssueSummary())
+                    .snippet(i.getIssueDescription()));
             markers.add(marker);
             cursor.moveToNext();
         }
