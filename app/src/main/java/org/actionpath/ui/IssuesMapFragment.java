@@ -2,7 +2,6 @@ package org.actionpath.ui;
 
 import android.app.Activity;
 import android.database.Cursor;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -125,8 +124,8 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
             LatLng issueLatLng = new LatLng(i.getLatitude(), i.getLongitude());
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(issueLatLng)
-                    .title(i.getIssueSummary())
-                    .snippet(i.getIssueDescription()));
+                    .title(i.getSummary())
+                    .snippet(i.getDescription()));
             markers.add(marker);
             cursor.moveToNext();
         }

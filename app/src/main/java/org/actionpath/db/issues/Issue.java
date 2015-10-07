@@ -88,15 +88,15 @@ public class Issue extends AbstractModel {
         this.placeId = placeId;
     }
 
-    public String getIssueSummary(){
+    public String getSummary(){
         return this.summary;
     }
 
-    public String getIssueDescription(){
+    public String getDescription(){
         return this.description;
     }
 
-    public String getIssueAddress(){ return this.address; }
+    public String getAddress(){ return this.address; }
 
     public double getLatitude(){
         return this.latitude;

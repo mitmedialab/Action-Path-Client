@@ -10,7 +10,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -99,14 +98,14 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(issue.getIssueSummary());
+        collapsingToolbar.setTitle(issue.getSummary());
 
         TextView summary = (TextView) findViewById(R.id.issue_detail_summary);
-        summary.setText(issue.getIssueSummary());
+        summary.setText(issue.getSummary());
 
         TextView description = (TextView) findViewById(R.id.issue_detail_description);
-        if (!issue.getIssueDescription().equals("")) {
-            description.setText(issue.getIssueDescription());
+        if (!issue.getDescription().equals("")) {
+            description.setText(issue.getDescription());
         } else {
             // hide description if there is none like in a custom question
             findViewById(R.id.issue_detail_description_header).setVisibility(View.GONE);
@@ -116,13 +115,13 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         TextView status = (TextView) findViewById(R.id.issue_detail_status);
         status.setText(issue.getStatus());
         TextView location = (TextView) findViewById(R.id.issue_detail_location);
-        location.setText(issue.getIssueAddress());
+        location.setText(issue.getAddress());
 
         Button walkThereButton = (Button) findViewById(R.id.issue_detail_walk_there_button);
         walkThereButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri gmmIntentUri = Uri.parse("google.navigation:mode=w&q=" + issue.getIssueAddress());
+                Uri gmmIntentUri = Uri.parse("google.navigation:mode=w&q=" + issue.getAddress());
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 startActivity(mapIntent);
@@ -302,7 +301,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLongitude());
         googleMap.addMarker(new MarkerOptions()
                 .position(issueLatLng)
-                .title(issue.getIssueSummary()));
+                .title(issue.getSummary()));
 
     }
 

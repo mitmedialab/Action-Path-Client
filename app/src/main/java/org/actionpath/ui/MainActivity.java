@@ -385,7 +385,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Log.d(TAG,"Sending notification for issueId: "+issueId);
 
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
-        String updateSummary = newStatus + ": " + issue.getIssueSummary();
+        String updateSummary = newStatus + ": " + issue.getSummary();
 
         PendingIntent pi = getPendingIntent(issueId);
 
@@ -407,7 +407,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private PendingIntent getPendingIntent(int issueId) {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
-        String summary = issue.getIssueSummary();
+        String summary = issue.getSummary();
 
         Log.v(TAG, "Returning update intent for IssueDetailActivity.class for issue: " + summary);
 
