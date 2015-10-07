@@ -1,6 +1,7 @@
 package org.actionpath.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,8 +29,10 @@ import org.actionpath.db.issues.IssuesDbHelper;
 import org.actionpath.util.Development;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, IssueListArgsReceiver {
+public class IssuesMapFragment extends Fragment implements
+        OnMapReadyCallback, IssueListArgsReceiver, GoogleMap.OnInfoWindowClickListener {
 
     public static String TAG = IssuesMapFragment.class.getName();
 
@@ -41,6 +44,7 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
     private int requestTypeId;
     private double myLatitude;
     private double myLongitude;
+    private HashMap<String,Issue> markerIdToIssueLookup;
 
     public static IssuesMapFragment newInstance(int type, int placeId, int requestTypeId, double latitude, double longitude) {
         IssuesMapFragment fragment = new IssuesMapFragment();
@@ -60,6 +64,7 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
      * fragment (e.g. upon screen orientation changes).
      */
     public IssuesMapFragment() {
+        markerIdToIssueLookup = new HashMap();
     }
 
     @Override
@@ -127,12 +132,29 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
                     .snippet(i.getDescription()));
             markers.add(marker);
             cursor.moveToNext();
+            markerIdToIssueLookup.put(marker.getId(), i);
         }
+        // set up the infowindow stuff
+        IssueInfoWindow infoWindow = new IssueInfoWindow();
+        map.setInfoWindowAdapter(infoWindow);
+        map.setOnInfoWindowClickListener(this);
         // center the camera on my current location
         CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(myLatitude, myLongitude));
         CameraUpdate zoom=CameraUpdateFactory.zoomTo(16);
         map.moveCamera(center);
         map.animateCamera(zoom);
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker){
+        Issue i = markerIdToIssueLookup.get(marker.getId());
+        Log.v(TAG, "Click on " + i.getId());
+        // Then you start a new Activity via Intent
+        Intent intent = new Intent()
+                .setClass(this.getActivity().getApplicationContext(), IssueDetailActivity.class)
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, i.getId())
+                .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+        startActivity(intent);
     }
 
 }
