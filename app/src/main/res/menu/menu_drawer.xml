@@ -9,6 +9,11 @@
             android:icon="@drawable/ic_launcher"
             android:title="@string/nav_home"/>
         <item
+            android:id="@+id/nav_map"
+            android:checked="false"
+            android:icon="@drawable/ic_launcher"
+            android:title="@string/nav_map"/>
+        <item
             android:id="@+id/nav_my_issues"
             android:checked="false"
             android:icon="@drawable/ic_launcher"

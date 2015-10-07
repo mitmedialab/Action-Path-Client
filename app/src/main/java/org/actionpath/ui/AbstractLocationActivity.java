@@ -127,6 +127,11 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
         } else {
             Log.d(TAG, "got location @ " + lastLocation.getLatitude() + "," + lastLocation.getLongitude());
         }
+        onGooglePlayServicesConnected();
+    }
+
+    protected void onGooglePlayServicesConnected(){
+        // override this to do something in your subclass
     }
 
     @Override

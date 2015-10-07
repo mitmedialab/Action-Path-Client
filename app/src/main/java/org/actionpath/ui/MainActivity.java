@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import org.actionpath.db.logs.LogMsg;
 import org.actionpath.places.Place;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
+import org.actionpath.util.GoogleApiClientNotConnectionException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,8 +37,8 @@ import org.json.JSONObject;
  * The entry point for the app, handles menu nav too
  */
 public class MainActivity extends AbstractLocationActivity implements
-        IssuesFragmentList.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
-        UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnFragmentInteractionListener,
+        IssuesListFragment.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
+        UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnDisplayExternalURLListener,
         AssignRequestTypeFragment.OnRequestTypeAssignedListener {
 
     private Toolbar toolbar;
@@ -82,11 +84,14 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_HOME);
                     case R.id.nav_my_issues:
                         logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
-                        displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+                        displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
+                        return true;
+                    case R.id.nav_map:
+                        displayMapFragment();
                         return true;
                     case R.id.nav_all_issues:
                         logMsg(LogMsg.ACTION_CLICKED_ALL_ISSUES);
-                        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+                        displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
                         return true;
                     case R.id.nav_update_issues:
                         logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
@@ -205,24 +210,22 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onResume(){
         super.onResume();
-        if (Config.getInstance().isPickPlaceMode()) {
-            // On first load check to see if we have a place selected if so load My Actions Page
-            if(hasPlaceSet()){
-                if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
-                    displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
-                } else {
-                    displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
-                }
+        if(hasPlaceSet()){
+            if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
+                displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
             } else {
-                Log.w(TAG, "onResume: No place set yet");
-                displayPickPlaceFragment();
+                displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
             }
-        } else if(Config.getInstance().isAssignRequestTypeMode()){
-            if(!hasPlaceSet()){
+        } else {
+            Log.w(TAG, "onResume: No place set yet");
+            if (Config.getInstance().isPickPlaceMode()) {
+                // On first load check to see if we have a place selected if so load My Actions Page
+                displayPickPlaceFragment();
+            } else if(Config.getInstance().isAssignRequestTypeMode()){
                 Place place = Config.getInstance().getPlace();
                 savePlace(place);
+                displayAssignRequestTypeFragment();
             }
-            displayAssignRequestTypeFragment();
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
@@ -262,7 +265,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private void displayIssuesListFragment(int type){
         switch(type){
-            case IssuesFragmentList.ALL_ISSUES:
+            case IssuesDataSource.ALL_ISSUES_LIST:
                 if(Config.getInstance().isPickPlaceMode()) {
                     toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlace().name));
                 } else if(Config.getInstance().isAssignRequestTypeMode()) {
@@ -270,7 +273,7 @@ public class MainActivity extends AbstractLocationActivity implements
                             getAssignedRequestType().nickname, getPlace().name));
                 }
                 break;
-            case IssuesFragmentList.FOLLOWED_ISSUES:
+            case IssuesDataSource.FOLLOWED_ISSUES_LIST:
                 if(Config.getInstance().isPickPlaceMode()) {
                     toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlace().name));
                 } else if(Config.getInstance().isAssignRequestTypeMode()) {
@@ -279,11 +282,25 @@ public class MainActivity extends AbstractLocationActivity implements
                 }
                 break;
         }
-        IssuesFragmentList fragment = IssuesFragmentList.newInstance(type);
+        IssuesListFragment fragment = IssuesListFragment.newInstance(type, getPlaceId(), getAssignedRequestTypeId());
         displayFragment(fragment);
     }
 
-    private void displayAboutFragment(){
+    private void displayMapFragment(){
+        toolbar.setTitle(R.string.issues_map_title);
+        try {
+            Location loc = getLocation();
+            IssuesMapFragment mapFragment = IssuesMapFragment.newInstance(0,getPlaceId(),
+                    getAssignedRequestTypeId(),
+                    loc.getLatitude(), loc.getLongitude());
+            displayFragment(mapFragment);
+        } catch (GoogleApiClientNotConnectionException e) {
+            Log.e(TAG,"tried to display map fragment but couldn't connect to goole api client");
+            e.printStackTrace();
+        }
+    }
+
+    private void displayAboutFragment() {
         toolbar.setTitle(R.string.about_header);
         AboutFragment fragment = AboutFragment.newInstance();
         displayFragment(fragment);
@@ -315,7 +332,11 @@ public class MainActivity extends AbstractLocationActivity implements
 
     @Override
     public int getPlaceId() {
-        return getPlace().id;
+        if(getPlace()==null){
+            return -1;
+        } else {
+            return getPlace().id;
+        }
     }
 
     @Override
@@ -337,7 +358,7 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onIssuesUpdateSucceeded(int newIssueCount){
         String feedback = getResources().getQuantityString(R.plurals.updated_issues, newIssueCount, newIssueCount);
         Snackbar.make(findViewById(R.id.main_content), feedback, Snackbar.LENGTH_SHORT).show();
-        displayIssuesListFragment(IssuesFragmentList.ALL_ISSUES);
+        displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
     }
 
     @Override
@@ -403,7 +424,10 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onDisplayExternalURL(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW);
+        browserIntent.setData(Uri.parse(url));
+        startActivity(browserIntent);
     }
 
     private void updateIssues(){
@@ -428,9 +452,12 @@ public class MainActivity extends AbstractLocationActivity implements
         displayUpdateIssuesFragment();
     }
 
-    @Override
     public int getAssignedRequestTypeId(){
-        return getAssignedRequestType().id;
+        if(getAssignedRequestType()==null){
+            return -1;
+        } else {
+            return getAssignedRequestType().id;
+        }
     }
 
     @Override

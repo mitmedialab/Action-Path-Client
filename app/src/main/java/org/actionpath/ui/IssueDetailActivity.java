@@ -1,7 +1,5 @@
 package org.actionpath.ui;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -11,6 +9,9 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -21,8 +22,8 @@ import android.widget.TextView;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -164,10 +165,9 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         options.mapType(GoogleMap.MAP_TYPE_NORMAL)
                 .camera(CameraPosition.fromLatLngZoom(issueLatLng, 14))
                 .liteMode(true);
-        MapFragment mapFragment = MapFragment.newInstance(options);
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.issue_detail_map_wrapper, mapFragment);
+        SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.issue_detail_map_wrapper, mapFragment);
         fragmentTransaction.commit();
         mapFragment.getMapAsync(this);
 
@@ -308,14 +308,14 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     private void showCustomQuestionUiFragment(){
         Fragment fragment = IssueCustomQuestionFragment.newInstance(issue.getQuestion(),issue.getAnswers());
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
         fragmentTransaction.commit();
     }
 
     private void showDefaultQuestionUiFragment(){
         Fragment fragment = IssueDefaultQuestionFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
         fragmentTransaction.commit();
     }
@@ -330,8 +330,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         }
     }
 
-    protected void removeGeofence(){
-        List<String> issuesToRemove = new ArrayList<String>();
+    private void removeGeofence(){
+        List<String> issuesToRemove = new ArrayList();
         issuesToRemove.add(issue.getId() + "");
         GeofencingRemover remover = new GeofencingRemover(getApplicationContext(),
             issuesToRemove,this);

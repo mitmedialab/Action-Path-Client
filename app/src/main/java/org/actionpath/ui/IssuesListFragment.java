@@ -13,10 +13,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
 import org.actionpath.R;
-import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.issues.IssuesDbHelper;
-import org.actionpath.util.Config;
 
 /**
  * A fragment representing a list of followed issues.
@@ -24,24 +22,22 @@ import org.actionpath.util.Config;
  * Activities containing this fragment MUST implement the {@link OnIssueSelectedListener}
  * interface.
  */
-public class IssuesFragmentList extends ListFragment {
+public class IssuesListFragment extends ListFragment implements IssueListArgsReceiver {
 
-    private static String TAG = IssuesFragmentList.class.getName();
-
-    public static final int ALL_ISSUES = 0;
-    public static final int FOLLOWED_ISSUES = 1;
-
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_TYPE = "ARG_LIST_TYPE";
+    private static String TAG = IssuesListFragment.class.getName();
 
     private int type;
+    private int placeId;
+    private int requestTypeId;
 
     private OnIssueSelectedListener listener;
 
-    public static IssuesFragmentList newInstance(int type) {
-        IssuesFragmentList fragment = new IssuesFragmentList();
+    public static IssuesListFragment newInstance(int type, int placeId, int requestTypeId) {
+        IssuesListFragment fragment = new IssuesListFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TYPE, type);
+        args.putInt(ARG_PLACE_ID, placeId);
+        args.putInt(ARG_REQUEST_TYPE_ID, requestTypeId);
         fragment.setArguments(args);
         Log.d(TAG,"Created list with type "+type);
         return fragment;
@@ -51,19 +47,19 @@ public class IssuesFragmentList extends ListFragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public IssuesFragmentList() {
+    public IssuesListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             type = getArguments().getInt(ARG_TYPE);
+            placeId = getArguments().getInt(ARG_PLACE_ID);
+            requestTypeId = getArguments().getInt(ARG_REQUEST_TYPE_ID);
         }
-
         Log.i(TAG, "Favorited Issues: " + IssuesDataSource.getInstance(getActivity())
-                .countFollowedIssues(listener.getPlaceId()));
+                .countFollowedIssues(placeId));
     }
 
     @Override
@@ -79,26 +75,7 @@ public class IssuesFragmentList extends ListFragment {
                 IssuesDbHelper.ISSUES_DESCRIPTION_COL };
         int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
         SimpleCursorAdapter adapter;
-        Cursor cursor = null;
-        int placeId = listener.getPlaceId();
-        switch(type){
-            case ALL_ISSUES:
-                Log.d(TAG,"Showing All Issues Fragment for Place "+placeId);
-                if(Config.getInstance().isPickPlaceMode()) {
-                    cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId);
-                } else if(Config.getInstance().isAssignRequestTypeMode()){
-                    cursor = IssuesDataSource.getInstance(context).getAllIssuesCursor(placeId,listener.getAssignedRequestTypeId());
-                }
-                break;
-            case FOLLOWED_ISSUES:
-                Log.d(TAG,"Showing Followed Issues Fragment for Place "+placeId);
-                if(Config.getInstance().isPickPlaceMode()) {
-                    cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId);
-                } else if(Config.getInstance().isAssignRequestTypeMode()){
-                    cursor = IssuesDataSource.getInstance(context).getFollowedIssuesCursor(placeId,listener.getAssignedRequestTypeId());
-                }
-                break;
-        }
+        Cursor cursor = IssuesDataSource.getInstance().getIssuesListCursor(type, placeId, requestTypeId);
         adapter = new SimpleCursorAdapter(
                 context, R.layout.issue_list_item,
                 cursor,
@@ -130,7 +107,6 @@ public class IssuesFragmentList extends ListFragment {
         if (null != listener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            Cursor cursor = (Cursor) l.getItemAtPosition(position);
             int issueId = (int) id;
             listener.onIssueSelected(issueId);
         }
@@ -138,8 +114,6 @@ public class IssuesFragmentList extends ListFragment {
 
     public interface OnIssueSelectedListener {
         void onIssueSelected(int issueId);
-        int getPlaceId();
-        int getAssignedRequestTypeId();
     }
 
 }

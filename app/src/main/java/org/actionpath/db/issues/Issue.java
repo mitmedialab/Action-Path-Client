@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -57,6 +58,12 @@ public class Issue extends AbstractModel {
 
     }
 
+    public Issue(int id, String summary, String description){
+        this.id = id;
+        this.summary = summary;
+        this.description = description;
+    }
+
     public Issue(int id,
                  String status,
                  String summary,
@@ -93,6 +100,14 @@ public class Issue extends AbstractModel {
 
     public double getLatitude(){
         return this.latitude;
+    }
+
+    public void setLatitude(float lat){
+        this.latitude = lat;
+    }
+
+    public void setLongitude(float lng){
+        this.longitude = lng;
     }
 
     public String getQuestion(){

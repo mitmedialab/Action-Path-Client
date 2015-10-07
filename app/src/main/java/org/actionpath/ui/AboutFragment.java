@@ -8,23 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.util.Log;
+import android.widget.ImageView;
 
 
 import org.actionpath.R;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AboutFragment.OnFragmentInteractionListener} interface
+ * {@link OnDisplayExternalURLListener} interface
  * to handle interaction events.
  * Use the {@link AboutFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AboutFragment extends Fragment {
+public class AboutFragment extends Fragment implements View.OnClickListener {
     private static String TAG = AboutFragment.class.getName();
 
-    private OnFragmentInteractionListener mListener;
+    private OnDisplayExternalURLListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -52,14 +56,29 @@ public class AboutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        View view = inflater.inflate(R.layout.fragment_about, container, false);
+        ImageView civicMediaLogo = (ImageView) view.findViewById(R.id.about_image_civicmedia_logo);
+        civicMediaLogo.setOnClickListener(this);
+        ImageView mediaLabLogo = (ImageView) view.findViewById(R.id.about_image_medialab_logo);
+        mediaLabLogo.setOnClickListener(this);
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.about_image_civicmedia_logo:
+                visitUri("https://civic.mit.edu/");
+                break;
+            case R.id.about_image_medialab_logo:
+                visitUri("https://media.mit.edu/");
+                break;
+        }
+    }
+
+    private void visitUri(String uri) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onDisplayExternalURL(uri);
         }
     }
 
@@ -67,10 +86,10 @@ public class AboutFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (OnDisplayExternalURLListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnDisplayExternalURLListener");
         }
     }
 
@@ -90,8 +109,8 @@ public class AboutFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    public interface OnDisplayExternalURLListener {
+        void onDisplayExternalURL(String uri);
     }
 
 }

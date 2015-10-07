@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import org.actionpath.util.Config;
+
 import java.sql.SQLException;
 
 /**
@@ -17,7 +19,10 @@ import java.sql.SQLException;
  */
 public class IssuesDataSource {
 
-    public static String LOG_TAG = IssuesDataSource.class.getName();
+    public static String TAG = IssuesDataSource.class.getName();
+
+    public static final int ALL_ISSUES_LIST = 0;
+    public static final int FOLLOWED_ISSUES_LIST = 1;
 
     private SQLiteDatabase db;
     private IssuesDbHelper dbHelper;
@@ -33,7 +38,7 @@ public class IssuesDataSource {
 
     public static synchronized IssuesDataSource getInstance(Context context){
         if(instance==null){
-            Log.i(LOG_TAG,"Creating new IssuesDataSource");
+            Log.i(TAG,"Creating new IssuesDataSource");
             instance = new IssuesDataSource(context);
         }
         return instance;
@@ -44,7 +49,7 @@ public class IssuesDataSource {
             dbHelper = new IssuesDbHelper(context);
             this.open(true);
         } catch (SQLException e) {
-            Log.e(LOG_TAG,"Unable to open database.  This is bad, very very bad!");
+            Log.e(TAG,"Unable to open database.  This is bad, very very bad!");
             e.printStackTrace();
         }
     }
@@ -120,12 +125,15 @@ public class IssuesDataSource {
      */
     public Cursor getAllIssuesCursor(int placeId, int requestTypeId){
         Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
+                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL,
+                        IssuesDbHelper.ISSUES_DESCRIPTION_COL, IssuesDbHelper.ISSUES_LATITUDE_COL, IssuesDbHelper.ISSUES_LONGITUDE_COL},
                 IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL+"=?",
                 new String[] {placeId+"",requestTypeId+""}, null, null,
                 IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
+        } else {
+            Log.w(TAG,"Uh oh, cursor is null in getAllIssuesCursor(placeId,requestTypeId");
         }
         return cursor;
     }
@@ -183,7 +191,7 @@ public class IssuesDataSource {
             cursor.close();
         } catch(CursorIndexOutOfBoundsException e){
             cursor.close();
-            Log.w(LOG_TAG, "No issue " + id + " in database");
+            Log.w(TAG, "No issue " + id + " in database");
             issue = null;
         }
         return issue;
@@ -195,23 +203,23 @@ public class IssuesDataSource {
     }
 
     public void insertIssue(Issue i){
-        Log.v(LOG_TAG, "Inserting " + i.toString());
+        Log.v(TAG, "Inserting " + i.toString());
         db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues(false));
     }
 
     public void updateIssue(Issue i, boolean justServerFields){
-        Log.v(LOG_TAG, "Updating " + i.toString());
+        Log.v(TAG, "Updating " + i.toString());
         db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(justServerFields),
                 IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
     }
 
     public void insertOrUpdateIssue(Issue i, boolean justServerFields){
-        insertOrUpdateIssue(i,true,justServerFields);
+        insertOrUpdateIssue(i, true, justServerFields);
     }
 
     public void insertOrUpdateIssue(Issue i, boolean orUpdate, boolean justServerFields) {
         if(i==null){
-            Log.e(LOG_TAG,"trying to insert a null issue - ignoring to fail gracefully");
+            Log.e(TAG,"trying to insert a null issue - ignoring to fail gracefully");
         } else {
             try {
                 if (issueExists(i.getId()) && orUpdate) {
@@ -220,9 +228,34 @@ public class IssuesDataSource {
                     insertIssue(i);
                 }
             } catch (SQLiteConstraintException ce) {
-                Log.w(LOG_TAG, "Ignoring issue " + i.toString() + " because it already exists and you said not to update");
+                Log.w(TAG, "Ignoring issue " + i.toString() + " because it already exists and you said not to update");
             }
         }
     }
 
+    public Cursor getIssuesListCursor(int listType, int placeId, int requestTypeId) {
+        Cursor cursor = null;
+        IssuesDataSource dataSource = IssuesDataSource.getInstance();
+        switch(listType){
+            case ALL_ISSUES_LIST:
+                if(Config.getInstance().isPickPlaceMode()) {
+                    Log.v(TAG,"getAllIssuesCursor with placeId");
+                    cursor = dataSource.getAllIssuesCursor(placeId);
+                } else if(Config.getInstance().isAssignRequestTypeMode()){
+                    Log.v(TAG,"getAllIssuesCursor with request type");
+                    cursor = dataSource.getAllIssuesCursor(placeId, requestTypeId);
+                }
+                break;
+            case FOLLOWED_ISSUES_LIST:
+                if(Config.getInstance().isPickPlaceMode()) {
+                    Log.v(TAG,"getFollowedIssuesCursor with placeId");
+                    cursor = dataSource.getFollowedIssuesCursor(placeId);
+                } else if(Config.getInstance().isAssignRequestTypeMode()){
+                    Log.v(TAG,"getFollowedIssuesCursor with request type");
+                    cursor = dataSource.getFollowedIssuesCursor(placeId,requestTypeId);
+                }
+                break;
+        }
+        return cursor;
+    }
 }

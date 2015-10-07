@@ -53,7 +53,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
 
     // Database creation sql statement
     public static final String DATABASE_CREATE = "create table if not exists "
-            + ISSUES_TABLE_NAME + "(" +
+            + ISSUES_TABLE_NAME + " (" +
             ISSUES_ID_COL + " integer primary key autoincrement, " +
             ISSUES_STATUS_COL + " text, " +
             ISSUES_SUMMARY_COL + " text, " +
@@ -65,7 +65,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ISSUES_FOLLOWED_COL + " int, " +
             ISSUES_GEOFENCE_CREATED_COL + " int, " +
             ISSUES_PLACE_ID_COL + " int, " +
-            ISSUES_REQUEST_TYPE_ID_COL + "int, "+
+            ISSUES_REQUEST_TYPE_ID_COL + " int, "+
             ISSUES_CREATED_AT_COL + " int, " +
             ISSUES_UPDATED_AT_COL + " int, " +
             ISSUES_GEOFENCE_RADIUS_COL + " int, " +
@@ -87,7 +87,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(DATABASE_CREATE);
         Log.i(TAG, "Created " + ISSUES_TABLE_NAME);
-        Log.d(TAG, "  " + DATABASE_CREATE);
+        Log.v(TAG, "  " + DATABASE_CREATE);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         if(oldVersion==1 && newVersion>=2){
             db.execSQL("ALTER TABLE "+ISSUES_TABLE_NAME+" ADD COLUMN "+ISSUES_GEOFENCE_RADIUS_COL+" int default 500;");
-            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v1 to v2");
+            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v1");
         } else if(oldVersion==2 && newVersion>=3) {
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_QUESTION_COL + " text;");
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER1_COL + " text;");
@@ -104,9 +104,10 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER4_COL + " text;");
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER5_COL + " text;");
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_ANSWER6_COL + " text;");
-            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v2 to v3");
+            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v2");
         } else if(oldVersion==3 && newVersion>=3){
             db.execSQL("ALTER TABLE " + ISSUES_TABLE_NAME + " ADD COLUMN " + ISSUES_REQUEST_TYPE_ID_COL + " int;");
+            Log.i(TAG, "Upgraded " + ISSUES_TABLE_NAME + " from v3");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + ISSUES_TABLE_NAME);
             onCreate(db);
