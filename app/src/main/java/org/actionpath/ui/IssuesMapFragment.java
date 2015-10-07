@@ -18,7 +18,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -52,7 +51,7 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
         args.putDouble(ARG_MY_LATITUDE, latitude);
         args.putDouble(ARG_MY_LONGITUDE, longitude);
         fragment.setArguments(args);
-        Log.d(TAG,"Created map fragment with type "+type);
+        Log.d(TAG,"Created map fragment with type "+type+" for ("+latitude+","+longitude+")");
         return fragment;
     }
 
@@ -94,7 +93,7 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
             myLatLng = new LatLng(myLatitude,myLongitude);
         }
         options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-                .camera(CameraPosition.fromLatLngZoom(myLatLng, 10));
+                .camera(CameraPosition.fromLatLngZoom(myLatLng, 13));
         SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
         mapFragment.getMapAsync(this);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -129,15 +128,11 @@ public class IssuesMapFragment extends Fragment implements OnMapReadyCallback, I
             markers.add(marker);
             cursor.moveToNext();
         }
-        // zoom to bounds
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
-        }
-        LatLngBounds bounds = builder.build();
-        int padding = 0; // offset from edges of the map in pixels
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-        map.moveCamera(cu);
+        // center the camera on my current location
+        CameraUpdate center=CameraUpdateFactory.newLatLng(new LatLng(myLatitude, myLongitude));
+        CameraUpdate zoom=CameraUpdateFactory.zoomTo(16);
+        map.moveCamera(center);
+        map.animateCamera(zoom);
     }
 
 }
