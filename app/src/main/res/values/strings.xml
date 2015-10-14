@@ -102,5 +102,5 @@
     <string name="response_photo_tumbnail">Your photo of this issue</string>
     <string name="response_submit">submit</string>
 
-
+    <string name="info_click_note">click for detail</string>
 </resources>
