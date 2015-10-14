@@ -12,4 +12,5 @@
     <dimen name="textview_title_padding">16dp</dimen>
     <dimen name="button_margin">16dp</dimen>
     <dimen name="radio_button_group_padding">16dp</dimen>
+    <dimen name="map_bubble_width">256dp</dimen>
 </resources>
