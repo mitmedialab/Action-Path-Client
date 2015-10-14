@@ -85,10 +85,10 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
             }
             worked = true;
         } catch (IOException ioe){
-            Log.e(TAG, "Server said it failed to sync: "+ioe.toString());
+            Log.e(TAG, "Server said it failed to sync IO: "+ioe.toString());
             worked = false;
         } catch (JSONException jse){
-            Log.e(TAG, "Server said it failed to sync: "+jse.toString());
+            Log.e(TAG, "Server said it failed to sync JSON: "+jse.toString());
             worked = false;
         }
         if(!worked){

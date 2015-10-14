@@ -48,17 +48,22 @@ public abstract class AbstractSyncableDataSource {
         for (int i = 0; i < totalColumn; i++) {
             if (cursor.getColumnName(i) != null) {
                 try {
-                    if (cursor.getString(i) != null) {
-                        rowObject.put(cursor.getColumnName(i), cursor.getString(i));
-                    } else {
-                        rowObject.put(cursor.getColumnName(i), "");
-                    }
+                    Object obj = getObjectForColumnValue(cursor.getColumnName(i),cursor.getString(i));
+                    rowObject.put(cursor.getColumnName(i), obj);
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
                 }
             }
         }
         return rowObject;
+    }
+
+    protected Object getObjectForColumnValue(String columnName,String value){
+        if (value != null) {
+            return value;
+        } else {
+            return "";
+        }
     }
 
 }

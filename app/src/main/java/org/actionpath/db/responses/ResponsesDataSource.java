@@ -5,15 +5,22 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.SyncableDbHelper;
+import org.actionpath.util.ImageUtil;
 import org.actionpath.util.Installation;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 
 /**
@@ -75,8 +82,8 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
     @Override
     public long countDataToSync(){
         return DatabaseUtils.queryNumEntries(db, ResponsesDbHelper.TABLE_NAME,
-                SyncableDbHelper.STATUS_COL + "=? OR "+SyncableDbHelper.STATUS_COL + "=?",
-                new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC +"",""+Response.STATUS_DID_NOT_SYNC});
+                SyncableDbHelper.STATUS_COL + "=? OR " + SyncableDbHelper.STATUS_COL + "=?",
+                new String[]{AbstractSyncableModel.STATUS_READY_TO_SYNC + "", "" + Response.STATUS_DID_NOT_SYNC});
     }
 
     @Override
@@ -114,7 +121,7 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
                 new String[]{id + ""});
     }
 
-    public void insert(Context context, int issueId, String answerText, Location loc){
+    public void insert(Context context, int issueId, String answerText, String commentText, String photoPath, Location loc){
         double latitude = 0;
         double longitude = 0;
         if(loc!=null) {
@@ -125,8 +132,21 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
         Response response = new Response(issueId, Installation.id(context), answerText,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
-                status,null,null);
+                status,commentText,photoPath);
         insert(response);
+    }
+
+    public void insert(Context context, int issueId, String answerText, Location loc){
+        insert(context,issueId,answerText,null,null,loc);
+    }
+
+    @Override
+    protected Object getObjectForColumnValue(String columnName,String value){
+        if(ResponsesDbHelper.PHOTO_PATH_COL.equals(columnName)){
+            return ImageUtil.encodeImageToBase64(value);
+        } else {
+            return super.getObjectForColumnValue(columnName,value);
+        }
     }
 
 }

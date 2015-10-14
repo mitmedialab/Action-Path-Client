@@ -11,6 +11,9 @@ public class Response extends AbstractSyncableModel {
     public String comment;
     public String photoPath;
 
+    public Response(){
+    }
+
     public Response(int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status, String comment, String photoPath) {
         this(INVALID_ID, issueId, installationId, answerText, timestamp, latitude, longitude, status,comment,photoPath);
     }
@@ -31,6 +34,8 @@ public class Response extends AbstractSyncableModel {
     public ContentValues getContentValues() {
         ContentValues values = super.getContentValues();
         values.put(ResponsesDbHelper.ANSWER_COL, answerText);
+        values.put(ResponsesDbHelper.COMMENT_COL, comment);
+        values.put(ResponsesDbHelper.PHOTO_PATH_COL, photoPath);
         return values;
     }
 

@@ -253,7 +253,11 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
      */
 
-    private void answerQuestion(View view, String answer){
+    private void answerQuestion(View view, String answer) {
+        answerQuestion(view,answer,null,null);
+    }
+
+    private void answerQuestion(View view, String answer,final String comment, final String photoPath){
         Log.i(TAG, "Answered '" + answer + "' on issue " + issue.getId());
         // update the UI
         changeFollowedAndUpdateUI(view, true, false);
@@ -266,7 +270,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             @Override
             protected Object doInBackground(Object[] params) {
                 ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
-                dataSource.insert(context, issue.getId(), answerText, loc);
+                dataSource.insert(context, issue.getId(), answerText, comment, photoPath, loc);
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION, answerText);
                 return true;
             }
@@ -313,7 +317,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     private void showDefaultQuestionUiFragment(){
-        Fragment fragment = IssueDefaultQuestionFragment.newInstance();
+        Fragment fragment = IssueDefaultQuestionFragment.newInstance(issue.getId());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
         fragmentTransaction.commit();
@@ -321,8 +325,18 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     @Override
     public void onAnswerSelected(String answerText) {
-        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING,answerText);
+        logMsg(issue.getId(), LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING, answerText);
         answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
+        if(fromSurveyNotification) {
+            // only remove the geofence if we got an alert and then answered a question
+            removeGeofence();
+        }
+    }
+
+    @Override
+    public void onAnswerSelected(String answerText,String commentText, String photoPath) {
+        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING,answerText+":"+commentText);
+        answerQuestion(findViewById(R.id.issue_detail_question_container), answerText, commentText, photoPath);
         if(fromSurveyNotification) {
             // only remove the geofence if we got an alert and then answered a question
             removeGeofence();

@@ -98,6 +98,9 @@
     <string name="assign_request_type_header">Get Your Assignment!</string>
     <string name="got_it">Got It!</string>
     <string name="issues_map_title">Issues Near Me</string>
+    <string name="response_add_photo">add a photo</string>
+    <string name="response_photo_tumbnail">Your photo of this issue</string>
+    <string name="response_submit">submit</string>
 
 
 </resources>
