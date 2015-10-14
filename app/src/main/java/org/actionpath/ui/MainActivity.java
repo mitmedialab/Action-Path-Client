@@ -221,8 +221,6 @@ public class MainActivity extends AbstractLocationActivity implements
                 // On first load check to see if we have a place selected if so load My Actions Page
                 displayPickPlaceFragment();
             } else if(Config.getInstance().isAssignRequestTypeMode()){
-                Place place = Config.getInstance().getPlace();
-                savePlace(place);
                 displayAssignRequestTypeFragment();
             }
         }
@@ -439,7 +437,9 @@ public class MainActivity extends AbstractLocationActivity implements
 
     @Override
     public void onRequestTypeAssigned(RequestType requestType){
-        Log.d(TAG,"user was assigned "+requestType);
+        Place place = Config.getInstance().getPlace();  // do this here so place and request type are guaranteed to be set together
+        savePlace(place);
+        Log.d(TAG, "user was assigned " + requestType);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         try {
