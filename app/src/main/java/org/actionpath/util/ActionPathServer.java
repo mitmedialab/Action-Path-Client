@@ -40,7 +40,6 @@ public class ActionPathServer {
     public static final String TAG = ActionPathServer.class.getName();
 
     public static final String BASE_URL = "https://api.dev.actionpath.org";
-    //public static final String BASE_URL = "http://action-path-server.rahulbot.c9.io"; // test server
 
     public static final String RESPONSE_STATUS = "status";
     public static final String RESPONSE_STATUS_OK = "ok";
