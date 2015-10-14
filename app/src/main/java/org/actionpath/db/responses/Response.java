@@ -8,12 +8,14 @@ import org.actionpath.db.AbstractSyncableModel;
 public class Response extends AbstractSyncableModel {
 
     public String answerText;
+    public String comment;
+    public String photoPath;
 
-    public Response(int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status) {
-        this(INVALID_ID, issueId, installationId, answerText, timestamp, latitude, longitude, status);
+    public Response(int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status, String comment, String photoPath) {
+        this(INVALID_ID, issueId, installationId, answerText, timestamp, latitude, longitude, status,comment,photoPath);
     }
 
-    public Response(int id, int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status) {
+    public Response(int id, int issueId, String installationId, String answerText, long timestamp, double latitude, double longitude, int status, String comment, String photoPath) {
         this.id = id;
         this.issueId = issueId;
         this.installationId = installationId;
@@ -22,6 +24,8 @@ public class Response extends AbstractSyncableModel {
         this.latitude = latitude;
         this.longitude = longitude;
         this.status = status;
+        this.comment = comment;
+        this.photoPath = photoPath;
     }
 
     public ContentValues getContentValues() {
@@ -39,8 +43,10 @@ public class Response extends AbstractSyncableModel {
         Double latitude = c.getDouble(c.getColumnIndex(ResponsesDbHelper.LATITUDE_COL));
         Double longitude = c.getDouble(c.getColumnIndex(ResponsesDbHelper.LONGITUDE_COL));
         int status = c.getInt(c.getColumnIndex(ResponsesDbHelper.STATUS_COL));
+        String comment = c.getString(c.getColumnIndex(ResponsesDbHelper.COMMENT_COL));
+        String photoPath = c.getString(c.getColumnIndex(ResponsesDbHelper.PHOTO_PATH_COL));
 
-        return new Response(id,issueId,installationId,answerText,timestamp,latitude,longitude,status);
+        return new Response(id,issueId,installationId,answerText,timestamp,latitude,longitude,status, comment, photoPath);
     }
 
     @Override

@@ -125,7 +125,7 @@ public class ResponsesDataSource extends AbstractSyncableDataSource {
         Response response = new Response(issueId, Installation.id(context), answerText,
                 System.currentTimeMillis()/1000,
                 latitude, longitude,
-                status);
+                status,null,null);
         insert(response);
     }
 

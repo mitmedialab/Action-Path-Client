@@ -15,18 +15,20 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
     private static String TAG = ResponsesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "responses.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // DB Table consts
     public static final String TABLE_NAME = "responses";
     public static final String ANSWER_COL = "answerText";
+    public static final String COMMENT_COL = "comment";
+    public static final String PHOTO_PATH_COL = "photoPath";
 
     public static String[] RESPONSES_COLUMNS;
 
     static {
         RESPONSES_COLUMNS = new String [] {
                 ID_COL,
-                ANSWER_COL, // these are unique to this table
+                ANSWER_COL, COMMENT_COL, PHOTO_PATH_COL, // these are unique to this table
                 INSTALLATION_ID_COL, ISSUE_ID_COL, TIMESTAMP_COL, LATITUDE_COL, LONGITUDE_COL, STATUS_COL
         };
     }
@@ -36,6 +38,8 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
             + TABLE_NAME + "(" +
             ID_COL + " integer primary key autoincrement, " +
             ANSWER_COL + " text, " +
+            COMMENT_COL + " text, " +
+            PHOTO_PATH_COL + " text, " +
             // and now the other SyncableDbHelper columns
             ISSUE_ID_COL + " integer, " +
             INSTALLATION_ID_COL + " text, " +
@@ -44,7 +48,6 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
             LONGITUDE_COL + " double, " +
             STATUS_COL + " int " +
             ");";
-
 
     public ResponsesDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -59,9 +62,14 @@ public class ResponsesDbHelper extends SQLiteOpenHelper implements SyncableDbHel
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        onCreate(db);
+        Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion + "");
+        if(oldVersion==4 && newVersion>=5) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + COMMENT_COL + " text;");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + PHOTO_PATH_COL + " text;");
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+            onCreate(db);
+        }
     }
 
 }
