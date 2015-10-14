@@ -105,7 +105,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ANSWER5_COL + " text;");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ANSWER6_COL + " text;");
             Log.i(TAG, "Upgraded " + TABLE_NAME + " from v2");
-        } else if(oldVersion==3 && newVersion>=3){
+        } else if(oldVersion==3 && newVersion>=4){
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + REQUEST_TYPE_ID_COL + " int;");
             Log.i(TAG, "Upgraded " + TABLE_NAME + " from v3");
         } else {
