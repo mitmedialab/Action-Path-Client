@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
@@ -191,31 +190,31 @@ public class Issue extends AbstractModel {
 
     public static Issue fromCursor(Cursor cursor){
         Issue i = new Issue();
-        i.id = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL));
-        i.status = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_STATUS_COL));
-        i.summary = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL));
-        i.description = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL));
-        i.latitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL));
-        i.longitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL));
-        i.address = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ADDRESS_COL));
-        i.imageUrl = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_IMAGE_URL_COL));
-        i.createdAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_CREATED_AT_COL)) * 1000);
-        i.updatedAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_UPDATED_AT_COL)) * 1000);
-        i.placeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_PLACE_ID_COL));
-        i.requestTypeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL));
-        i.radius = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL));
-        i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_FOLLOWED_COL))==1;
-        i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL))==1;
-        i.question = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_QUESTION_COL));
-        i.answer1 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER1_COL));
-        i.answer2 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER2_COL));
-        i.answer3 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER3_COL));
-        i.answer4 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER4_COL));
-        i.answer5 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER5_COL));
-        i.answer6 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ANSWER6_COL));
+        i.id = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ID_COL));
+        i.status = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.STATUS_COL));
+        i.summary = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.SUMMARY_COL));
+        i.description = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.DESCRIPTION_COL));
+        i.latitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LATITUDE_COL));
+        i.longitude = cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LONGITUDE_COL));
+        i.address = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ADDRESS_COL));
+        i.imageUrl = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.IMAGE_URL_COL));
+        i.createdAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.CREATED_AT_COL)) * 1000);
+        i.updatedAt = new Date(cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.UPDATED_AT_COL)) * 1000);
+        i.placeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.PLACE_ID_COL));
+        i.requestTypeId = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.REQUEST_TYPE_ID_COL));
+        i.radius = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.GEOFENCE_RADIUS_COL));
+        i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.FOLLOWED_COL))==1;
+        i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.GEOFENCE_CREATED_COL))==1;
+        i.question = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.QUESTION_COL));
+        i.answer1 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER1_COL));
+        i.answer2 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER2_COL));
+        i.answer3 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER3_COL));
+        i.answer4 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER4_COL));
+        i.answer5 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER5_COL));
+        i.answer6 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER6_COL));
         Log.v(TAG, "Parsed cursor issue at loc (" +
-                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)) + "," +
-                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)) + ")");
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LATITUDE_COL)) + "," +
+                cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LONGITUDE_COL)) + ")");
         Log.v(TAG, "  as (" +
                 i.latitude + "," +
                 i.longitude + ") / radius = "+i.getRadius());
@@ -261,31 +260,31 @@ public class Issue extends AbstractModel {
 
     public ContentValues getContentValues(boolean justServerFields){
         ContentValues cv = new ContentValues();
-        cv.put(IssuesDbHelper.ISSUES_ID_COL,id);
-        cv.put(IssuesDbHelper.ISSUES_STATUS_COL,status);
-        cv.put(IssuesDbHelper.ISSUES_SUMMARY_COL,summary);
-        cv.put(IssuesDbHelper.ISSUES_DESCRIPTION_COL,description);
-        cv.put(IssuesDbHelper.ISSUES_LATITUDE_COL,latitude);
-        cv.put(IssuesDbHelper.ISSUES_LONGITUDE_COL,longitude);
-        cv.put(IssuesDbHelper.ISSUES_ADDRESS_COL,address);
-        cv.put(IssuesDbHelper.ISSUES_IMAGE_URL_COL,imageUrl);
+        cv.put(IssuesDbHelper.ID_COL,id);
+        cv.put(IssuesDbHelper.STATUS_COL,status);
+        cv.put(IssuesDbHelper.SUMMARY_COL,summary);
+        cv.put(IssuesDbHelper.DESCRIPTION_COL,description);
+        cv.put(IssuesDbHelper.LATITUDE_COL,latitude);
+        cv.put(IssuesDbHelper.LONGITUDE_COL,longitude);
+        cv.put(IssuesDbHelper.ADDRESS_COL,address);
+        cv.put(IssuesDbHelper.IMAGE_URL_COL,imageUrl);
         long createdAtSecs = (createdAt!=null) ? createdAt.getTime()/1000 : 0;
-        cv.put(IssuesDbHelper.ISSUES_CREATED_AT_COL,createdAtSecs);
+        cv.put(IssuesDbHelper.CREATED_AT_COL,createdAtSecs);
         long updatedAtSecs = (updatedAt !=null) ? updatedAt.getTime()/1000 : 0;
-        cv.put(IssuesDbHelper.ISSUES_UPDATED_AT_COL,updatedAtSecs);
-        cv.put(IssuesDbHelper.ISSUES_GEOFENCE_RADIUS_COL, radius);
-        cv.put(IssuesDbHelper.ISSUES_PLACE_ID_COL,placeId);
-        cv.put(IssuesDbHelper.ISSUES_QUESTION_COL, question);
-        cv.put(IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL, requestTypeId);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER1_COL, answer1);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER2_COL, answer2);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER3_COL, answer3);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER4_COL, answer4);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER5_COL, answer5);
-        cv.put(IssuesDbHelper.ISSUES_ANSWER6_COL, answer6);
+        cv.put(IssuesDbHelper.UPDATED_AT_COL,updatedAtSecs);
+        cv.put(IssuesDbHelper.GEOFENCE_RADIUS_COL, radius);
+        cv.put(IssuesDbHelper.PLACE_ID_COL,placeId);
+        cv.put(IssuesDbHelper.QUESTION_COL, question);
+        cv.put(IssuesDbHelper.REQUEST_TYPE_ID_COL, requestTypeId);
+        cv.put(IssuesDbHelper.ANSWER1_COL, answer1);
+        cv.put(IssuesDbHelper.ANSWER2_COL, answer2);
+        cv.put(IssuesDbHelper.ANSWER3_COL, answer3);
+        cv.put(IssuesDbHelper.ANSWER4_COL, answer4);
+        cv.put(IssuesDbHelper.ANSWER5_COL, answer5);
+        cv.put(IssuesDbHelper.ANSWER6_COL, answer6);
         if(!justServerFields) {
-            cv.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, followed ? 1 : 0);
-            cv.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
+            cv.put(IssuesDbHelper.FOLLOWED_COL, followed ? 1 : 0);
+            cv.put(IssuesDbHelper.GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
         }
         return cv;
     }

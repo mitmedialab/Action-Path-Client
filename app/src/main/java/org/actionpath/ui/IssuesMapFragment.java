@@ -123,11 +123,11 @@ public class IssuesMapFragment extends Fragment implements
         Cursor cursor = IssuesDataSource.getInstance().getIssuesListCursor(type,placeId,requestTypeId);
         while (cursor.isAfterLast() == false) {
             Issue i = new Issue(
-                    cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ISSUES_ID_COL)),
-                    cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_SUMMARY_COL)),
-                    cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ISSUES_DESCRIPTION_COL)));
-            i.setLatitude(cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LATITUDE_COL)));
-            i.setLongitude(cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.ISSUES_LONGITUDE_COL)));
+                    cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.ID_COL)),
+                    cursor.getString(cursor.getColumnIndex(IssuesDbHelper.SUMMARY_COL)),
+                    cursor.getString(cursor.getColumnIndex(IssuesDbHelper.DESCRIPTION_COL)));
+            i.setLatitude(cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LATITUDE_COL)));
+            i.setLongitude(cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LONGITUDE_COL)));
             LatLng issueLatLng = new LatLng(i.getLatitude(), i.getLongitude());
             Marker marker = map.addMarker(new MarkerOptions()
                     .position(issueLatLng)

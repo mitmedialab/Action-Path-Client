@@ -71,8 +71,8 @@ public class IssuesListFragment extends ListFragment implements IssueListArgsRec
     }
 
     private SimpleCursorAdapter getDataAdapter(Context context){
-        String[] fromColumns = new String[] { IssuesDbHelper.ISSUES_SUMMARY_COL,
-                IssuesDbHelper.ISSUES_DESCRIPTION_COL };
+        String[] fromColumns = new String[] { IssuesDbHelper.SUMMARY_COL,
+                IssuesDbHelper.DESCRIPTION_COL};
         int[] toTextViews = new int[] {R.id.issue_summary, R.id.issue_description };
         SimpleCursorAdapter adapter;
         Cursor cursor = IssuesDataSource.getInstance().getIssuesListCursor(type, placeId, requestTypeId);

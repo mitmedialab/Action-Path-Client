@@ -68,21 +68,21 @@ public class IssuesDataSource {
     }*/
 
     public long getIssueCount(int placeId) {
-        return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.ISSUES_TABLE_NAME,
-                IssuesDbHelper.ISSUES_PLACE_ID_COL +"=?", new String[] {placeId+""});
+        return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.TABLE_NAME,
+                IssuesDbHelper.PLACE_ID_COL +"=?", new String[] {placeId+""});
     }
 
     public long countFollowedIssues(int placeId){
-        return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.ISSUES_TABLE_NAME,
-                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?", new String[] {"1",placeId+""});
+        return DatabaseUtils.queryNumEntries(db, IssuesDbHelper.TABLE_NAME,
+                IssuesDbHelper.FOLLOWED_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=?", new String[] {"1",placeId+""});
     }
 
     public Cursor getFollowedIssuesCursor(int placeId){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL, IssuesDbHelper.DESCRIPTION_COL},
+                IssuesDbHelper.FOLLOWED_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=?",
                 new String[] {"1",placeId+""}, null, null,
-                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -90,11 +90,11 @@ public class IssuesDataSource {
     }
 
     public Cursor getFollowedIssuesCursor(int placeId, int requestTypeId){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_FOLLOWED_COL +"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL+"=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL, IssuesDbHelper.DESCRIPTION_COL},
+                IssuesDbHelper.FOLLOWED_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=? AND "+IssuesDbHelper.REQUEST_TYPE_ID_COL +"=?",
                 new String[] {"1",placeId+"",requestTypeId+""}, null, null,
-                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -107,11 +107,11 @@ public class IssuesDataSource {
      * @return
      */
     public Cursor getAllIssuesCursor(int placeId){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL, IssuesDbHelper.ISSUES_DESCRIPTION_COL},
-                IssuesDbHelper.ISSUES_PLACE_ID_COL+"=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL, IssuesDbHelper.DESCRIPTION_COL},
+                IssuesDbHelper.PLACE_ID_COL +"=?",
                 new String[] {placeId+""}, null, null,
-                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         }
@@ -124,12 +124,12 @@ public class IssuesDataSource {
      * @return
      */
     public Cursor getAllIssuesCursor(int placeId, int requestTypeId){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_SUMMARY_COL,
-                        IssuesDbHelper.ISSUES_DESCRIPTION_COL, IssuesDbHelper.ISSUES_LATITUDE_COL, IssuesDbHelper.ISSUES_LONGITUDE_COL},
-                IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_REQUEST_TYPE_ID_COL+"=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL,
+                        IssuesDbHelper.DESCRIPTION_COL, IssuesDbHelper.LATITUDE_COL, IssuesDbHelper.LONGITUDE_COL},
+                IssuesDbHelper.PLACE_ID_COL +"=? AND "+IssuesDbHelper.REQUEST_TYPE_ID_COL +"=?",
                 new String[] {placeId+"",requestTypeId+""}, null, null,
-                IssuesDbHelper.ISSUES_UPDATED_AT_COL+" DESC");
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
         if (cursor != null) {
             cursor.moveToFirst();
         } else {
@@ -142,9 +142,9 @@ public class IssuesDataSource {
      * Get a list of issues in this place that we should add geofences for
      */
     public Cursor getIssuesToGeofenceCursor(int placeId){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL, IssuesDbHelper.ISSUES_LATITUDE_COL, IssuesDbHelper.ISSUES_LONGITUDE_COL},
-                IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL+"=? AND "+IssuesDbHelper.ISSUES_PLACE_ID_COL+"=? AND "+IssuesDbHelper.ISSUES_STATUS_COL+"!=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.LATITUDE_COL, IssuesDbHelper.LONGITUDE_COL},
+                IssuesDbHelper.GEOFENCE_CREATED_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=? AND "+IssuesDbHelper.STATUS_COL +"!=?",
                 new String[] {"0",placeId+"",Issue.STATUS_CLOSED}, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -157,9 +157,9 @@ public class IssuesDataSource {
      * @return cursor
      */
     public Cursor getIssuesWithGeofences(){
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME,
-                new String[] {IssuesDbHelper.ISSUES_ID_COL},
-                IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL+"=?",
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL},
+                IssuesDbHelper.GEOFENCE_CREATED_COL +"=?",
                 new String[] {"1"}, null, null, null);
         if (cursor != null) {
             cursor.moveToFirst();
@@ -169,21 +169,21 @@ public class IssuesDataSource {
 
     public void updateIssueFollowed(int issueId, boolean isFollowed) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(IssuesDbHelper.ISSUES_FOLLOWED_COL, (isFollowed ? 1 : 0));
-        db.update(IssuesDbHelper.ISSUES_TABLE_NAME,
-                contentValues, IssuesDbHelper.ISSUES_ID_COL + "=" + issueId, null);
+        contentValues.put(IssuesDbHelper.FOLLOWED_COL, (isFollowed ? 1 : 0));
+        db.update(IssuesDbHelper.TABLE_NAME,
+                contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
     }
 
     public void updateIssueGeofenceCreated(int issueId, boolean isGeofenceCreated) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(IssuesDbHelper.ISSUES_GEOFENCE_CREATED_COL, (isGeofenceCreated ? 1 : 0));
-        db.update(IssuesDbHelper.ISSUES_TABLE_NAME,
-                contentValues,IssuesDbHelper.ISSUES_ID_COL+"="+issueId,null);
+        contentValues.put(IssuesDbHelper.GEOFENCE_CREATED_COL, (isGeofenceCreated ? 1 : 0));
+        db.update(IssuesDbHelper.TABLE_NAME,
+                contentValues,IssuesDbHelper.ID_COL +"="+issueId,null);
     }
 
     public Issue getIssue(int id) {
-        Cursor cursor = db.query(IssuesDbHelper.ISSUES_TABLE_NAME, IssuesDbHelper.ISSUES_COLUMN_NAMES,
-                IssuesDbHelper.ISSUES_ID_COL + "=" + id, null, null, null, null);
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME, IssuesDbHelper.ISSUES_COLUMN_NAMES,
+                IssuesDbHelper.ID_COL + "=" + id, null, null, null, null);
         Issue issue;
         try {
             cursor.moveToFirst();
@@ -204,13 +204,13 @@ public class IssuesDataSource {
 
     public void insertIssue(Issue i){
         Log.v(TAG, "Inserting " + i.toString());
-        db.insert(IssuesDbHelper.ISSUES_TABLE_NAME, null, i.getContentValues(false));
+        db.insert(IssuesDbHelper.TABLE_NAME, null, i.getContentValues(false));
     }
 
     public void updateIssue(Issue i, boolean justServerFields){
         Log.v(TAG, "Updating " + i.toString());
-        db.update(IssuesDbHelper.ISSUES_TABLE_NAME, i.getContentValues(justServerFields),
-                IssuesDbHelper.ISSUES_ID_COL + "=?", new String[]{i.getId() + ""});
+        db.update(IssuesDbHelper.TABLE_NAME, i.getContentValues(justServerFields),
+                IssuesDbHelper.ID_COL + "=?", new String[]{i.getId() + ""});
     }
 
     public void insertOrUpdateIssue(Issue i, boolean justServerFields){
