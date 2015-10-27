@@ -103,4 +103,6 @@
     <string name="response_submit">submit</string>
 
     <string name="info_click_note">click for detail</string>
+
+    <string name="issue_updated">You updated the issue! You are following this issue.</string>
 </resources>

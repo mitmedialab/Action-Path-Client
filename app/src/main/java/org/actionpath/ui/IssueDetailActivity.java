@@ -48,6 +48,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
     public static final String PARAM_FROM_UPDATE_NOTIFICATION = "fromUpdateNotification";
 
+    private static final int LONG_SNACKBAR_DURATION = 5500;
+
     public String TAG = this.getClass().getName();
 
     private Issue issue;
@@ -191,7 +193,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         changeFollowedAndUpdateUI(view, !issue.isFollowed(), true);
     }
 
-    private void changeFollowedAndUpdateUI(View view,boolean follow,boolean showSnackbar){
+    private void changeFollowedAndUpdateUI(View view, boolean follow, boolean showSnackbar) {
         Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
         // update the issue first
         issue.setFollowed(follow);
@@ -280,7 +282,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                 Log.d(TAG,"saved answer to db "+success);
                 if(success) {
                     // show some snackbar feedback
-                    int feedbackStringId = R.string.issue_question_answered;
+                    int feedbackStringId = R.string.issue_updated;
                     Snackbar.make(v, feedbackStringId, Snackbar.LENGTH_LONG)
                             .setAction(R.string.action_unfollow, new View.OnClickListener() {
                                 @Override
@@ -288,6 +290,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
                                     changeFollowedAndUpdateUI(v, false, true);
                                 }
                             })
+                            .setDuration(LONG_SNACKBAR_DURATION)
                             .show();
                 } else {
                     // something in the server comms failed
