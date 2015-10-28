@@ -39,6 +39,8 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
     public static final String PARAM_FROM_UPDATE_NOTIFICATION = "fromUpdateNotification";
 
+    private static final int LONG_SNACKBAR_DURATION = 5500;
+
     public String TAG = this.getClass().getName();
 
     private Menu toolbarMenu;
@@ -195,7 +197,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         changeFollowedAndUpdateUI(view, !issue.isFollowed(), true);
     }
 
-    private void changeFollowedAndUpdateUI(View view,boolean follow,boolean showSnackbar){
+    private void changeFollowedAndUpdateUI(View view, boolean follow, boolean showSnackbar) {
         Log.i(TAG, "Setting followed on " + issue.getId() + " to " + !issue.isFollowed());
         // update the issue first
         issue.setFollowed(follow);
