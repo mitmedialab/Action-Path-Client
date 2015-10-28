@@ -152,7 +152,7 @@ public class IssuesMapFragment extends Fragment implements
                 TextView summary = (TextView) v.findViewById(R.id.info_issue_summary);
                 summary.setText(i.getSummary());
                 TextView description = (TextView) v.findViewById(R.id.info_issue_description);
-                description.setText(i.getDescription().substring(0,100));
+                description.setText(i.getShortenedDescription(100));
                 return v;
             }
         });

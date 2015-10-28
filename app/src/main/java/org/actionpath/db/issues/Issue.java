@@ -97,6 +97,13 @@ public class Issue extends AbstractModel {
         return this.description;
     }
 
+    public String getShortenedDescription(int maxLength){
+        if(description.length()>maxLength){
+            return description.substring(0,maxLength)+"...";
+        }
+        return description;
+    }
+
     public String getAddress(){ return this.address; }
 
     public double getLatitude(){
