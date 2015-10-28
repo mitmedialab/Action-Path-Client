@@ -48,10 +48,13 @@ public abstract class AbstractSyncableDataSource {
         for (int i = 0; i < totalColumn; i++) {
             if (cursor.getColumnName(i) != null) {
                 try {
-                    Object obj = getObjectForColumnValue(cursor.getColumnName(i),cursor.getString(i));
+                    Object obj = "";
+                    if(!cursor.isNull(i)){
+                        obj = getObjectForColumnValue(cursor.getColumnName(i),cursor.getString(i));
+                    }
                     rowObject.put(cursor.getColumnName(i), obj);
                 } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, "Unable to read JSON Object in col "+cursor.getColumnName(i)+" - "+e.toString());
                 }
             }
         }

@@ -13,7 +13,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     private static String TAG = IssuesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "issues.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // DB Table consts
     public static final String TABLE_NAME = "issues";
@@ -39,6 +39,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public static final String ANSWER4_COL = "answer4";
     public static final String ANSWER5_COL = "answer5";
     public static final String ANSWER6_COL = "answer6";
+    public static final String NEW_INFO_COL = "new_info";
+    public static final String RESPONSE_COUNT_COL = "response_count";
 
     public static String[] ISSUES_COLUMN_NAMES;
 
@@ -48,6 +50,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
                     ADDRESS_COL, LATITUDE_COL, LONGITUDE_COL, IMAGE_URL_COL,
                     FOLLOWED_COL, GEOFENCE_CREATED_COL, PLACE_ID_COL, REQUEST_TYPE_ID_COL,
                     CREATED_AT_COL, UPDATED_AT_COL, GEOFENCE_RADIUS_COL,
+                    NEW_INFO_COL, RESPONSE_COUNT_COL,
                     QUESTION_COL, ANSWER1_COL, ANSWER2_COL, ANSWER3_COL, ANSWER4_COL, ANSWER5_COL, ANSWER6_COL};
     }
 
@@ -69,6 +72,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             CREATED_AT_COL + " int, " +
             UPDATED_AT_COL + " int, " +
             GEOFENCE_RADIUS_COL + " int, " +
+            NEW_INFO_COL+" int DEFAULT 0, " +
+            RESPONSE_COUNT_COL+ " int DEFAULT 0, " +
             QUESTION_COL + " string," +
             ANSWER1_COL + " string," +
             ANSWER2_COL + " string," +
@@ -95,7 +100,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         if(oldVersion==1 && newVersion>=2){
             db.execSQL("ALTER TABLE "+ TABLE_NAME +" ADD COLUMN "+ GEOFENCE_RADIUS_COL +" int default 500;");
-            Log.i(TAG, "Upgraded " + TABLE_NAME + " from v1");
+            Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v1");
         } else if(oldVersion==2 && newVersion>=3) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + QUESTION_COL + " text;");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ANSWER1_COL + " text;");
@@ -105,9 +110,13 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ANSWER5_COL + " text;");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + ANSWER6_COL + " text;");
             Log.i(TAG, "Upgraded " + TABLE_NAME + " from v2");
-        } else if(oldVersion==3 && newVersion>=4){
+        } else if(oldVersion==3 && newVersion>=4) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + REQUEST_TYPE_ID_COL + " int;");
-            Log.i(TAG, "Upgraded " + TABLE_NAME + " from v3");
+            Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v3");
+        } else if(oldVersion==4 && newVersion>=5) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + NEW_INFO_COL + " int DEFAULT 0;");
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + RESPONSE_COUNT_COL + " int DEFAULT 0;");
+            Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v4");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);

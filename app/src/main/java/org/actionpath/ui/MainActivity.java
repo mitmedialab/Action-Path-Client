@@ -368,8 +368,8 @@ public class MainActivity extends AbstractLocationActivity implements
         Log.d(TAG,"status change alert on issue "+issueId+": "+oldStatus+" -> "+newStatus);
         // Fire a low priority notification
         sendNotification(ISSUE_CHANGE_NOTIFICATION_TAG, issueId, newStatus);
-
-        // TODO: Mark issue as having something "new" on fav list (a UI indication)
+        // Mark issue as having something "new" on fav list (to drive a UI indication)
+        IssuesDataSource.getInstance(this).updateIssueNewInfo(issueId,true);
     }
 
     /**

@@ -134,7 +134,7 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
         switch (item.getItemId()) {
             case R.id.issue_take_action_save:
                 String photoFilePath = (photoFile==null) ? null : photoFile.getAbsolutePath();
-                answerQuestion(answerFragment.getAnswerText(),commentTextView.getText().toString(),
+                answerQuestion(answerFragment.getAnswerText(), commentTextView.getText().toString(),
                         photoFilePath);
                 return true;
         }
@@ -239,10 +239,13 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
             @Override
             protected void onPostExecute(Object o) {
                 boolean success = (boolean) o;
-                Log.d(TAG,"saved answer to db "+success);
+                Log.d(TAG, "saved answer to db " + success);
                 // automatically follow it
                 issue.setFollowed(true);
                 IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
+                // and mark that you've responded
+                issue.incrementResponseCount();
+                IssuesDataSource.getInstance().updateIssueResponseCount(issue.getId(), issue.getResponseCount());
                 // remove geofence if it from the survey
                 if(fromSurveyNotification) {
                     // only remove the geofence if we got an alert and then answered a question

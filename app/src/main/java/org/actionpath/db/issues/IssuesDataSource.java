@@ -174,6 +174,20 @@ public class IssuesDataSource {
                 contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
     }
 
+    public void updateIssueNewInfo(int issueId, boolean hasNewInfo) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(IssuesDbHelper.NEW_INFO_COL, (hasNewInfo ? 1 : 0));
+        db.update(IssuesDbHelper.TABLE_NAME,
+                contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
+    }
+
+    public void updateIssueResponseCount(int issueId, int responseCount) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(IssuesDbHelper.RESPONSE_COUNT_COL, responseCount);
+        db.update(IssuesDbHelper.TABLE_NAME,
+                contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
+    }
+
     public void updateIssueGeofenceCreated(int issueId, boolean isGeofenceCreated) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(IssuesDbHelper.GEOFENCE_CREATED_COL, (isGeofenceCreated ? 1 : 0));

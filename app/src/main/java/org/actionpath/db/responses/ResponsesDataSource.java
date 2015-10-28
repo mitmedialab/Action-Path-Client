@@ -5,22 +5,15 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 
-import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
+import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.SyncableDbHelper;
 import org.actionpath.util.ImageUtil;
 import org.actionpath.util.Installation;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 
 /**

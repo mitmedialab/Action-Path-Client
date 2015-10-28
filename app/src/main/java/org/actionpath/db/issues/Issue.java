@@ -40,6 +40,8 @@ public class Issue extends AbstractModel {
     Date updatedAt;
     int placeId;
     int requestTypeId;
+    int newInfo = 0;
+    int responseCount = 0;
     String question;
     String answer1;
     String answer2;
@@ -205,6 +207,8 @@ public class Issue extends AbstractModel {
         i.radius = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.GEOFENCE_RADIUS_COL));
         i.followed = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.FOLLOWED_COL))==1;
         i.geofenceCreated = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.GEOFENCE_CREATED_COL))==1;
+        i.newInfo = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.NEW_INFO_COL));
+        i.responseCount = cursor.getInt(cursor.getColumnIndex(IssuesDbHelper.RESPONSE_COUNT_COL));
         i.question = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.QUESTION_COL));
         i.answer1 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER1_COL));
         i.answer2 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER2_COL));
@@ -285,6 +289,8 @@ public class Issue extends AbstractModel {
         if(!justServerFields) {
             cv.put(IssuesDbHelper.FOLLOWED_COL, followed ? 1 : 0);
             cv.put(IssuesDbHelper.GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
+            cv.put(IssuesDbHelper.NEW_INFO_COL, newInfo);
+            cv.put(IssuesDbHelper.RESPONSE_COUNT_COL, responseCount);
         }
         return cv;
     }
@@ -314,5 +320,11 @@ public class Issue extends AbstractModel {
     public void setRequestTypeId(int requestTypeId) {
         this.requestTypeId = requestTypeId;
     }
+
+    public boolean hasNewInfo() { return newInfo==1; }
+
+    public int getResponseCount() { return responseCount; }
+
+    public void incrementResponseCount() { responseCount++; }
 
 }

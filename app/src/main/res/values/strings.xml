@@ -108,9 +108,15 @@
     <string name="issue_take_action">Take Action</string>
     <string name="issue_comments">Comments</string>
     <string name="issue_take_photo">Photo</string>
-    <string name="issue_take_action_cancel_prompt">\"Discard your comments?\"</string>
+    <string name="issue_take_action_cancel_prompt">Discard your comments?</string>
     <string name="discard">discard</string>
 
     <string name="issue_updated">You updated the issue! You are following this issue.</string>
+
+    <plurals name="response_count">
+        <item quantity="zero">You haven\'t taken action yet</item>
+        <item quantity="one">You\'ve taken %d action</item>
+        <item quantity="other">You\'ve taken %d actions</item>
+    </plurals>
 
 </resources>

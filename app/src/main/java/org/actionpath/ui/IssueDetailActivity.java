@@ -179,6 +179,18 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         updateFollowedButtons(issue.isFollowed());
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        issue = IssuesDataSource.getInstance(this).getIssue(issue.getId());
+        Log.v(TAG,"Issue has "+issue.getResponseCount()+" responses");
+        Log.v(TAG, "Updating response count feedack to " + issue.getResponseCount());
+        String responseCountFeedback = getResources().getQuantityString(R.plurals.response_count,
+                issue.getResponseCount(),issue.getResponseCount(),issue.getResponseCount());
+        TextView responseCountTextView = (TextView) findViewById(R.id.issue_detail_response_count);
+        responseCountTextView.setText(responseCountFeedback);
+    }
+
     /**
      * change behaviour when toolbar is collapsed
      * @param appBarLayout
