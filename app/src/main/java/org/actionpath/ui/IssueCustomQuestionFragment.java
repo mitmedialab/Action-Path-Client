@@ -1,34 +1,30 @@
 package org.actionpath.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.EditText;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
 
 import org.actionpath.R;
 
 import java.util.ArrayList;
 
 /**
- * Activities containing this fragment MUST implement the {@link OnAnswerSelectedListener}
- * interface.
+ * All the issue to have a custom list of answers (from the server config)
  */
-public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment implements View.OnClickListener {
+public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment {
 
     private static String TAG = IssueCustomQuestionFragment.class.getName();
-
-    private OnAnswerSelectedListener listener;
 
     private static final String ARG_QUESTION = "ARG_QUESTION";
     private static final String ARG_ANSWERS = "ARG_ANSWERS";
@@ -79,7 +75,6 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
         radioGroup = (RadioGroup) fragmentView.findViewById(R.id.issue_custom_answer_group);
         for(Object answer: answers){
             RadioButton button = new RadioButton(this.getActivity());
-            button.setOnClickListener(this);
 
             // Create other edit text box
             if (answer.toString().equals(OTHER)) {
@@ -93,7 +88,6 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
                     @Override
                     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                         if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            listener.onAnswerSelected(edit.getText().toString());
                             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(edit.getWindowToken(), 0);
                             return true;
@@ -141,30 +135,15 @@ public class IssueCustomQuestionFragment extends AbstractIssueQuestionFragment i
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            listener = (OnAnswerSelectedListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnAnswerSelectedListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        listener = null;
-    }
-
-    @Override
-    public void onClick(View v) {
+    public String getAnswerText(){
+        String answerText = "";
+        // save the answer text
         int selectedId = radioGroup.getCheckedRadioButtonId();
         RadioButton selectedRadioButton = (RadioButton) fragmentView.findViewById(selectedId);
-
-        // Only grab answer text if answer is not other
         if (!selectedRadioButton.getText().toString().equals("")) {
-            listener.onAnswerSelected( selectedRadioButton.getText().toString() );
+            answerText = selectedRadioButton.getText().toString();
         }
+        return answerText;
     }
 
 }

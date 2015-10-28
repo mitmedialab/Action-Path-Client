@@ -1,24 +1,22 @@
 package org.actionpath.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,20 +27,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.R;
-import org.actionpath.geofencing.GeofencingRemovalListener;
-import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
-import org.actionpath.db.responses.ResponsesDataSource;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
-        OnMapReadyCallback, AbstractIssueQuestionFragment.OnAnswerSelectedListener,
-        GeofencingRemovalListener {
+        OnMapReadyCallback, AppBarLayout.OnOffsetChangedListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
     public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
@@ -50,12 +41,12 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     public String TAG = this.getClass().getName();
 
+    private Menu toolbarMenu;
+    private CollapsingToolbarLayout collapsingToolbar;
     private Issue issue;
     private ImageLoader imageLoader;
     private boolean fromSurveyNotification;
     private boolean fromUpdateNotification;
-
-    private AsyncTask answeringQuestionTask;
 
     private View.OnClickListener onFollowClickListener;
 
@@ -96,9 +87,11 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             }
         });
 
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbar.setTitle(issue.getSummary());
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
+        appBarLayout.addOnOffsetChangedListener(this);
 
         TextView summary = (TextView) findViewById(R.id.issue_detail_summary);
         summary.setText(issue.getSummary());
@@ -145,18 +138,15 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
             viewOnlineButton.setVisibility(View.VISIBLE);
         }
 
-        if(issue.hasCustomQuestion()) {
-            showCustomQuestionUiFragment();
-        } else {
-            showDefaultQuestionUiFragment();
-        }
-
-        onFollowClickListener = new View.OnClickListener() {
-            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
-        };
-
         followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
-        followFloatingButton.setOnClickListener(onFollowClickListener);
+        followFloatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
+        });
+
+        Button takeActionButton = (Button) findViewById(R.id.issue_detail_take_action_button);
+        takeActionButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view) { showTakeActionFragment(); }
+        });
 
         // create and add the map
         LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLongitude());
@@ -185,6 +175,20 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     public void onStart(){
         super.onStart();
         updateFollowedButtons(issue.isFollowed());
+    }
+
+    /**
+     * change behaviour when toolbar is collapsed
+     * @param appBarLayout
+     * @param offset
+     */
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
+        if (offset == 0) {// Collapsed
+
+        } else { // Not collapsed
+
+        }
     }
 
     private void changeFollowedAndUpdateUI(View view) {
@@ -230,13 +234,15 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         //followToolbarMenuItem.setTitle(stringId);
     }
 
-/*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /*
         getMenuInflater().inflate(R.menu.menu_issue_detail, menu);
         toolbarMenu = menu;
-        followToolbarMenuItem = (MenuItem) toolbarMenu.findItem(R.id.issue_detail_action_follow);
         return true;
+        */
+        return false;
     }
 
     @Override
@@ -251,52 +257,6 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         }
         return super.onOptionsItemSelected(item);
     }
-     */
-
-    private void answerQuestion(View view, String answer) {
-        answerQuestion(view,answer,null,null);
-    }
-
-    private void answerQuestion(View view, String answer,final String comment, final String photoPath){
-        Log.i(TAG, "Answered '" + answer + "' on issue " + issue.getId());
-        // update the UI
-        changeFollowedAndUpdateUI(view, true, false);
-        final View v = view;
-        final String answerText = answer;
-        final Context context = getApplicationContext();
-        final Location loc = updateLastLocation();  // gotta call that instead of getLocation to avoid exception
-        // save the answer
-        answeringQuestionTask = new AsyncTask<Object, Void, Object>() {
-            @Override
-            protected Object doInBackground(Object[] params) {
-                ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
-                dataSource.insert(context, issue.getId(), answerText, comment, photoPath, loc);
-                logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION, answerText);
-                return true;
-            }
-            @Override
-            protected void onPostExecute(Object o) {
-                boolean success = (boolean) o;
-                Log.d(TAG,"saved answer to db "+success);
-                if(success) {
-                    // show some snackbar feedback
-                    int feedbackStringId = R.string.issue_question_answered;
-                    Snackbar.make(v, feedbackStringId, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.action_unfollow, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    changeFollowedAndUpdateUI(v, false, true);
-                                }
-                            })
-                            .show();
-                } else {
-                    // something in the server comms failed
-                    Snackbar.make(v, R.string.failed_to_save_answer, Snackbar.LENGTH_LONG).show();
-                }
-            }
-        };
-        answeringQuestionTask.execute();
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -309,68 +269,13 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
 
     }
 
-    private void showCustomQuestionUiFragment(){
-        Fragment fragment = IssueCustomQuestionFragment.newInstance(issue.getQuestion(),issue.getAnswers());
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
-        fragmentTransaction.commit();
-    }
-
-    private void showDefaultQuestionUiFragment(){
-        Fragment fragment = IssueDefaultQuestionFragment.newInstance(issue.getId());
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.issue_detail_question_container, fragment);
-        fragmentTransaction.commit();
-    }
-
-    @Override
-    public void onAnswerSelected(String answerText) {
-        logMsg(issue.getId(), LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING, answerText);
-        answerQuestion(findViewById(R.id.issue_detail_question_container), answerText);
-        if(fromSurveyNotification) {
-            // only remove the geofence if we got an alert and then answered a question
-            removeGeofence();
-        }
-    }
-
-    @Override
-    public void onAnswerSelected(String answerText,String commentText, String photoPath) {
-        logMsg(issue.getId(),LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING,answerText+":"+commentText);
-        answerQuestion(findViewById(R.id.issue_detail_question_container), answerText, commentText, photoPath);
-        if(fromSurveyNotification) {
-            // only remove the geofence if we got an alert and then answered a question
-            removeGeofence();
-        }
-    }
-
-    private void removeGeofence(){
-        List<String> issuesToRemove = new ArrayList();
-        issuesToRemove.add(issue.getId() + "");
-        GeofencingRemover remover = new GeofencingRemover(getApplicationContext(),
-            issuesToRemove,this);
-        remover.sendRequest();
-    }
-
-    @Override
-    public void onGeofenceRemovalSuccess(List<String> requestIdsRemoved){
-        for(String issueId: requestIdsRemoved){
-            Log.d(TAG,"Removing geofence for issue "+issueId);
-            IssuesDataSource.getInstance(getApplicationContext()).updateIssueGeofenceCreated(
-                    Integer.parseInt(issueId),false);
-        }
-    }
-
-    @Override
-    public void onGeofenceRemovalFailure(Status status) {
-        Log.w(TAG, "Failed to remove geofence for issue " + issue.getId() + " - " + status.getStatus());
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        if(answeringQuestionTask!=null){
-            answeringQuestionTask.cancel(true);
-        }
+    private void showTakeActionFragment(){
+        // Then you start a new Activity via Intent
+        Intent intent = new Intent()
+                .setClass(this, IssueTakeActionActivity.class)
+                .putExtra(IssueTakeActionActivity.PARAM_ISSUE_ID, issue.getId())
+                .putExtra(IssueTakeActionActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+        startActivity(intent);
     }
 
 }

@@ -58,11 +58,22 @@
             android:paddingRight="@dimen/activity_horizontal_margin"
             >
 
+            <Button style="@style/Widget.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/issue_take_action"
+                android:id="@+id/issue_detail_take_action_button"
+                android:enabled="true"
+                android:layout_weight="1.0"
+                android:padding="@dimen/button_margin"/>
+
             <TextView
+                android:paddingTop="@dimen/button_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/issue_detail_summary"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -80,13 +91,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:id="@+id/issue_detail_question_container"
-                />
 
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="24dp"
+    android:paddingTop="16dp"
     >
 
     <TextView
@@ -11,56 +11,19 @@
         android:layout_height="wrap_content"
         android:text="@string/issue_question"
         android:textAppearance="@style/TextAppearance.AppCompat.Title" />
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/button_margin"
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <Button
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/issue_detail_yes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/issue_answer_yes"
-            android:id="@+id/issue_detail_yes"
-            android:enabled="true"
-            android:layout_weight="1.0" />
-        <Button
+            android:text="@string/issue_answer_yes"/>
+        <RadioButton android:id="@+id/issue_detail_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/issue_answer_no"
-            android:id="@+id/issue_detail_no"
-            android:enabled="true"
-            android:layout_weight="1.0" />
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/response_comment_textbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:textSize="@dimen/abc_text_size_body_1_material" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/response_add_photo"
-        android:id="@+id/response_add_photo"
-        android:enabled="true"
-        android:layout_weight="1.0" />
-
-    <ImageView
-        android:id="@+id/response_photo_tumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:fitsSystemWindows="true"
-        android:contentDescription="@string/response_photo_tumbnail" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/response_submit"
-        android:id="@+id/response_submit_button"
-        android:enabled="true"
-        android:layout_weight="1.0" />
+            android:text="@string/issue_answer_no"/>
+    </RadioGroup>
 
 </LinearLayout>
