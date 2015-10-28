@@ -97,10 +97,10 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
                         displayUpdateIssuesFragment();
                         return true;
-                    case R.id.nav_pick_place:
+                    /*case R.id.nav_pick_place:
                         logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
                         displayPickPlaceFragment();
-                        return true;
+                        return true;*/
                     case R.id.nav_about:
                         logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                         displayAboutFragment();
