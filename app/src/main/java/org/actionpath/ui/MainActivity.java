@@ -1,9 +1,11 @@
 package org.actionpath.ui;
 
+import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -78,15 +80,38 @@ public class MainActivity extends AbstractLocationActivity implements
                 //Closing drawer on item click
                 drawerLayout.closeDrawers();
 
-                //Check to see which item was being clicked and perform appropriate action
+                // show an alert that they need to pick a place first if they don't have one
+                if(!hasPlaceSet() && menuItem.getItemId()!=R.id.nav_about && menuItem.getItemId()!=R.id.nav_home){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setMessage(R.string.need_to_pick_place)
+                            .setTitle(R.string.error_dialog_title)
+                            .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    return;
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    // Add the buttons
+                    dialog.show();
+                    return false;
+                }
+
+                    //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()) {
                     case R.id.nav_home:
                         logMsg(LogMsg.ACTION_CLICKED_HOME);
+                        if(!hasPlaceSet()){
+                            showPickPlaceFragment();
+                        } else {
+                            showAppropriateHomeFragment();
+                        }
+                        return true;
                     case R.id.nav_my_issues:
                         logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
                         displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
                         return true;
                     case R.id.nav_map:
+                        logMsg(LogMsg.ACTION_CLICKED_ISSUES_MAP);
                         displayMapFragment();
                         return true;
                     case R.id.nav_all_issues:
@@ -209,20 +234,11 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onResume(){
         super.onResume();
-        if(hasPlaceSet()){
-            if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
-                displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
-            } else {
-                displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
-            }
-        } else {
+        if(!hasPlaceSet()){
             Log.w(TAG, "onResume: No place set yet");
-            if (Config.getInstance().isPickPlaceMode()) {
-                // On first load check to see if we have a place selected if so load My Actions Page
-                displayPickPlaceFragment();
-            } else if(Config.getInstance().isAssignRequestTypeMode()){
-                displayAssignRequestTypeFragment();
-            }
+            showPickPlaceFragment();
+        } else {
+            showAppropriateHomeFragment();
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
@@ -233,6 +249,23 @@ public class MainActivity extends AbstractLocationActivity implements
             String formattedStr = String.format(strToFormat, logsToUpload, responsesToUpload);
             debugMenuItem.setTitle(formattedStr);
         }*/
+    }
+
+    private void showAppropriateHomeFragment(){
+        if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
+            displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
+        } else {
+            displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
+        }
+    }
+
+    private void showPickPlaceFragment(){
+        if (Config.getInstance().isPickPlaceMode()) {
+            // On first load check to see if we have a place selected if so load My Actions Page
+            displayPickPlaceFragment();
+        } else if(Config.getInstance().isAssignRequestTypeMode()){
+            displayAssignRequestTypeFragment();
+        }
     }
 
     private void displayFragment(Fragment fragment){

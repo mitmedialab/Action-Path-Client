@@ -112,6 +112,9 @@
     <string name="discard">discard</string>
 
     <string name="issue_updated">You updated the issue! You are following this issue.</string>
+    <string name="need_to_pick_place">Sorry, you need to pick a place before you can do this.</string>
+    <string name="error_dialog_title">Error</string>
+    <string name="ok">OK</string>
 
     <plurals name="response_count">
         <item quantity="zero">You haven\'t taken action yet</item>
