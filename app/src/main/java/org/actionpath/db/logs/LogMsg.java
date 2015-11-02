@@ -20,6 +20,7 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_PICKED_PLACE= "PickedPlace";
     public static final String ACTION_CLICKED_ABOUT = "ClickedAbout";
     public static final String ACTION_CLICKED_MY_ISSUES = "ClickedMyIssues";
+    public static final String ACTION_CLICKED_ISSUES_MAP = "ClickedIssuesMap";
     public static final String ACTION_CLICKED_ALL_ISSUES = "ClickedAllIssues";
     public static final String ACTION_CLICKED_UPDATE_ISSUES = "ClickedUpdateIssues";
     public static final String ACTION_CLICKED_PICK_PLACE = "ClickedPickPlace";
