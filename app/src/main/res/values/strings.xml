@@ -115,6 +115,7 @@
     <string name="need_to_pick_place">Sorry, you need to pick a place before you can do this.</string>
     <string name="error_dialog_title">Error</string>
     <string name="ok">OK</string>
+    <string name="assign_request_type_title">Pick a type of report you\'d like to work on.</string>
 
     <plurals name="response_count">
         <item quantity="zero">You haven\'t taken action yet</item>

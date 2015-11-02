@@ -62,14 +62,37 @@ public class AssignRequestTypeFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        Button gotItButton = (Button) getView().findViewById(R.id.assigned_request_type_ok);
-        gotItButton.setOnClickListener(new View.OnClickListener() {
+        // set the buttons correctly
+        List<RequestType> requestTypes = Config.getInstance().getValidRequestTypes();
+        // set the buttons
+        final RequestType type1 = requestTypes.get(0);
+        Button button1 = (Button) getView().findViewById(R.id.assigned_request_type_1);
+        button1.setText(type1.nickname);
+        button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onRequestTypeAssigned(requestType);
+                listener.onRequestTypeAssigned(type1);
             }
         });
-        showAssignedRequestType();
+        final RequestType type2 = requestTypes.get(1);
+        Button button2 = (Button) getView().findViewById(R.id.assigned_request_type_2);
+        button2.setText(type2.nickname);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onRequestTypeAssigned(type2);
+            }
+        });
+        final RequestType type3 = requestTypes.get(2);
+        Button button3 = (Button) getView().findViewById(R.id.assigned_request_type_3);
+        button3.setText(type3.nickname);
+        button3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onRequestTypeAssigned(type3);
+            }
+        });
+
     }
 
     @Override
@@ -83,18 +106,6 @@ public class AssignRequestTypeFragment extends Fragment {
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString() + " must implement OnRequestTypeAssignedListener");
         }
-    }
-
-    private void showAssignedRequestType(){
-        requestType = pickRandomRequestType();
-        TextView requestTypeName = (TextView) getView().findViewById(R.id.assigned_request_type);
-        requestTypeName.setText(requestType.name);
-    }
-
-    public RequestType pickRandomRequestType(){
-        List<RequestType> requestTypes = Config.getInstance().getValidRequestTypes();
-        int randomIndex = (new Random()).nextInt(requestTypes.size());
-        return requestTypes.get(randomIndex);
     }
 
     @Override
