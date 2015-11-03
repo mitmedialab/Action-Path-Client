@@ -18,7 +18,7 @@ public class Issue extends AbstractModel {
 
     private static String TAG = Issue.class.getName();
 
-    public static final int DEFAULT_RADIUS = 500;
+    public static final int DEFAULT_RADIUS = 200;
 
     // used for parsing date in json from server
     private static ParsePosition zeroParsePosition = new ParsePosition(0);
