@@ -473,6 +473,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Place place = Config.getInstance().getPlace();  // do this here so place and request type are guaranteed to be set together
         savePlace(place);
         Log.d(TAG, "user was assigned " + requestType);
+        logMsg(LogMsg.INVALID_ID, LogMsg.ACTION_PICKED_REQUEST_TYPE, requestType.name);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
         try {
