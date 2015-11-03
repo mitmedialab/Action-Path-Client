@@ -6,8 +6,8 @@
     "url": "new-haven"
   },
   "validRequestTypes": [
-    {"id":122, "name": "Graffiti", "nickname": "Graffiti Gopher"},
+    {"id":117, "name": "Sidewalks and Curb damage", "nickname": "Sidewalk Sheriff"},
     {"id":1250, "name": "Illegal Dumping", "nickname": "Dumping Doctor"},
-    {"id":126, "name": "Parks Request", "nickname": "Parks Protagonist"},
+    {"id":51, "name": "Traffic Signal / Pedestrian Signal", "nickname": "Signal Sorter"}
   ]
 }
