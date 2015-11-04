@@ -303,20 +303,10 @@ public class MainActivity extends AbstractLocationActivity implements
     private void displayIssuesListFragment(int type){
         switch(type){
             case IssuesDataSource.ALL_ISSUES_LIST:
-                if(Config.getInstance().isPickPlaceMode()) {
-                    toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlace().name));
-                } else if(Config.getInstance().isAssignRequestTypeMode()) {
-                    toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_of_request_type_header),
-                            getAssignedRequestType().nickname, getPlace().name));
-                }
+                toolbar.setTitle(String.format(getResources().getString(R.string.all_issues_header), getPlace().name));
                 break;
             case IssuesDataSource.FOLLOWED_ISSUES_LIST:
-                if(Config.getInstance().isPickPlaceMode()) {
-                    toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlace().name));
-                } else if(Config.getInstance().isAssignRequestTypeMode()) {
-                    toolbar.setTitle(String.format(getResources().getString(R.string.all_followed_issues_of_request_type_header),
-                            getAssignedRequestType().nickname, getPlace().name));
-                }
+                toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlace().name));
                 break;
         }
         IssuesListFragment fragment = IssuesListFragment.newInstance(type, getPlaceId(), getAssignedRequestTypeId());
