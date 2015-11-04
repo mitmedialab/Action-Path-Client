@@ -2,14 +2,20 @@ package org.actionpath.db.responses;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import org.actionpath.db.AbstractSyncableModel;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Response extends AbstractSyncableModel {
+
+    public static String TAG = Response.class.getName();
 
     public String answerText;
     public String comment;
     public String photoPath;
+    public String serverPhotoUrl;
 
     public Response(){
     }
@@ -60,6 +66,21 @@ public class Response extends AbstractSyncableModel {
         if (o == null || getClass() != o.getClass()) return false;
         Response log = (Response) o;
         return id == log.id;
+    }
+
+    public static Response fromJson(JSONObject object) throws JSONException {
+        Response r = new Response();
+        r.id = object.getInt("id");
+        r.installationId = object.getString("install_id");
+        r.issueId = object.getInt("issue_id");
+        r.timestamp = object.getInt("timestamp");
+        r.comment = object.getString("comment");
+        r.answerText = object.getString("answer");
+        if(object.has("photoUrl")) {
+            r.serverPhotoUrl = object.getString("photoUrl");
+        }
+        Log.v(TAG, "  " + r.id + ": image_url = " + r.serverPhotoUrl);
+        return r;
     }
 
     @Override

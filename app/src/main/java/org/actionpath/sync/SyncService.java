@@ -28,12 +28,14 @@ public class SyncService extends Service implements
 
     private static int LOG_UPLOAD_INTERVAL = 5 * 60 * 1000;
     private static int RESPONSE_UPLOAD_INTERVAL = 1 * 60 * 1000;
+    private static int RESPONSE_DOWNLOAD_INTERVAL = 1 * 60 * 1000; // TODO make this less often
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
 
-    private Timer logTimer;
-    private Timer responseTimer;
+    private Timer logUploadTimer;
+    private Timer responseUploadTimer;
+    private Timer responseDownloadTimer;
 
     public SyncService() {
         super();
@@ -56,12 +58,17 @@ public class SyncService extends Service implements
         googleApiClient.connect();
         // upload log messages periodically
         TimerTask logUploaderTask = new LogUploadTimerTask(this,getInstallationId(),googleApiClient);
-        logTimer = new Timer();
-        logTimer.schedule(logUploaderTask, 0, LOG_UPLOAD_INTERVAL);
+        logUploadTimer = new Timer();
+        logUploadTimer.schedule(logUploaderTask, 0, LOG_UPLOAD_INTERVAL);
         // upload responses periodically
         TimerTask responseUploaderTask = new ResponseUploadTimerTask(this,getInstallationId(),googleApiClient);
-        responseTimer = new Timer();
-        responseTimer.schedule(responseUploaderTask, 0, RESPONSE_UPLOAD_INTERVAL);
+        responseUploadTimer = new Timer();
+        responseUploadTimer.schedule(responseUploaderTask, 0, RESPONSE_UPLOAD_INTERVAL);
+        // download new responses to issues you are following periodically
+        TimerTask responseDownloaderTask = new ResponseDownloadTimerTask(this,getInstallationId());
+        responseDownloadTimer = new Timer();
+        responseDownloadTimer.schedule(responseDownloaderTask, 0, RESPONSE_DOWNLOAD_INTERVAL);
+        // gotta return that it's all good in the neighborhood
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -120,11 +127,14 @@ public class SyncService extends Service implements
         if((googleApiClient!=null) && googleApiClient.isConnected() ){
             googleApiClient.disconnect();
         }
-        if(logTimer!=null){
-            logTimer.cancel();
+        if(logUploadTimer!=null){
+            logUploadTimer.cancel();
         }
-        if(responseTimer!=null){
-            responseTimer.cancel();
+        if(responseUploadTimer !=null){
+            responseUploadTimer.cancel();
+        }
+        if(responseDownloadTimer !=null){
+            responseDownloadTimer.cancel();
         }
     }
 

@@ -37,7 +37,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
     public static final String PREF_ITEM_REQUEST_TYPE_JSON = "assignedRequestTypeJSON";
     public static final String PREF_ITEM_PLACE_JSON = "placeJSON";
 
-    protected static int INVALID_PLACE_ID = -1;
+    public static int INVALID_PLACE_ID = -1;
 
     /**
      * Do any config and setup that applies no matter how we enter the app here

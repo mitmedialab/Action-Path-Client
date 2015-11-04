@@ -12,6 +12,8 @@ import android.util.Log;
 import org.actionpath.util.Config;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Use this as a singleton to access the issues database.  MainActivity should create this for the
@@ -87,6 +89,17 @@ public class IssuesDataSource {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    public List<Integer> getFollowedIssueIds(int placeId){
+        List<Integer> issueIds = new ArrayList<>();
+        Cursor c = getFollowedIssuesCursor(placeId);
+        while(!c.isAfterLast()){
+            int issueId = c.getInt(c.getColumnIndex(IssuesDbHelper.ID_COL));
+            issueIds.add(issueId);
+            c.moveToNext();
+        }
+        return issueIds;
     }
 
     public Cursor getFollowedIssuesCursor(int placeId, int requestTypeId){

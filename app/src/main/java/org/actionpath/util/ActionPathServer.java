@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import org.actionpath.db.issues.Issue;
+import org.actionpath.db.responses.Response;
 import org.actionpath.places.Place;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -29,7 +30,9 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -173,7 +176,7 @@ public class ActionPathServer {
         params.add(new BasicNameValuePair("request_type", Integer.toString(requestTypeId)));
         String paramString = URLEncodedUtils.format(params, "UTF-8");
         URL u = new URL(BASE_URL + "/issues/near.json?" + paramString);
-        Log.v(TAG,"Fetching from "+u);
+        Log.v(TAG, "Fetching from " + u);
         HttpGet httpGet = new HttpGet(u.toURI());
         HttpClient httpClient = new DefaultHttpClient();
         HttpResponse httpResponse = httpClient.execute(httpGet);
@@ -186,8 +189,37 @@ public class ActionPathServer {
             Issue issue = Issue.fromJson(object);
             newIssues.add(issue);
         }
-        Log.i(TAG, "Successfully pulled "+issuesArray.length()+" new issues for "+requestTypeId);
+        Log.i(TAG, "Successfully pulled " + issuesArray.length() + " new issues for " + requestTypeId);
         return newIssues;
+    }
+
+    public static List<Response> responsesOnIssues(List<Integer> issueIds, String myInstallId, long lastCheck)
+            throws URISyntaxException, IOException, JSONException{
+        ArrayList<Response> newResponses = new ArrayList<>();
+        String responseStr = "";
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        for(Integer issueId : issueIds){
+            params.add(new BasicNameValuePair("issue_ids[]", Integer.toString(issueId)));
+        }
+        params.add(new BasicNameValuePair("install_id", myInstallId));
+        params.add(new BasicNameValuePair("after", ""+lastCheck));
+        String paramString = URLEncodedUtils.format(params, "UTF-8");
+        URL u = new URL(BASE_URL + "/responses/on_issues.json?" + paramString);
+        Log.v(TAG, "Fetching from " + u);
+        HttpGet httpGet = new HttpGet(u.toURI());
+        HttpClient httpClient = new DefaultHttpClient();
+        HttpResponse httpResponse = httpClient.execute(httpGet);
+        responseStr = EntityUtils.toString(httpResponse.getEntity());
+        Log.v(TAG,"Server said responses/on_issues = "+responseStr);
+        JSONArray responsesArray = new JSONArray(responseStr);
+        Log.v(TAG, "  "+responsesArray.length()+" responses");
+        for (int i = 0; i < responsesArray.length(); i++) {
+            JSONObject object = responsesArray.getJSONObject(i);
+            Response response = Response.fromJson(object);
+            newResponses.add(response);
+        }
+        Log.i(TAG, "Successfully pulled " + responsesArray.length() + " responses");
+        return newResponses;
     }
 
 }
