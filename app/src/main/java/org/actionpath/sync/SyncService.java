@@ -54,11 +54,11 @@ public class SyncService extends Service implements
                 .addApi(LocationServices.API)
                 .build();
         googleApiClient.connect();
-        // set up and start the log sync task
+        // upload log messages periodically
         TimerTask logSyncer = new LogSyncTimerTask(this,getInstallationId(),googleApiClient);
         logTimer = new Timer();
         logTimer.schedule(logSyncer, 0, LOG_SYNC_INTERVAL);
-        // set up and start the response sync task
+        // upload responses periodically
         TimerTask responseSyncer = new ResponseSyncTimerTask(this,getInstallationId(),googleApiClient);
         responseTimer = new Timer();
         responseTimer.schedule(responseSyncer, 0, RESPONSE_SYNC_INTERVAL);
