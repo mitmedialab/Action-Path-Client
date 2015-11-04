@@ -240,12 +240,7 @@ public class MainActivity extends AbstractLocationActivity implements
             showPickPlaceFragment();
         } else {
             showAppropriateHomeFragment();
-            TextView headerText = (TextView) findViewById(R.id.nav_bar_header_text);
-            if(Config.getInstance().isAssignRequestTypeMode()) {
-                headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
-            } else {
-                headerText.setText(getString(R.string.app_name) + ": " + getPlace().name);
-            }
+            updateNavBarHeaderText();
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
@@ -256,6 +251,15 @@ public class MainActivity extends AbstractLocationActivity implements
             String formattedStr = String.format(strToFormat, logsToUpload, responsesToUpload);
             debugMenuItem.setTitle(formattedStr);
         }*/
+    }
+
+    private void updateNavBarHeaderText(){
+        TextView headerText = (TextView) findViewById(R.id.nav_bar_header_text);
+        if(Config.getInstance().isAssignRequestTypeMode()) {
+            headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
+        } else {
+            headerText.setText(getString(R.string.app_name) + ": " + getPlace().name);
+        }
     }
 
     private void showAppropriateHomeFragment(){
@@ -470,6 +474,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Place place = Config.getInstance().getPlace();  // do this here so place and request type are guaranteed to be set together
         savePlace(place);
         Log.d(TAG, "user was assigned " + requestType);
+        updateNavBarHeaderText();
         logMsg(LogMsg.INVALID_ID, LogMsg.ACTION_PICKED_REQUEST_TYPE, requestType.name);
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = settings.edit();
