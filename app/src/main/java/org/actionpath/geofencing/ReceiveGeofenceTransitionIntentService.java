@@ -34,9 +34,9 @@ public abstract class ReceiveGeofenceTransitionIntentService extends IntentServi
                 int transition = event.getGeofenceTransition();
                 if(transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL || transition == Geofence.GEOFENCE_TRANSITION_EXIT){
                     String[] issueIds = new String[event.getTriggeringGeofences().size()];
+                    Log.d(TAG, "triggered issues ("+transition+"): " + Arrays.toString(issueIds));
                     for (int index = 0; index < event.getTriggeringGeofences().size(); index++) {
                         issueIds[index] = event.getTriggeringGeofences().get(index).getRequestId();
-                        Log.d(TAG, "triggered issues: " + Arrays.toString(issueIds));
                     }
                     if (transition == Geofence.GEOFENCE_TRANSITION_ENTER || transition == Geofence.GEOFENCE_TRANSITION_DWELL) {
                         onEnteredGeofences(issueIds);
