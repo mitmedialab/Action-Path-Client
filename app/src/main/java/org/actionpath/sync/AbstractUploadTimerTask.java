@@ -23,7 +23,7 @@ import java.util.TimerTask;
 /**
  * Upload SyncableModels to the server
  */
-public abstract class AbstractSyncTimerTask extends TimerTask {
+public abstract class AbstractUploadTimerTask extends TimerTask {
 
     public String TAG = this.getClass().getName();
 
@@ -32,7 +32,7 @@ public abstract class AbstractSyncTimerTask extends TimerTask {
     protected ContextWrapper contextWrapper;
     protected AbstractSyncableDataSource dataSource;
 
-    public AbstractSyncTimerTask(ContextWrapper contextWrapper, GoogleApiClient googleApiClient, Context context, String installId) {
+    public AbstractUploadTimerTask(ContextWrapper contextWrapper, GoogleApiClient googleApiClient, Context context, String installId) {
         this.contextWrapper = contextWrapper;
         this.googleApiClient = googleApiClient;
         this.installId = installId;

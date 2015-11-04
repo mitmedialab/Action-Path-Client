@@ -10,11 +10,11 @@ import org.actionpath.util.ActionPathServer;
 /**
  * Upload log records to the server
  */
-public class LogSyncTimerTask extends AbstractSyncTimerTask {
+public class LogUploadTimerTask extends AbstractUploadTimerTask {
 
-    public static String TAG = LogSyncTimerTask.class.getName();
+    public static String TAG = LogUploadTimerTask.class.getName();
 
-    public LogSyncTimerTask(ContextWrapper contextWrapper, String installId, GoogleApiClient googleApiClient) {
+    public LogUploadTimerTask(ContextWrapper contextWrapper, String installId, GoogleApiClient googleApiClient) {
         super(contextWrapper, googleApiClient, contextWrapper, installId);
         this.dataSource = LogsDataSource.getInstance(contextWrapper);
     }

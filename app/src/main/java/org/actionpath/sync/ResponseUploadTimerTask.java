@@ -5,17 +5,16 @@ import android.content.ContextWrapper;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.actionpath.db.responses.ResponsesDataSource;
-import org.actionpath.db.responses.ResponsesDbHelper;
 import org.actionpath.util.ActionPathServer;
 
 /**
  * Upload responses up to the server
  */
-public class ResponseSyncTimerTask extends AbstractSyncTimerTask {
+public class ResponseUploadTimerTask extends AbstractUploadTimerTask {
 
-    public static String TAG = ResponseSyncTimerTask.class.getName();
+    public static String TAG = ResponseUploadTimerTask.class.getName();
 
-    public ResponseSyncTimerTask(ContextWrapper contextWrapper, String installId, GoogleApiClient googleApiClient) {
+    public ResponseUploadTimerTask(ContextWrapper contextWrapper, String installId, GoogleApiClient googleApiClient) {
         super(contextWrapper, googleApiClient, contextWrapper, installId);
         dataSource = ResponsesDataSource.getInstance(contextWrapper);
     }

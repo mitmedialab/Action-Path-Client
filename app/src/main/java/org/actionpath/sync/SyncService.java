@@ -26,8 +26,8 @@ public class SyncService extends Service implements
 
     private static boolean running = false;
 
-    private static int LOG_SYNC_INTERVAL = 5 * 60 * 1000;
-    private static int RESPONSE_SYNC_INTERVAL = 1 * 60 * 1000;
+    private static int LOG_UPLOAD_INTERVAL = 5 * 60 * 1000;
+    private static int RESPONSE_UPLOAD_INTERVAL = 1 * 60 * 1000;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
@@ -43,7 +43,7 @@ public class SyncService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         setRunning(true);
-        Log.i(TAG,"Starting LogSyncService");
+        Log.i(TAG,"Starting SyncService");
         // to set up the database correctly
         LogsDataSource.getInstance(this);
         ResponsesDataSource.getInstance(this);
@@ -55,13 +55,13 @@ public class SyncService extends Service implements
                 .build();
         googleApiClient.connect();
         // upload log messages periodically
-        TimerTask logSyncer = new LogSyncTimerTask(this,getInstallationId(),googleApiClient);
+        TimerTask logUploaderTask = new LogUploadTimerTask(this,getInstallationId(),googleApiClient);
         logTimer = new Timer();
-        logTimer.schedule(logSyncer, 0, LOG_SYNC_INTERVAL);
+        logTimer.schedule(logUploaderTask, 0, LOG_UPLOAD_INTERVAL);
         // upload responses periodically
-        TimerTask responseSyncer = new ResponseSyncTimerTask(this,getInstallationId(),googleApiClient);
+        TimerTask responseUploaderTask = new ResponseUploadTimerTask(this,getInstallationId(),googleApiClient);
         responseTimer = new Timer();
-        responseTimer.schedule(responseSyncer, 0, RESPONSE_SYNC_INTERVAL);
+        responseTimer.schedule(responseUploaderTask, 0, RESPONSE_UPLOAD_INTERVAL);
         return Service.START_REDELIVER_INTENT;
     }
 
