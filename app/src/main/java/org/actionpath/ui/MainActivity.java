@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import org.actionpath.R;
 import org.actionpath.db.RequestType;
@@ -239,6 +240,12 @@ public class MainActivity extends AbstractLocationActivity implements
             showPickPlaceFragment();
         } else {
             showAppropriateHomeFragment();
+            TextView headerText = (TextView) findViewById(R.id.nav_bar_header_text);
+            if(Config.getInstance().isAssignRequestTypeMode()) {
+                headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
+            } else {
+                headerText.setText(getString(R.string.app_name) + ": " + getPlace().name);
+            }
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
