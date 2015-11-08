@@ -18,6 +18,9 @@ import org.actionpath.util.Installation;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * Manage background syncing of various objects up and down to the server
+ */
 public class SyncService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener{

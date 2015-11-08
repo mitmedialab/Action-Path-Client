@@ -9,10 +9,13 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import org.actionpath.db.responses.Response;
 import org.actionpath.util.Config;
+import org.json.JSONArray;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -25,6 +28,7 @@ public class IssuesDataSource {
 
     public static final int ALL_ISSUES_LIST = 0;
     public static final int FOLLOWED_ISSUES_LIST = 1;
+    public static final int RECENTLY_UPDATED_ISSUES_LIST = 2;
 
     private SQLiteDatabase db;
     private IssuesDbHelper dbHelper;
@@ -114,6 +118,30 @@ public class IssuesDataSource {
         return cursor;
     }
 
+    public Cursor getRecentlyUpdatedCursor(int placeId){
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL, IssuesDbHelper.DESCRIPTION_COL},
+                IssuesDbHelper.NEW_INFO_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=?",
+                new String[] {"1",placeId+""}, null, null,
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
+    public Cursor getRecentlyUpdatedCursor(int placeId, int requestTypeId){
+        Cursor cursor = db.query(IssuesDbHelper.TABLE_NAME,
+                new String[] {IssuesDbHelper.ID_COL, IssuesDbHelper.SUMMARY_COL, IssuesDbHelper.DESCRIPTION_COL},
+                IssuesDbHelper.NEW_INFO_COL +"=? AND "+IssuesDbHelper.PLACE_ID_COL +"=? AND "+IssuesDbHelper.REQUEST_TYPE_ID_COL +"=?",
+                new String[] {"1",placeId+"",requestTypeId+""}, null, null,
+                IssuesDbHelper.UPDATED_AT_COL +" DESC");
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
+
     /**
      * Get a list of all the issues in this place we have in the db
      * @param placeId
@@ -187,9 +215,20 @@ public class IssuesDataSource {
                 contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
     }
 
+    private long getNow(){
+        return (new Date()).getTime()/1000;
+    }
+
     public void updateIssueNewInfo(int issueId, boolean hasNewInfo) {
+        updateIssueNewInfo(issueId, hasNewInfo, true);
+    }
+
+    public void updateIssueNewInfo(int issueId, boolean hasNewInfo, boolean setUpdatedAtToNow) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(IssuesDbHelper.NEW_INFO_COL, (hasNewInfo ? 1 : 0));
+        if(setUpdatedAtToNow){
+            contentValues.put(IssuesDbHelper.UPDATED_AT_COL,getNow());
+        }
         db.update(IssuesDbHelper.TABLE_NAME,
                 contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
     }
@@ -282,7 +321,39 @@ public class IssuesDataSource {
                     cursor = dataSource.getFollowedIssuesCursor(placeId,requestTypeId);
                 }
                 break;
+            case RECENTLY_UPDATED_ISSUES_LIST:
+                if(Config.getInstance().isPickPlaceMode()) {
+                    Log.v(TAG,"getRecentlyUpdatedCursor with placeId");
+                    cursor = dataSource.getRecentlyUpdatedCursor(placeId);
+                } else if(Config.getInstance().isAssignRequestTypeMode()){
+                    Log.v(TAG,"getRecentlyUpdatedCursor with request type");
+                    cursor = dataSource.getRecentlyUpdatedCursor(placeId,requestTypeId);
+                }
         }
         return cursor;
     }
+
+    public void updateOtherResponsesJson(Integer issueId, List<Response> otherResponses) {
+        updateOtherResponsesJson(issueId, otherResponses, true, true);
+    }
+
+    private void updateOtherResponsesJson(Integer issueId, List<Response> otherResponses,
+                                          boolean markAsNew, boolean setUpdatedAtToNow) {
+        JSONArray arr = new JSONArray();
+        for(Response r:otherResponses){
+            arr.put(r);
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(IssuesDbHelper.OTHER_RESPONSE_JSON_COL, arr.toString());
+        if(markAsNew){
+            contentValues.put(IssuesDbHelper.NEW_INFO_COL, 1);
+        }
+        if(setUpdatedAtToNow){
+            contentValues.put(IssuesDbHelper.UPDATED_AT_COL,getNow());
+        }
+        Log.v(TAG,"Saving "+otherResponses.size()+" other responses to "+issueId);
+        db.update(IssuesDbHelper.TABLE_NAME,
+                contentValues, IssuesDbHelper.ID_COL + "=" + issueId, null);
+    }
+
 }

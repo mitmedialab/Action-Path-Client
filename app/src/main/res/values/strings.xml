@@ -19,6 +19,7 @@
     <string name="all_issues_header">All Actions in %s</string>
     <string name="all_followed_issues_of_request_type_header">%1$s: Mine in %2$s</string>
     <string name="followed_issues_header">My Actions in %s</string>
+    <string name="recently_updated_issues_header">Recently Updated in %s</string>
     <string name="pick_place_header">Choose Your City</string>
     <string name="update_issues_header">Updating Actions in %s</string>
     <string name="about_header">About Action Path</string>
@@ -116,11 +117,15 @@
     <string name="error_dialog_title">Error</string>
     <string name="ok">OK</string>
     <string name="assign_request_type_title">Pick a type of report you\'d like to work on.</string>
+    <string name="nav_updated_issues">Recently Updated</string>
 
     <plurals name="response_count">
         <item quantity="zero">You haven\'t taken action yet</item>
         <item quantity="one">You\'ve taken %d action</item>
         <item quantity="other">You\'ve taken %d actions</item>
     </plurals>
+
+    <string name="cant_get_location_title">Can\'t find your location</string>
+    <string name="cant_get_location_detail">Sorry, we can\'t figure out where you are right now.  For now we are just showing a map of New Haven.</string>
 
 </resources>

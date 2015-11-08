@@ -1,5 +1,6 @@
 package org.actionpath.util;
 
+import android.location.Location;
 import android.os.Build;
 
 /**
@@ -23,6 +24,13 @@ public class Development {
 
     public static boolean isSimulator(){
         return Build.FINGERPRINT.startsWith("generic");
+    }
+
+    public static Location getFakeLocation(){
+        Location loc = new Location("development");
+        loc.setLatitude(Development.NEW_HAVEN_LAT);
+        loc.setLongitude(Development.NEW_HAVEN_LON);
+        return loc;
     }
 
 }

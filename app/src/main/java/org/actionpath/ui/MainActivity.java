@@ -32,6 +32,7 @@ import org.actionpath.db.logs.LogMsg;
 import org.actionpath.places.Place;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
+import org.actionpath.util.Development;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,6 +107,10 @@ public class MainActivity extends AbstractLocationActivity implements
                         } else {
                             showAppropriateHomeFragment();
                         }
+                        return true;
+                    case R.id.nav_recently_updated_issues:
+                        logMsg(LogMsg.ACTION_CLICKED_RECENTLY_UPDATED_ISSUES);
+                        displayIssuesListFragment(IssuesDataSource.RECENTLY_UPDATED_ISSUES_LIST);
                         return true;
                     case R.id.nav_my_issues:
                         logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
@@ -312,6 +317,9 @@ public class MainActivity extends AbstractLocationActivity implements
             case IssuesDataSource.FOLLOWED_ISSUES_LIST:
                 toolbar.setTitle(String.format(getResources().getString(R.string.followed_issues_header), getPlace().name));
                 break;
+            case IssuesDataSource.RECENTLY_UPDATED_ISSUES_LIST:
+                toolbar.setTitle(String.format(getResources().getString(R.string.recently_updated_issues_header), getPlace().name));
+                break;
         }
         IssuesListFragment fragment = IssuesListFragment.newInstance(type, getPlaceId(), getAssignedRequestTypeId());
         displayFragment(fragment);
@@ -321,9 +329,23 @@ public class MainActivity extends AbstractLocationActivity implements
         toolbar.setTitle(R.string.issues_map_title);
         try {
             Location loc = getLocation();
+            if(loc==null){
+                loc = Development.getFakeLocation();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.cant_get_location_detail)
+                        .setTitle(R.string.cant_get_location_title)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                return;
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                // Add the buttons
+                dialog.show();
+            }
             IssuesMapFragment mapFragment = IssuesMapFragment.newInstance(0,getPlaceId(),
-                    getAssignedRequestTypeId(),
-                    loc.getLatitude(), loc.getLongitude());
+                        getAssignedRequestTypeId(),
+                        loc.getLatitude(), loc.getLongitude());
             displayFragment(mapFragment);
         } catch (GoogleApiClientNotConnectionException e) {
             Log.e(TAG,"tried to display map fragment but couldn't connect to goole api client");

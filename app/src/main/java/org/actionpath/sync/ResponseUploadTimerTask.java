@@ -8,7 +8,7 @@ import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.ActionPathServer;
 
 /**
- * Upload responses up to the server
+ * Upload responses you have made on issues to the server
  */
 public class ResponseUploadTimerTask extends AbstractUploadTimerTask {
 

@@ -243,6 +243,7 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
                 // automatically follow it
                 issue.setFollowed(true);
                 IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
+                logMsg(issueId,LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
                 // and mark that you've responded
                 issue.incrementResponseCount();
                 IssuesDataSource.getInstance().updateIssueResponseCount(issue.getId(), issue.getResponseCount());

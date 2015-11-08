@@ -55,6 +55,8 @@ public class Issue extends AbstractModel {
     boolean followed = false;
     boolean geofenceCreated = false;
 
+    String otherResponseJson;
+
     public Issue(){
 
     }
@@ -223,6 +225,7 @@ public class Issue extends AbstractModel {
         i.answer4 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER4_COL));
         i.answer5 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER5_COL));
         i.answer6 = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.ANSWER6_COL));
+        i.otherResponseJson = cursor.getString(cursor.getColumnIndex(IssuesDbHelper.OTHER_RESPONSE_JSON_COL));
         Log.v(TAG, "Parsed cursor issue at loc (" +
                 cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LATITUDE_COL)) + "," +
                 cursor.getFloat(cursor.getColumnIndex(IssuesDbHelper.LONGITUDE_COL)) + ")");
@@ -298,6 +301,7 @@ public class Issue extends AbstractModel {
             cv.put(IssuesDbHelper.GEOFENCE_CREATED_COL, geofenceCreated ? 1 : 0);
             cv.put(IssuesDbHelper.NEW_INFO_COL, newInfo);
             cv.put(IssuesDbHelper.RESPONSE_COUNT_COL, responseCount);
+            cv.put(IssuesDbHelper.OTHER_RESPONSE_JSON_COL, otherResponseJson);
         }
         return cv;
     }

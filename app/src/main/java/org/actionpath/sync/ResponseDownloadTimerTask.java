@@ -1,8 +1,11 @@
 package org.actionpath.sync;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContextWrapper;
 import android.util.Log;
 
+import org.actionpath.R;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.responses.Response;
 import org.actionpath.db.responses.ResponsesDataSource;
@@ -12,6 +15,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -65,8 +69,32 @@ public class ResponseDownloadTimerTask extends TimerTask {
         Boolean worked = false;
         try {
             List<Response> otherResponses = ActionPathServer.responsesOnIssues(issueIds, installId, lastCheck);
-            Log.d(TAG,"  got "+otherResponses.size()+" new responses");
-            // TODO: decide where to save this...
+            Log.d(TAG, "  got " + otherResponses.size() + " new responses");
+            for(Integer issueId: issueIds){
+                // save other responses issue by issue
+                List<Response> issueResponses = new ArrayList<>();
+                for(Response otherResponse : otherResponses){
+                    if(otherResponse.issueId==issueId){
+                        issueResponses.add(otherResponse);
+                    }
+                }
+                Log.d(TAG," Issue "+issueId+": "+otherResponses.size()+" other responses");
+                issuesDataSource.updateOtherResponsesJson(issueId,otherResponses);  // this will also mark it as new
+                // and fire a notification about recent updates
+/*                Notification.Builder notificationBuilder = new Notification.Builder(this.contextWrapper);
+                notificationBuilder
+                        .setPriority(Notification.PRIORITY_LOW)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(this.contextWrapper.getResources().getString(R.string.update_notification))
+                        .setContentText(updateSummary)
+                        .setContentIntent(pi);
+
+                Notification notification = notificationBuilder.build();
+                notification.flags |= Notification.FLAG_AUTO_CANCEL;
+                NotificationManager notificationManager = getNotificationManager();
+                notificationManager.notify(notificationTag, issueId, notification);*/
+            }
             lastCheck = System.currentTimeMillis()/1000;;
             worked = true;
         } catch (URISyntaxException use){

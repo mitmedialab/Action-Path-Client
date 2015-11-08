@@ -19,6 +19,11 @@
             android:icon="@drawable/ic_action_favorite"
             android:title="@string/nav_followed_issues"/>
         <item
+            android:id="@+id/nav_recently_updated_issues"
+            android:checked="false"
+            android:icon="@drawable/ic_action_flash_on"
+            android:title="@string/nav_updated_issues"/> <!-- use ic_action_unread instead? -->
+        <item
             android:id="@+id/nav_all_issues"
             android:checked="false"
             android:icon="@drawable/ic_action_view_as_list"

@@ -13,7 +13,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     private static String TAG = IssuesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "issues.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // DB Table consts
     public static final String TABLE_NAME = "issues";
@@ -40,7 +40,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     public static final String ANSWER5_COL = "answer5";
     public static final String ANSWER6_COL = "answer6";
     public static final String NEW_INFO_COL = "new_info";
-    public static final String RESPONSE_COUNT_COL = "response_count";
+    public static final String RESPONSE_COUNT_COL = "response_count";   // my responses
+    public static final String OTHER_RESPONSE_JSON_COL = "other_response_json"; // json data of other folks' responses
 
     public static String[] ISSUES_COLUMN_NAMES;
 
@@ -51,7 +52,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
                     FOLLOWED_COL, GEOFENCE_CREATED_COL, PLACE_ID_COL, REQUEST_TYPE_ID_COL,
                     CREATED_AT_COL, UPDATED_AT_COL, GEOFENCE_RADIUS_COL,
                     NEW_INFO_COL, RESPONSE_COUNT_COL,
-                    QUESTION_COL, ANSWER1_COL, ANSWER2_COL, ANSWER3_COL, ANSWER4_COL, ANSWER5_COL, ANSWER6_COL};
+                    QUESTION_COL, ANSWER1_COL, ANSWER2_COL, ANSWER3_COL, ANSWER4_COL, ANSWER5_COL, ANSWER6_COL,
+                        OTHER_RESPONSE_JSON_COL};
     }
 
     // Database creation sql statement
@@ -80,7 +82,8 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             ANSWER3_COL + " string," +
             ANSWER4_COL + " string," +
             ANSWER5_COL + " string," +
-            ANSWER6_COL + " string " +
+            ANSWER6_COL + " string, " +
+            OTHER_RESPONSE_JSON_COL + " text" +
             ");";
 
     public IssuesDbHelper(Context context) {
@@ -117,6 +120,9 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + NEW_INFO_COL + " int DEFAULT 0;");
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + RESPONSE_COUNT_COL + " int DEFAULT 0;");
             Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v4");
+        } else if(oldVersion==5 && newVersion>=6) {
+            db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + OTHER_RESPONSE_JSON_COL + " text;");
+            Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v5");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);
