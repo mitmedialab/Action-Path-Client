@@ -2,13 +2,16 @@ package org.actionpath.sync;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.util.Log;
 
 import org.actionpath.R;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.responses.Response;
 import org.actionpath.db.responses.ResponsesDataSource;
+import org.actionpath.ui.IssuesListFragment;
 import org.actionpath.ui.MainActivity;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONException;
@@ -28,6 +31,9 @@ import java.util.TimerTask;
 public class ResponseDownloadTimerTask extends TimerTask {
 
     private String TAG = this.getClass().getName();
+
+    private static String ISSUES_UPDATED_NOTIFICATION_TAG = "issuesUpdated";
+    private static int ISSUES_UPDATED_NOTIFICATION_ID = 1;
 
     private String installId;
     private ContextWrapper contextWrapper;
@@ -64,39 +70,49 @@ public class ResponseDownloadTimerTask extends TimerTask {
         }
         Log.d(TAG, "  " + followedIssueCount + " followed issues");
         Log.d(TAG, "  last checked at " + lastCheck);
-        // now send off the data to the server
+        // now grab the data from the server
         List<Integer> issueIds = issuesDataSource.getFollowedIssueIds(0);
         Boolean worked = false;
         try {
             List<Response> otherResponses = ActionPathServer.responsesOnIssues(issueIds, installId, lastCheck);
             Log.d(TAG, "  got " + otherResponses.size() + " new responses");
-            for(Integer issueId: issueIds){
+            for(Integer issueId: issueIds) {
                 // save other responses issue by issue
                 List<Response> issueResponses = new ArrayList<>();
-                for(Response otherResponse : otherResponses){
-                    if(otherResponse.issueId==issueId){
+                for (Response otherResponse : otherResponses) {
+                    if (otherResponse.issueId == issueId) {
                         issueResponses.add(otherResponse);
                     }
                 }
                 Log.d(TAG," Issue "+issueId+": "+otherResponses.size()+" other responses");
                 issuesDataSource.updateOtherResponsesJson(issueId,otherResponses);  // this will also mark it as new
-                // and fire a notification about recent updates
-/*                Notification.Builder notificationBuilder = new Notification.Builder(this.contextWrapper);
+            }
+            lastCheck = System.currentTimeMillis()/1000;;
+            worked = true;
+            // and fire a notification about recent updates if there were any
+            if(otherResponses.size()>0){
+                String notificationTitle = this.contextWrapper.getResources().getQuantityString(R.plurals.recently_updated_issues,
+                        otherResponses.size(), otherResponses.size(), otherResponses.size());
+                Intent intent = new Intent(this.contextWrapper,MainActivity.class)
+                        .putExtra(MainActivity.PARAM_FRAGMENT_MENU_ID, R.id.nav_recently_updated_issues)
+                        .putExtra(MainActivity.PARAM_FROM_UPDATE_NOTIFICATION, true)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this.contextWrapper, 0, intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+                Notification.Builder notificationBuilder = new Notification.Builder(this.contextWrapper);
                 notificationBuilder
                         .setPriority(Notification.PRIORITY_LOW)
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(this.contextWrapper.getResources().getString(R.string.update_notification))
-                        .setContentText(updateSummary)
-                        .setContentIntent(pi);
-
+                        .setContentTitle(notificationTitle)
+                        .setContentText(notificationTitle)
+                        .setContentIntent(pendingIntent);
                 Notification notification = notificationBuilder.build();
                 notification.flags |= Notification.FLAG_AUTO_CANCEL;
-                NotificationManager notificationManager = getNotificationManager();
-                notificationManager.notify(notificationTag, issueId, notification);*/
+                NotificationManager notificationManager =
+                        (NotificationManager) contextWrapper.getSystemService(contextWrapper.NOTIFICATION_SERVICE);
+                notificationManager.notify(ISSUES_UPDATED_NOTIFICATION_TAG, ISSUES_UPDATED_NOTIFICATION_ID, notification);
             }
-            lastCheck = System.currentTimeMillis()/1000;;
-            worked = true;
         } catch (URISyntaxException use){
             Log.e(TAG, "Couldn't sync to server: "+use.toString());
             worked = false;

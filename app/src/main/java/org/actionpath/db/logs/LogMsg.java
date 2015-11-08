@@ -12,6 +12,7 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_UNFOLLOWED_ISSUE_FROM_FOLLOW_BUTTON = "UnfollowedIssueFromFollowButton";
     public static final String ACTION_FOLLOWED_ISSUE_BY_ANSWERING = "FollowedIssueFromAnswer";
     public static final String ACTION_CLICKED_ON_SURVEY_NOTIFICATION = "ClickedOnSurveyNotification";
+    public static final String ACTION_CLICKED_ON_UPDATED_ISSUES_NOTIFICATION = "ClickedOnUpdatedIssuesNotification";
     public static final String ACTION_RESPONDED_TO_QUESTION = "ResponsedToSuvery";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";

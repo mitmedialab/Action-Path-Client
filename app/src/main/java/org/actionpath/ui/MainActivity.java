@@ -28,6 +28,7 @@ import org.actionpath.R;
 import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
+import org.actionpath.db.issues.IssuesDbHelper;
 import org.actionpath.db.logs.LogMsg;
 import org.actionpath.places.Place;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
@@ -49,6 +50,9 @@ public class MainActivity extends AbstractLocationActivity implements
     private DrawerLayout drawerLayout;
     private NavigationView navView;
     private UpdateIssuesAsyncTask updateIssuesTask;
+
+    public static String PARAM_FRAGMENT_MENU_ID = "fragmentMenuIdToShow";
+    public static String PARAM_FROM_UPDATE_NOTIFICATION = "cameFromAnUpdatedIssuesNotification";
 
     private static String TAG = MainActivity.class.getName();
 
@@ -97,65 +101,9 @@ public class MainActivity extends AbstractLocationActivity implements
                     dialog.show();
                     return false;
                 }
+                int menuItemId = menuItem.getItemId();
+                return handleMenuItemClick(menuItemId);
 
-                    //Check to see which item was being clicked and perform appropriate action
-                switch (menuItem.getItemId()) {
-                    case R.id.nav_home:
-                        logMsg(LogMsg.ACTION_CLICKED_HOME);
-                        if(!hasPlaceSet()){
-                            showPickPlaceFragment();
-                        } else {
-                            showAppropriateHomeFragment();
-                        }
-                        return true;
-                    case R.id.nav_recently_updated_issues:
-                        logMsg(LogMsg.ACTION_CLICKED_RECENTLY_UPDATED_ISSUES);
-                        displayIssuesListFragment(IssuesDataSource.RECENTLY_UPDATED_ISSUES_LIST);
-                        return true;
-                    case R.id.nav_my_issues:
-                        logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
-                        displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
-                        return true;
-                    case R.id.nav_map:
-                        logMsg(LogMsg.ACTION_CLICKED_ISSUES_MAP);
-                        displayMapFragment();
-                        return true;
-                    case R.id.nav_all_issues:
-                        logMsg(LogMsg.ACTION_CLICKED_ALL_ISSUES);
-                        displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
-                        return true;
-                    case R.id.nav_update_issues:
-                        logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
-                        displayUpdateIssuesFragment();
-                        return true;
-                    /*case R.id.nav_pick_place:
-                        logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
-                        displayPickPlaceFragment();
-                        return true;*/
-                    case R.id.nav_about:
-                        logMsg(LogMsg.ACTION_CLICKED_ABOUT);
-                        displayAboutFragment();
-                        return true;
-                    /*case R.id.nav_save_debug_info:
-                        logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
-                        try {
-                            ArrayList<String> filePaths = new ArrayList<String>();
-                            String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
-                            String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
-                            if (logsFilePath != null) filePaths.add(logsFilePath);
-                            if (responsesFilePath != null) filePaths.add(responsesFilePath);
-                            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
-                            sendEmailWithUnsyncedRecords(filePaths);
-                        } catch (IOException ioe) {
-                            Log.e(TAG, "Unable to backup unsynced records " + ioe.toString());
-                            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
-                        }
-                        displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
-                        return true;*/
-                    default:
-                        Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
-                        return true;
-                }
             }
         });
 
@@ -181,12 +129,89 @@ public class MainActivity extends AbstractLocationActivity implements
         //calling sync state is necessay or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
+        // handle the case where this was started from an intent (ie. from a notification)
+        Intent intent  = getIntent();
+        if(intent!=null) {
+            Bundle bundle = getIntent().getExtras();
+            if(bundle!=null) {
+                if (bundle.containsKey(PARAM_FRAGMENT_MENU_ID)) {
+                    int menuItemToClick = bundle.getInt(PARAM_FRAGMENT_MENU_ID);
+                    boolean cameFromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
+                    if (cameFromUpdateNotification) {
+                        logMsg(LogMsg.ACTION_CLICKED_ON_UPDATED_ISSUES_NOTIFICATION);
+                    }
+                    handleMenuItemClick(menuItemToClick);
+                }
+            }
+        }
+
         // automatically update issues (if we have all the info we need to)
-        if( (Config.getInstance().isPickPlaceMode() && (getPlace() == null))
+        /*if( (Config.getInstance().isPickPlaceMode() && (getPlace() == null))
                 || (Config.getInstance().isAssignRequestTypeMode() && getAssignedRequestType()!=null)){
             updateIssues();
         } else {
             Log.v(TAG,"not enough info to update issues now, skipping");
+        }*/
+    }
+
+    private boolean handleMenuItemClick(int menuItemId) {
+        //Check to see which item was being clicked and perform appropriate action
+        switch (menuItemId) {
+            case R.id.nav_home:
+                logMsg(LogMsg.ACTION_CLICKED_HOME);
+                if(!hasPlaceSet()){
+                    showPickPlaceFragment();
+                } else {
+                    showAppropriateHomeFragment();
+                }
+                return true;
+            case R.id.nav_recently_updated_issues:
+                logMsg(LogMsg.ACTION_CLICKED_RECENTLY_UPDATED_ISSUES);
+                displayIssuesListFragment(IssuesDataSource.RECENTLY_UPDATED_ISSUES_LIST);
+                return true;
+            case R.id.nav_my_issues:
+                logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
+                displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
+                return true;
+            case R.id.nav_map:
+                logMsg(LogMsg.ACTION_CLICKED_ISSUES_MAP);
+                displayMapFragment();
+                return true;
+            case R.id.nav_all_issues:
+                logMsg(LogMsg.ACTION_CLICKED_ALL_ISSUES);
+                displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
+                return true;
+            case R.id.nav_update_issues:
+                logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
+                displayUpdateIssuesFragment();
+                return true;
+            /*case R.id.nav_pick_place:
+                logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
+                displayPickPlaceFragment();
+                return true;*/
+            case R.id.nav_about:
+                logMsg(LogMsg.ACTION_CLICKED_ABOUT);
+                displayAboutFragment();
+                return true;
+            /*case R.id.nav_save_debug_info:
+                logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
+                try {
+                    ArrayList<String> filePaths = new ArrayList<String>();
+                    String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
+                    String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
+                    if (logsFilePath != null) filePaths.add(logsFilePath);
+                    if (responsesFilePath != null) filePaths.add(responsesFilePath);
+                    Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
+                    sendEmailWithUnsyncedRecords(filePaths);
+                } catch (IOException ioe) {
+                    Log.e(TAG, "Unable to backup unsynced records " + ioe.toString());
+                    Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
+                }
+                displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
+                return true;*/
+            default:
+                Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
+                return true;
         }
     }
 
@@ -440,7 +465,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String updateSummary = newStatus + ": " + issue.getSummary();
 
-        PendingIntent pi = getPendingIntent(issueId);
+        PendingIntent pi = getPendingIntentToIssueDetail(issueId);
 
         // create the notification
         Notification.Builder notificationBuilder = new Notification.Builder(this);
@@ -458,7 +483,7 @@ public class MainActivity extends AbstractLocationActivity implements
         notificationManager.notify(notificationTag, issueId, notification);
     }
 
-    private PendingIntent getPendingIntent(int issueId) {
+    private PendingIntent getPendingIntentToIssueDetail(int issueId) {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getSummary();
 

@@ -125,6 +125,12 @@
         <item quantity="other">You\'ve taken %d actions</item>
     </plurals>
 
+    <plurals name="recently_updated_issues">
+        <item quantity="zero">No issues have been updated recently</item>
+        <item quantity="one">%d update on an issue you follow</item>
+        <item quantity="other">%d updates on issues you follow</item>
+    </plurals>
+
     <string name="cant_get_location_title">Can\'t find your location</string>
     <string name="cant_get_location_detail">Sorry, we can\'t figure out where you are right now.  For now we are just showing a map of New Haven.</string>
 
