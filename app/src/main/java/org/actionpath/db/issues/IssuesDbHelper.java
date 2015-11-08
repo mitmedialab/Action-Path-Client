@@ -13,7 +13,7 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
     private static String TAG = IssuesDbHelper.class.getName();
 
     private static final String DATABASE_NAME = "issues.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     // DB Table consts
     public static final String TABLE_NAME = "issues";
@@ -123,6 +123,9 @@ public class IssuesDbHelper extends SQLiteOpenHelper {
         } else if(oldVersion==5 && newVersion>=6) {
             db.execSQL("ALTER TABLE " + TABLE_NAME + " ADD COLUMN " + OTHER_RESPONSE_JSON_COL + " text;");
             Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v5");
+        } else if(oldVersion==6 && newVersion>=7){
+            db.execSQL("CREATE INDEX place_id_idx ON "+TABLE_NAME+"("+PLACE_ID_COL+");");
+            Log.i(TAG, "  Upgraded " + TABLE_NAME + " from v6");
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
             onCreate(db);
