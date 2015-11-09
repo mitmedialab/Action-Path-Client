@@ -5,11 +5,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
@@ -26,6 +30,8 @@ public class IssueResponsesFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_ISSUE_ID = "issueId";
+
+    private static String TAG = IssueResponsesFragment.class.getName();
 
     // TODO: Rename and change types of parameters
     private int issueId;
@@ -65,6 +71,7 @@ public class IssueResponsesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_issue_response_list, container, false);
         responseListContainer = (LinearLayout) view.findViewById(R.id.issue_other_responses_list_container);
         responseListContainer.removeAllViews();
+        ImageLoader imageLoader = ImageLoader.getInstance();
         for(Response response : issueResponses) {
             View responseView = inflater.inflate(R.layout.fragment_issue_response, container, false);
             String questionAnswerText = "";
@@ -78,11 +85,22 @@ public class IssueResponsesFragment extends Fragment {
                     DateUtils.getRelativeTimeSpanString(response.timestamp*1000));
             ((TextView) responseView.findViewById(R.id.other_response_question_text)).setText(questionAnswerText);
             TextView commentTextView = (TextView) responseView.findViewById(R.id.other_response_comment_text);
+            // show comment if there is one
             if(response.hasComment()) {
                 commentTextView.setText(response.comment);
                 commentTextView.setVisibility(View.VISIBLE);
             } else {
                 commentTextView.setVisibility(View.GONE);
+            }
+            // show image if there is one
+            ImageView otherResponseImageView = (ImageView) responseView.findViewById(R.id.other_response_photo_tumbnail);
+            if(response.hasServerPhotoUrl()){
+                Log.v(TAG, "showing image on other response " + response.id + " "+response.serverPhotoUrl);
+                imageLoader.displayImage(response.serverPhotoUrl, otherResponseImageView);
+                otherResponseImageView.setVisibility(View.VISIBLE);
+            } else {
+                Log.v(TAG,"no image on other response "+response.id);
+                otherResponseImageView.setVisibility(View.GONE);
             }
             responseListContainer.addView(responseView);
         }

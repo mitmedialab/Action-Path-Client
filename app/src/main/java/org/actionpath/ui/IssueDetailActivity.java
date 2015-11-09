@@ -204,12 +204,14 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         // update the list of other responses
         if(issue.hasOtherReponses()){
             Log.v(TAG,"adding other responses fragment");
+            ((View)findViewById(R.id.issue_detail_other_responses_container)).setVisibility(View.VISIBLE);
             Fragment issueResponsesFragment = IssueResponsesFragment.newInstance(this.issue.getId());
             FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
             fragmentTransaction2.replace(R.id.issue_detail_other_responses_container, issueResponsesFragment);
             fragmentTransaction2.commit();
         } else {
             Log.v(TAG,"skipping other responses fragment");
+            ((View)findViewById(R.id.issue_detail_other_responses_container)).setVisibility(View.GONE);
         }
     }
 
