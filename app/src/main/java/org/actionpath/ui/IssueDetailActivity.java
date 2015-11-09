@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -183,12 +184,23 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     public void onResume(){
         super.onResume();
         issue = IssuesDataSource.getInstance(this).getIssue(issue.getId());
+        // update the count of your responses
         Log.v(TAG,"Issue has "+issue.getResponseCount()+" responses");
         Log.v(TAG, "Updating response count feedack to " + issue.getResponseCount());
         String responseCountFeedback = getResources().getQuantityString(R.plurals.response_count,
                 issue.getResponseCount(),issue.getResponseCount(),issue.getResponseCount());
         TextView responseCountTextView = (TextView) findViewById(R.id.issue_detail_response_count);
         responseCountTextView.setText(responseCountFeedback);
+        // update the list of other responses
+        if(issue.hasOtherReponses()){
+            Log.v(TAG,"adding other responses fragment");
+            Fragment issueResponsesFragment = IssueResponsesFragment.newInstance(this.issue.getId());
+            FragmentTransaction fragmentTransaction2 = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction2.replace(R.id.issue_detail_other_responses_container, issueResponsesFragment);
+            fragmentTransaction2.commit();
+        } else {
+            Log.v(TAG,"skipping other responses fragment");
+        }
     }
 
     /**

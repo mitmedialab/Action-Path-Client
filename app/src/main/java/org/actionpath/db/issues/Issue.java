@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.util.Log;
 
 import org.actionpath.db.AbstractModel;
+import org.actionpath.db.responses.Response;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -12,6 +14,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class Issue extends AbstractModel {
@@ -337,5 +340,30 @@ public class Issue extends AbstractModel {
     public int getResponseCount() { return responseCount; }
 
     public void incrementResponseCount() { responseCount++; }
+
+    public boolean hasOtherReponses(){
+        return (this.otherResponseJson!=null) && (this.otherResponseJson.length()>0)
+                && (!this.otherResponseJson.trim().equals("[]"));
+    }
+
+    public List<Response> getOtherResponsesList() {
+        List<Response> responses = new ArrayList();
+        if(!this.hasOtherReponses()) {
+            return responses;
+        }
+        try {
+            JSONArray otherResponses = new JSONArray(this.otherResponseJson);
+            for(int i=0;i<otherResponses.length();i++){
+                JSONObject otherResponse = new JSONObject(otherResponses.get(i).toString());
+                Response response = Response.fromJson(otherResponse);
+                responses.add(response);
+            }
+        } catch (JSONException jse){
+            Log.e(TAG,"Unable to parse otherResponses json on issue "+getId());
+            Log.e(TAG,this.otherResponseJson);
+            Log.e(TAG, Log.getStackTraceString(jse));
+        }
+        return responses;
+    }
 
 }

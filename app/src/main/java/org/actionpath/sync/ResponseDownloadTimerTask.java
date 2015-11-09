@@ -53,7 +53,7 @@ public class ResponseDownloadTimerTask extends TimerTask {
         Calendar c = Calendar.getInstance();
         int hourIn24 = c.get(Calendar.HOUR_OF_DAY);
         Log.v(TAG,"current hour of day is "+hourIn24);
-        return (hourIn24 > 8) && (hourIn24 < 23);
+        return (hourIn24 > 8) && (hourIn24 < 21);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ResponseDownloadTimerTask extends TimerTask {
                         issueResponses.add(otherResponse);
                     }
                 }
-                Log.d(TAG," Issue "+issueId+": "+otherResponses.size()+" other responses");
+                Log.d(TAG," Issue "+issueId+": "+issueResponses.size()+" other responses");
                 issuesDataSource.updateOtherResponsesJson(issueId,otherResponses);  // this will also mark it as new
             }
             lastCheck = System.currentTimeMillis()/1000;;
@@ -112,15 +112,16 @@ public class ResponseDownloadTimerTask extends TimerTask {
                 NotificationManager notificationManager =
                         (NotificationManager) contextWrapper.getSystemService(contextWrapper.NOTIFICATION_SERVICE);
                 notificationManager.notify(ISSUES_UPDATED_NOTIFICATION_TAG, ISSUES_UPDATED_NOTIFICATION_ID, notification);
+                Log.d(TAG,"Preppde notification ");
             }
         } catch (URISyntaxException use){
-            Log.e(TAG, "Couldn't sync to server: "+use.toString());
+            Log.e(TAG, "URL failed: "+use.toString());
             worked = false;
         } catch (IOException ioe){
-            Log.e(TAG, "Server said it failed to sync IO: "+ioe.toString());
+            Log.e(TAG, "Failed to sync IO: "+ioe.toString());
             worked = false;
         } catch (JSONException jse){
-            Log.e(TAG, "Server said it failed to sync JSON: "+jse.toString());
+            Log.e(TAG, "Failed to sync JSON: "+jse.toString());
             worked = false;
         }
     }

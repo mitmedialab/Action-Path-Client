@@ -117,6 +117,14 @@
                 android:id="@+id/issue_detail_status"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
+            <!-- show the default, or custom, question text -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:id="@+id/issue_detail_other_responses_container"
+                />
+
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
                 android:layout_width="match_parent"

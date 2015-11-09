@@ -12,6 +12,7 @@ import android.util.Log;
 import org.actionpath.db.responses.Response;
 import org.actionpath.util.Config;
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -341,7 +342,11 @@ public class IssuesDataSource {
                                           boolean markAsNew, boolean setUpdatedAtToNow) {
         JSONArray arr = new JSONArray();
         for(Response r:otherResponses){
-            arr.put(r);
+            try {
+                arr.put(r.toJson());
+            } catch(JSONException jse){
+                Log.v(TAG,"Couldn't convert response "+r.id+" to json in updateOtherResponsesJson");
+            }
         }
         ContentValues contentValues = new ContentValues();
         contentValues.put(IssuesDbHelper.OTHER_RESPONSE_JSON_COL, arr.toString());

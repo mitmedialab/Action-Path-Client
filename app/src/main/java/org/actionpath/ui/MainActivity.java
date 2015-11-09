@@ -136,6 +136,7 @@ public class MainActivity extends AbstractLocationActivity implements
             if(bundle!=null) {
                 if (bundle.containsKey(PARAM_FRAGMENT_MENU_ID)) {
                     int menuItemToClick = bundle.getInt(PARAM_FRAGMENT_MENU_ID);
+                    Log.d(TAG,"Going to main activity from notification "+menuItemToClick);
                     boolean cameFromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
                     if (cameFromUpdateNotification) {
                         logMsg(LogMsg.ACTION_CLICKED_ON_UPDATED_ISSUES_NOTIFICATION);
@@ -158,6 +159,7 @@ public class MainActivity extends AbstractLocationActivity implements
         //Check to see which item was being clicked and perform appropriate action
         switch (menuItemId) {
             case R.id.nav_home:
+                Log.v(TAG,"Nav: home");
                 logMsg(LogMsg.ACTION_CLICKED_HOME);
                 if(!hasPlaceSet()){
                     showPickPlaceFragment();
@@ -166,34 +168,42 @@ public class MainActivity extends AbstractLocationActivity implements
                 }
                 return true;
             case R.id.nav_recently_updated_issues:
+                Log.v(TAG,"Nav: recently updated");
                 logMsg(LogMsg.ACTION_CLICKED_RECENTLY_UPDATED_ISSUES);
                 displayIssuesListFragment(IssuesDataSource.RECENTLY_UPDATED_ISSUES_LIST);
                 return true;
             case R.id.nav_my_issues:
+                Log.v(TAG,"Nav: my issues");
                 logMsg(LogMsg.ACTION_CLICKED_MY_ISSUES);
                 displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
                 return true;
             case R.id.nav_map:
+                Log.v(TAG,"Nav: map");
                 logMsg(LogMsg.ACTION_CLICKED_ISSUES_MAP);
                 displayMapFragment();
                 return true;
             case R.id.nav_all_issues:
+                Log.v(TAG,"Nav: all issues");
                 logMsg(LogMsg.ACTION_CLICKED_ALL_ISSUES);
                 displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
                 return true;
             case R.id.nav_update_issues:
+                Log.v(TAG,"Nav: update issues");
                 logMsg(LogMsg.ACTION_CLICKED_UPDATE_ISSUES);
                 displayUpdateIssuesFragment();
                 return true;
             /*case R.id.nav_pick_place:
+                Log.v(TAG,"Nav: pick place");
                 logMsg(LogMsg.ACTION_CLICKED_PICK_PLACE);
                 displayPickPlaceFragment();
                 return true;*/
             case R.id.nav_about:
+                Log.v(TAG,"Nav: about");
                 logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                 displayAboutFragment();
                 return true;
             /*case R.id.nav_save_debug_info:
+                Log.v(TAG,"Nav: save debug info");
                 logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
                 try {
                     ArrayList<String> filePaths = new ArrayList<String>();
@@ -265,6 +275,7 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onResume(){
         super.onResume();
+        Log.i(TAG, "onResume");
         if(!hasPlaceSet()){
             Log.w(TAG, "onResume: No place set yet");
             showPickPlaceFragment();

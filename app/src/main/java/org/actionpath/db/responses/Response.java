@@ -13,7 +13,7 @@ public class Response extends AbstractSyncableModel {
     public static String TAG = Response.class.getName();
 
     public String answerText;
-    public String comment;
+    public String comment = "";
     public String photoPath;
     public String serverPhotoUrl;
 
@@ -68,6 +68,18 @@ public class Response extends AbstractSyncableModel {
         return id == log.id;
     }
 
+    public JSONObject toJson() throws JSONException {
+        JSONObject j = new JSONObject();
+        j.put("id",this.id+"");
+        j.put("install_id",this.installationId);
+        j.put("issue_id",this.issueId);
+        j.put("timestamp",this.timestamp);
+        j.put("comment",this.comment);
+        j.put("answer",this.answerText);
+        j.put("photoUrl",this.serverPhotoUrl);
+        return j;
+    }
+
     public static Response fromJson(JSONObject object) throws JSONException {
         Response r = new Response();
         r.id = object.getInt("id");
@@ -91,6 +103,10 @@ public class Response extends AbstractSyncableModel {
     @Override
     public String toString() {
         return id + " (" + answerText+ " on "+issueId+")";
+    }
+
+    public boolean hasComment(){
+        return comment!=null && comment.length()>0 && !comment.equals("null");
     }
 
 }
