@@ -13,6 +13,7 @@ import com.google.android.gms.location.LocationServices;
 
 import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.responses.ResponsesDataSource;
+import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
 
 import java.util.Timer;
@@ -29,9 +30,9 @@ public class SyncService extends Service implements
 
     private static boolean running = false;
 
-    private static int LOG_UPLOAD_INTERVAL = 5 * 60 * 1000;
-    private static int RESPONSE_UPLOAD_INTERVAL = 1 * 60 * 1000;
-    private static int RESPONSE_DOWNLOAD_INTERVAL = 1 * 60 * 1000; // TODO make this less often
+    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 10) * 60 * 1000;
+    private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
+    private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
