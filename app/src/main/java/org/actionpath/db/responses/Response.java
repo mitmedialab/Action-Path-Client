@@ -76,7 +76,7 @@ public class Response extends AbstractSyncableModel {
         j.put("timestamp",this.timestamp);
         j.put("comment",this.comment);
         j.put("answer",this.answerText);
-        j.put("photoUrl",this.serverPhotoUrl);
+        j.put("photo_url",this.serverPhotoUrl);
         return j;
     }
 
@@ -88,8 +88,8 @@ public class Response extends AbstractSyncableModel {
         r.timestamp = object.getInt("timestamp");
         r.comment = object.getString("comment");
         r.answerText = object.getString("answer");
-        if(object.has("photoUrl")) {
-            r.serverPhotoUrl = object.getString("photoUrl");
+        if(object.has("photo_url")) {
+            r.serverPhotoUrl = object.getString("photo_url");
         }
         Log.v(TAG, "  " + r.id + ": image_url = " + r.serverPhotoUrl);
         return r;
@@ -107,6 +107,10 @@ public class Response extends AbstractSyncableModel {
 
     public boolean hasComment(){
         return comment!=null && comment.length()>0 && !comment.equals("null");
+    }
+
+    public boolean hasServerPhotoUrl(){
+        return serverPhotoUrl!=null && serverPhotoUrl.length()>0 && !serverPhotoUrl.equals("null");
     }
 
 }

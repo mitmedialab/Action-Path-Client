@@ -366,4 +366,14 @@ public class Issue extends AbstractModel {
         return responses;
     }
 
+    public String lastestOtherResponseImage(){
+        List<Response> otherResponses = getOtherResponsesList();
+        for(Response r : otherResponses){
+            if(r.hasServerPhotoUrl()){
+                return r.serverPhotoUrl;
+            }
+        }
+        return null;
+    }
+
 }

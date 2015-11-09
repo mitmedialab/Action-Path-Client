@@ -163,13 +163,23 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         fragmentTransaction.commit();
         mapFragment.getMapAsync(this);
 
+        // show the issue's image, failing that the latest image from someone else's responses
+        String headerImageUrl = null;
         if(issue.hasImageUrl()){
-            Log.d(TAG,"issue has an image: "+issue.getImageUrl());
+            Log.d(TAG, "issue has an image: " + issue.getImageUrl());
+            headerImageUrl = issue.getImageUrl();
+        } else {
+            String otherReponseImageUrl = issue.lastestOtherResponseImage();
+            if(otherReponseImageUrl!=null){
+                headerImageUrl = otherReponseImageUrl;
+            }
+        }
+        if(headerImageUrl!=null){
             if(imageLoader==null || !imageLoader.isInited()){
                 imageLoader = ImageLoader.getInstance();
             }
             ImageView issueImage = (ImageView) findViewById(R.id.issue_detail_backdrop);
-            imageLoader.displayImage(issue.getImageUrl(), issueImage);
+            imageLoader.displayImage(headerImageUrl, issueImage);
         }
 
     }

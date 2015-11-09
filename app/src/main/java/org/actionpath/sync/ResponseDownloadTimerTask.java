@@ -86,7 +86,7 @@ public class ResponseDownloadTimerTask extends TimerTask {
                     }
                 }
                 Log.d(TAG," Issue "+issueId+": "+issueResponses.size()+" other responses");
-                issuesDataSource.updateOtherResponsesJson(issueId,otherResponses);  // this will also mark it as new
+                issuesDataSource.updateOtherResponsesJson(issueId,issueResponses);  // this will also mark it as new
             }
             lastCheck = System.currentTimeMillis()/1000;;
             worked = true;
