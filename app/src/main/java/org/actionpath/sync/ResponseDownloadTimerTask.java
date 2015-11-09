@@ -62,6 +62,7 @@ public class ResponseDownloadTimerTask extends TimerTask {
         Log.d(TAG, "Timer says we should download any new responses now!");
         if(!isOkTimeToUpdate()){
             Log.d(TAG, "  skipping because it isn't a valid time of day");
+            return;
         }
         long followedIssueCount = issuesDataSource.countFollowedIssues(0);
         if(followedIssueCount==0){
