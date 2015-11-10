@@ -31,7 +31,6 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
-import org.actionpath.db.properties.PropertiesDataSource;
 
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
@@ -67,7 +66,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
         fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
         if(fromGeofenceNotification){
-            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
+            logMsg(issueID, LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
         } else if (fromUpdateNotification) {
             logMsg(issueID,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
         }
