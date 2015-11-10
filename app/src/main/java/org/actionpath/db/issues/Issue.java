@@ -52,7 +52,7 @@ public class Issue extends AbstractModel {
     String answer4;
     String answer5;
     String answer6;
-    float radius = 500;   // geofence radius to use, in meters
+    float radius = DEFAULT_RADIUS;   // geofence radius to use, in meters
     boolean test = false;   // is this a test issue we have inserted?
 
     boolean followed = false;
