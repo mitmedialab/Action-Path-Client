@@ -44,6 +44,11 @@
             android:icon="@drawable/ic_launcher"
             android:title="@string/nav_save_debug_info"/>-->
         <item
+            android:id="@+id/nav_stats"
+            android:checked="false"
+            android:icon="@drawable/ic_action_about"
+            android:title="@string/nav_stats"/>
+        <item
             android:id="@+id/nav_about"
             android:checked="false"
             android:icon="@drawable/ic_action_about"

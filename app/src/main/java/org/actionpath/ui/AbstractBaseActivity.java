@@ -18,6 +18,8 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.properties.PropertiesDataSource;
+import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.places.Place;
 import org.actionpath.sync.SyncService;
 import org.actionpath.db.logs.LogsDataSource;
@@ -47,6 +49,9 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceBundle);
         // make sure database is instantiated
         IssuesDataSource.getInstance(this);
+        PropertiesDataSource.getInstance(this);
+        ResponsesDataSource.getInstance(this);
+        LogsDataSource.getInstance(this);
         // make sure the LogSyncService is running
         if(!SyncService.isRunning()) {
             Intent i = new Intent(this, SyncService.class);

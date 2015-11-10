@@ -31,13 +31,14 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.properties.PropertiesDataSource;
 
 
 public class IssueDetailActivity extends AbstractLocationActivity implements
         OnMapReadyCallback, AppBarLayout.OnOffsetChangedListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";
-    public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
+    public static final String PARAM_FROM_GEOFENCE_NOTIFICATION = "fromGeofenceNotification";
     public static final String PARAM_FROM_UPDATE_NOTIFICATION = "fromUpdateNotification";
 
     private static final int LONG_SNACKBAR_DURATION = 5500;
@@ -48,7 +49,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     private CollapsingToolbarLayout collapsingToolbar;
     private Issue issue;
     private ImageLoader imageLoader;
-    private boolean fromSurveyNotification;
+    private boolean fromGeofenceNotification;
     private boolean fromUpdateNotification;
 
     private View.OnClickListener onFollowClickListener;
@@ -63,10 +64,11 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         int issueID = bundle.getInt(PARAM_ISSUE_ID);
-        fromSurveyNotification = bundle.getBoolean(PARAM_FROM_SURVEY_NOTIFICATION);
+        fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
         fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
-        if(fromSurveyNotification){
+        if(fromGeofenceNotification){
             logMsg(issueID,LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
+            PropertiesDataSource.getInstance().incrementGeofenceNotificationFiredCount();
         } else if (fromUpdateNotification) {
             logMsg(issueID,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
         }
@@ -312,7 +314,7 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         Intent intent = new Intent()
                 .setClass(this, IssueTakeActionActivity.class)
                 .putExtra(IssueTakeActionActivity.PARAM_ISSUE_ID, issue.getId())
-                .putExtra(IssueTakeActionActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+                .putExtra(IssueTakeActionActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, false);
         startActivity(intent);
     }
 

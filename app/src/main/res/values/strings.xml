@@ -14,6 +14,7 @@
     <string name="nav_update_issues">Update Actions</string>
     <string name="nav_pick_place">Pick a City</string>
     <string name="nav_about">About</string>
+    <string name="nav_stats">Stats</string>
 
     <string name="all_issues_of_request_type_header">%1$s: All in %2$s</string>
     <string name="all_issues_header">All Actions in %s</string>
@@ -135,5 +136,10 @@
     <string name="cant_get_location_detail">Sorry, we can\'t figure out where you are right now.  For now we are just showing a map of New Haven.</string>
 
     <string name="other_responses_title">Comments from others</string>
+
+    <string name="stats_header">Stats</string>
+    <string name="stats_response_rate">You respond %s of the time</string>
+    <string name="stats_actions_taken_description">The number of times you have taken action on any issues</string>
+    <string name="stats_response_rate_description">The percent of time you take action on an issue you get a notification about.</string>
 
 </resources>

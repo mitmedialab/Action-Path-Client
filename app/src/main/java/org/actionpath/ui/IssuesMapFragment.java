@@ -172,7 +172,7 @@ public class IssuesMapFragment extends Fragment implements
         Intent intent = new Intent()
                 .setClass(this.getActivity().getApplicationContext(), IssueDetailActivity.class)
                 .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, i.getId())
-                .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+                .putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, false);
         startActivity(intent);
     }
 

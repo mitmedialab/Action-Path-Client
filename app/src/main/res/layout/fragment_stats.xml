@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.actionpath.ui.StatsFragment">
+
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stats_actions_taken_head"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_actions_taken_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stats_response_rate_head"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/stats_response_rate_description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

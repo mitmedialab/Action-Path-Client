@@ -28,7 +28,6 @@ import org.actionpath.R;
 import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
-import org.actionpath.db.issues.IssuesDbHelper;
 import org.actionpath.db.logs.LogMsg;
 import org.actionpath.places.Place;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
@@ -202,6 +201,11 @@ public class MainActivity extends AbstractLocationActivity implements
                 logMsg(LogMsg.ACTION_CLICKED_ABOUT);
                 displayAboutFragment();
                 return true;
+            case R.id.nav_stats:
+                Log.v(TAG,"Nav: stats");
+                logMsg(LogMsg.ACTION_CLICKED_STATS);
+                displayStatsFragment();
+                return true;
             /*case R.id.nav_save_debug_info:
                 Log.v(TAG,"Nav: save debug info");
                 logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
@@ -297,7 +301,10 @@ public class MainActivity extends AbstractLocationActivity implements
     private void updateNavBarHeaderText(){
         TextView headerText = (TextView) findViewById(R.id.nav_bar_header_text);
         if(Config.getInstance().isAssignRequestTypeMode()) {
-            headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
+            //protect because on first run we don't have an assigned request type yet!
+            if(getPlace()!=null && getAssignedRequestType()!=null) {
+                headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
+            }
         } else {
             headerText.setText(getString(R.string.app_name) + ": " + getPlace().name);
         }
@@ -395,6 +402,12 @@ public class MainActivity extends AbstractLocationActivity implements
         displayFragment(fragment);
     }
 
+    private void displayStatsFragment() {
+        toolbar.setTitle(R.string.stats_header);
+        StatsFragment fragment = StatsFragment.newInstance();
+        displayFragment(fragment);
+    }
+
     public void onPause() {
         super.onPause();
         // make sure to cancel the issue update task if it is running
@@ -415,7 +428,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Intent intent = new Intent()
             .setClass(this, IssueDetailActivity.class)
             .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-                .putExtra(IssueDetailActivity.PARAM_FROM_SURVEY_NOTIFICATION, false);
+                .putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, false);
         startActivity(intent);
     }
 

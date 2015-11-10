@@ -13,13 +13,15 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_FOLLOWED_ISSUE_BY_ANSWERING = "FollowedIssueFromAnswer";
     public static final String ACTION_CLICKED_ON_SURVEY_NOTIFICATION = "ClickedOnSurveyNotification";
     public static final String ACTION_CLICKED_ON_UPDATED_ISSUES_NOTIFICATION = "ClickedOnUpdatedIssuesNotification";
-    public static final String ACTION_RESPONDED_TO_QUESTION = "ResponsedToSuvery";
+    public static final String ACTION_RESPONDED_TO_QUESTION = "ResponsedToSurvey";
+    public static final String ACTION_RESPONDED_TO_QUESTION_FROM_GEOFENCE_NOTIFICATION = "ResponsedToSurveyFromGeofenceNotification";
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
     public static final String ACTION_CREATED_ISSUE = "CreatedIssueInDB";
     public static final String ACTION_PICKED_PLACE= "PickedPlace";
     public static final String ACTION_CLICKED_ABOUT = "ClickedAboutMenuItem";
+    public static final String ACTION_CLICKED_STATS = "ClickedStatsMenuItem";
     public static final String ACTION_CLICKED_RECENTLY_UPDATED_ISSUES = "ClickedRecentlyUpdatedIssuesMenuItem";
     public static final String ACTION_CLICKED_MY_ISSUES = "ClickedMyIssuesMenuItem";
     public static final String ACTION_CLICKED_ISSUES_MAP = "ClickedIssuesMapMenuItem";

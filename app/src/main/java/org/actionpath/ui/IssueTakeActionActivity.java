@@ -15,7 +15,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -32,6 +31,7 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.properties.PropertiesDataSource;
 import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.geofencing.GeofencingRemovalListener;
 import org.actionpath.geofencing.GeofencingRemover;
@@ -52,12 +52,12 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
     private static String TAG = IssueTakeActionActivity.class.getName();
 
     public static final String PARAM_ISSUE_ID = "issueID";
-    public static final String PARAM_FROM_SURVEY_NOTIFICATION = "fromSurveyNotification";
+    public static final String PARAM_FROM_GEOFENCE_NOTIFICATION = "fromGeofenceNotification";
     public static final String PARAM_FROM_UPDATE_NOTIFICATION = "fromUpdateNotification";
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
-    private boolean fromSurveyNotification;
+    private boolean fromGeofenceNotification;
     private boolean fromUpdateNotification;
     private AsyncTask answeringQuestionTask;
     private AbstractIssueQuestionFragment answerFragment;
@@ -76,7 +76,7 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
         Bundle bundle = getIntent().getExtras();
         // TODO: handle case where issueID is unknown or badly formed
         issueId = bundle.getInt(PARAM_ISSUE_ID);
-        fromSurveyNotification = bundle.getBoolean(PARAM_FROM_SURVEY_NOTIFICATION);
+        fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
         fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
         issue = IssuesDataSource.getInstance().getIssue(issueId);
         // set up toolbar
@@ -234,6 +234,9 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
                 ResponsesDataSource dataSource = ResponsesDataSource.getInstance(context);
                 dataSource.insert(context, issue.getId(), answerText, comment, photoPath, loc);
                 logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION, answerText);
+                if(fromGeofenceNotification){
+                    logMsg(issue.getId(), LogMsg.ACTION_RESPONDED_TO_QUESTION_FROM_GEOFENCE_NOTIFICATION, answerText);
+                }
                 return true;
             }
             @Override
@@ -244,11 +247,13 @@ public class IssueTakeActionActivity extends AbstractLocationActivity implements
                 issue.setFollowed(true);
                 IssuesDataSource.getInstance().updateIssueFollowed(issue.getId(), issue.isFollowed());
                 logMsg(issueId,LogMsg.ACTION_FOLLOWED_ISSUE_BY_ANSWERING);
-                // and mark that you've responded
+                // and mark that you've responded in various ways
+                PropertiesDataSource.getInstance().incrementActionsTakenCount();
                 issue.incrementResponseCount();
                 IssuesDataSource.getInstance().updateIssueResponseCount(issue.getId(), issue.getResponseCount());
                 // remove geofence if it from the survey
-                if(fromSurveyNotification) {
+                if(fromGeofenceNotification) {
+                    PropertiesDataSource.getInstance().incrementActionsTakenFromGeofenceNotificationCount();
                     // only remove the geofence if we got an alert and then answered a question
                     removeGeofence();
                 }
