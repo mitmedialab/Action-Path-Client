@@ -64,7 +64,7 @@ public class PropertiesDataSource {
     }
 
     public void incrementGeofenceNotificationFiredCount(){
-        incrementValue(Property.ACTIONS_TAKEN_COUNT_KEY);
+        incrementValue(Property.GEOFENCE_NOTIFICATON_COUNT_KEY);
     }
 
     public void incrementActionsTakenFromGeofenceNotificationCount(){
@@ -72,8 +72,9 @@ public class PropertiesDataSource {
     }
 
     public float getGeofenceResponseRate(){
-        int actionCount= findByKey(Property.ACTIONS_TAKEN_FROM_GEOFENCE_NOTIFICATION_COUNT_KEY).getIntValue();
-        int notificationCount = findByKey(Property.GEOFENCE_NOTIFICATON_COUNT_KEY).getIntValue();
+        float actionCount= findByKey(Property.ACTIONS_TAKEN_FROM_GEOFENCE_NOTIFICATION_COUNT_KEY).getIntValue();
+        float notificationCount = findByKey(Property.GEOFENCE_NOTIFICATON_COUNT_KEY).getIntValue();
+        Log.v(TAG, "Response rate = "+actionCount+"/"+notificationCount);
         if(notificationCount==0) return 0;
         return actionCount / notificationCount;
     }
@@ -121,9 +122,7 @@ public class PropertiesDataSource {
      */
     private Property findByKey(String key) {
         Property p = null;
-        if(!exists(key)){
-            insert(key, "0");
-        }
+        createIfNeeded(key);
         Cursor cursor = db.query(PropertiesDbHelper.TABLE_NAME,
                 PropertiesDbHelper.COLUMNS,
                 PropertiesDbHelper.KEY_COL +"=?",
@@ -133,6 +132,12 @@ public class PropertiesDataSource {
             p = Property.fromCursor(cursor);
         }
         return p;
+    }
+
+    private void createIfNeeded(String key){
+        if(!exists(key)){
+            insert(key, "0");
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import org.actionpath.db.properties.PropertiesDataSource;
 import org.actionpath.ui.IssueDetailActivity;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
@@ -27,8 +28,10 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         for(String str:issueIds){
             int issueId = Integer.parseInt(str);
             sendNotification(issueId);
+            // track that we hit a geofence, in various ways
             LogsDataSource.getInstance(getApplicationContext()).insert(
                     getApplicationContext(), issueId, LogMsg.ACTION_ENTERED_GEOFENCE, null);
+            PropertiesDataSource.getInstance().incrementGeofenceNotificationFiredCount();
         }
     }
 

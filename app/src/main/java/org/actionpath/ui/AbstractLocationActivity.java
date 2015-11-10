@@ -169,11 +169,12 @@ public abstract class AbstractLocationActivity extends AbstractBaseActivity impl
 
 
     protected void logMsg(int issueId, String action){
-        logMsg(issueId,action,"");
+        logMsg(issueId, action, "");
     }
 
     protected void logMsg(int issueId, String action, String details){
         Location loc = null;
+        Log.i(TAG,"Log Msg "+action+" on "+issueId+" ("+details+")");
         try {
             loc = getLocation();
         } catch(GoogleApiClientNotConnectionException mce){

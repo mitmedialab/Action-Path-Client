@@ -68,7 +68,6 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
         fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
         if(fromGeofenceNotification){
             logMsg(issueID,LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
-            PropertiesDataSource.getInstance().incrementGeofenceNotificationFiredCount();
         } else if (fromUpdateNotification) {
             logMsg(issueID,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
         }
@@ -310,11 +309,10 @@ public class IssueDetailActivity extends AbstractLocationActivity implements
     }
 
     private void showTakeActionFragment(){
-        // Then you start a new Activity via Intent
         Intent intent = new Intent()
                 .setClass(this, IssueTakeActionActivity.class)
                 .putExtra(IssueTakeActionActivity.PARAM_ISSUE_ID, issue.getId())
-                .putExtra(IssueTakeActionActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, false);
+                .putExtra(IssueTakeActionActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, fromGeofenceNotification);
         startActivity(intent);
     }
 
