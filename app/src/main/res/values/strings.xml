@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Action Path</string>
+    <string name="app_name">Action Path: New Haven</string>
 
     <string name="action_settings">Settings</string>
     <string name="places_list_header">Choose Your <City> </City></string>
