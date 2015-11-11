@@ -7,7 +7,7 @@
   },
   "validRequestTypes": [
     {"id":117, "name": "Sidewalks and Curb damage", "nickname": "Sidewalk Sheriff"},
-    {"id":1250, "name": "Illegal Dumping", "nickname": "Dumping Doctor"},
+    {"id":1250, "name": "Illegal Dumping", "nickname": "Dumping Detective"},
     {"id":51, "name": "Traffic Signal / Pedestrian Signal", "nickname": "Signal Sorter"}
   ]
 }
