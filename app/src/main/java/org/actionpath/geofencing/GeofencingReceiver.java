@@ -16,6 +16,7 @@ import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
 import org.actionpath.R;
 import org.actionpath.db.logs.LogsDataSource;
+import org.actionpath.ui.MainActivity;
 
 public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
 
@@ -61,7 +62,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getSummary();
 
-        PendingIntent pi = getPendingIntent(issueId);
+        PendingIntent pi = MainActivity.getPendingIntentToIssueDetail(this, issueId);
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);
@@ -89,19 +90,6 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         notificationManager.notify(GEOFENCE_NOTIFICATION_TAG, issueId, notification);
     }
 
-    private PendingIntent getPendingIntent(int issueId) {
-        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
-        String summary = issue.getSummary();
-
-        Log.v(TAG, "Returning survey intent for IssueDetailActivity.class for issue: " + summary);
-
-        Intent surveyIntent = new Intent(this, IssueDetailActivity.class)
-                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-                .putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, true)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        return PendingIntent.getActivity(this, issueId, surveyIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-    }
 
     private NotificationManager getNotificationManager() {
         return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
