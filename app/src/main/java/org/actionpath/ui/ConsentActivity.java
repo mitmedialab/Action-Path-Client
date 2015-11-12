@@ -32,6 +32,7 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.util.Preferences;
 
 /**
  * Show fine print and have user press the button to accept
@@ -49,6 +50,7 @@ public class ConsentActivity extends AbstractBaseActivity {
         viewOnlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Preferences.getInstance(contextWrapper).saveConsent(true);
                 Intent intent = new Intent().setClass(contextWrapper, MainActivity.class);
                 startActivity(intent);
             }
