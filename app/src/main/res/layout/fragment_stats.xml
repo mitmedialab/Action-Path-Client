@@ -39,6 +39,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/stats_response_rate_description"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stats_install_id"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+
         </LinearLayout>
 
     </ScrollView>

@@ -141,5 +141,6 @@
     <string name="stats_response_rate">You respond %s of the time</string>
     <string name="stats_actions_taken_description">The number of times you have taken action on any issues</string>
     <string name="stats_response_rate_description">The percent of time you take action on an issue you get a notification about.</string>
+    <string name="stats_install_id">Your install id is %s</string>
 
 </resources>

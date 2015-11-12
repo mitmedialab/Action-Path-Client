@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import org.actionpath.R;
 import org.actionpath.db.properties.PropertiesDataSource;
+import org.actionpath.util.Installation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,8 +60,13 @@ public class StatsFragment extends Fragment {
         // set the percent response rate
         TextView responseRate = (TextView) view.findViewById(R.id.stats_response_rate_head);
         String strToFormat = getResources().getString(R.string.stats_response_rate);
-        String formattedStr = String.format(strToFormat, Math.round(dataSource.getGeofenceResponseRate() * 100.0)+"%");
+        String formattedStr = String.format(strToFormat, Math.round(dataSource.getGeofenceResponseRate() * 100.0) + "%");
         responseRate.setText(formattedStr);
+        // and show their install id
+        TextView installIdView = (TextView) view.findViewById(R.id.stats_install_id);
+        String installIdStr = getResources().getString(R.string.stats_install_id);
+        String installIdText = String.format(installIdStr, Installation.id(this.getActivity()));
+        installIdView.setText(installIdText);
         return view;
     }
 
