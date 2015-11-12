@@ -53,6 +53,9 @@ public class IssueDownloadTimerTask extends AbstractLocationTimerTask implements
     @Override
     public void run() {
         Log.d(TAG, "Timer says we should update issues from the server!");
+        if(!Preferences.getInstance(this.getContextWrapper()).hasGivenConsent()){
+            return;
+        }
         // now grab the data from the server
         UpdateIssuesAsyncTask updateIssuesTask = new UpdateIssuesAsyncTask(this);
         updateIssuesTask.execute();

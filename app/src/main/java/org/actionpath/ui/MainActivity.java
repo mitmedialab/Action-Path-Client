@@ -38,7 +38,7 @@ import org.actionpath.util.Preferences;
 /**
  * The entry point for the app, handles menu nav too
  */
-public class MainActivity extends AbstractLocationActivity implements
+public class MainActivity extends AbstractLocationBaseActivity implements
         IssuesListFragment.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
         UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnDisplayExternalURLListener,
         AssignRequestTypeFragment.OnRequestTypeAssignedListener {
@@ -295,9 +295,15 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onResume(){
         super.onResume();
         Log.i(TAG, "onResume");
+        if(!prefs.hasGivenConsent()){
+            Intent intent = new Intent().setClass(this, ConsentActivity.class);
+            startActivity(intent);
+            return;
+        }
         if(!prefs.hasPlace()){
             Log.w(TAG, "onResume: No place set yet");
             showPickPlaceFragment();
+            return;
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();

@@ -36,7 +36,7 @@ public class SyncService extends Service implements
     private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * 60 * 1000;
     private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
     private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
-    private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 1 * 60 * 1000;
+    private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 5 * 60 * 1000;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;

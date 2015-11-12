@@ -18,8 +18,10 @@ public class Preferences {
     private static String TAG = Preferences.class.getName();
 
     public static final String PREFS_NAME = "ActionPathPrefs";
+
     public static final String PREF_ITEM_REQUEST_TYPE_JSON = "assignedRequestTypeJSON";
     public static final String PREF_ITEM_PLACE_JSON = "placeJSON";
+    public static final String PREF_ITEM_CONSENT = "hasGivenConsent";
 
     private static Preferences instance;
     private ContextWrapper contextWrapper;
@@ -34,6 +36,18 @@ public class Preferences {
 
     private void Preferences(){
 
+    }
+
+    public boolean hasGivenConsent(){
+        SharedPreferences settings = getSettings();
+        return settings.getBoolean(PREF_ITEM_CONSENT,false);
+    }
+
+    public void saveConsent(Boolean accepted){
+        SharedPreferences settings = getSettings();
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(PREF_ITEM_CONSENT, accepted);
+        editor.apply();
     }
 
     public int getAssignedRequestTypeId(){

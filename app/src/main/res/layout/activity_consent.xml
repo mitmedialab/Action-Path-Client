@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/scrollView"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:baselineAligned="false"
+            android:measureWithLargestChild="false">
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_summary"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_participation_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_participation_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_purpose_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_purpose_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_procedures_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_procedures_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_risks_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_risks_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_benefits_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_benefits_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_payment_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_payment_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_confidentiality_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_confidentiality_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_investigators_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_investigators_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_emergency_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_emergency_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_rights_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_rights_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+
+            <TextView
+                android:paddingTop="@dimen/textview_title_padding"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_agreement_title"
+                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/consent_agreement_text"
+                android:linksClickable="true"
+                android:autoLink="web"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            <Button
+                android:background="@android:drawable/dialog_holo_light_frame"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/consent_i_understand_button"
+                android:enabled="true"
+                android:padding="15dp"
+                android:text="@string/consent_i_understand"
+                android:layout_marginTop="15dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

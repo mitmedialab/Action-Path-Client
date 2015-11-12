@@ -69,8 +69,8 @@ public class PickPlaceListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
         Log.d(TAG,"Building pick place UI");
         view = inflater.inflate(R.layout.fragment_pick_place, container, false);
-        if(this.getActivity() instanceof AbstractLocationActivity){
-            final AbstractLocationActivity parentActivity = (AbstractLocationActivity) this.getActivity();
+        if(this.getActivity() instanceof AbstractLocationBaseActivity){
+            final AbstractLocationBaseActivity parentActivity = (AbstractLocationBaseActivity) this.getActivity();
             fetchingTask = new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {

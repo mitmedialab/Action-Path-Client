@@ -47,7 +47,7 @@ import java.util.List;
 /**
  * Give the user some options to provide feedback about the issue's current status
  */
-public class IssueTakeActionActivity extends AbstractLocationActivity implements GeofencingRemovalListener {
+public class IssueTakeActionActivity extends AbstractLocationBaseActivity implements GeofencingRemovalListener {
 
     private static String TAG = IssueTakeActionActivity.class.getName();
 

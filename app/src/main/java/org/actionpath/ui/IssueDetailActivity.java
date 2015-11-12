@@ -33,7 +33,7 @@ import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
 
 
-public class IssueDetailActivity extends AbstractLocationActivity implements
+public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         OnMapReadyCallback, AppBarLayout.OnOffsetChangedListener {
 
     public static final String PARAM_ISSUE_ID = "issueID";

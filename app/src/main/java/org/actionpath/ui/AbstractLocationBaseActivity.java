@@ -16,7 +16,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
 import org.actionpath.R;
-import org.actionpath.db.logs.LogMsg;
 import org.actionpath.util.Development;
 import org.actionpath.util.DeviceUtil;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
@@ -26,7 +25,7 @@ import org.actionpath.util.GoogleApiClientNotConnectionException;
  * See:
  * https://developers.google.com/android/reference/com/google/android/gms/common/api/GoogleApiClient
  */
-public abstract class AbstractLocationActivity extends AbstractBaseActivity implements
+public abstract class AbstractLocationBaseActivity extends AbstractBaseActivity implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
