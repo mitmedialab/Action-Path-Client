@@ -22,7 +22,7 @@ public class Development {
     public static final double NEW_HAVEN_LAT = 41.3100;
     public static final double NEW_HAVEN_LON = -72.9236;
 
-    public static boolean DEBUG_MODE = false;
+    public static boolean DEBUG_MODE = true;
 
     public static boolean isSimulator(){
         return Build.FINGERPRINT.startsWith("generic");
