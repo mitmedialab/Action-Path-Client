@@ -59,7 +59,7 @@
     <string name="issues_update_failed">Failed to update actions.</string>
     <string name="title_activity_maps">Map</string>
 
-    <string name="created_new_user">Created a new user</string>
+    <string name="created_new_installation">Created a new installation</string>
     <string name="placeholder">Placeholder Text</string>
 
     <string name="image_description">Image associated with the current action.</string>

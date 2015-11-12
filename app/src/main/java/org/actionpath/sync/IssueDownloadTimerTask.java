@@ -22,6 +22,7 @@ import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.ui.MainActivity;
 import org.actionpath.util.ActionPathServer;
+import org.actionpath.util.Config;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
 import org.actionpath.util.Installation;
 import org.actionpath.util.Preferences;
@@ -55,6 +56,16 @@ public class IssueDownloadTimerTask extends AbstractLocationTimerTask implements
         Log.d(TAG, "Timer says we should update issues from the server!");
         if(!Preferences.getInstance(this.getContextWrapper()).hasGivenConsent()){
             return;
+        }
+        // bail if no set up yet
+        if(Config.getInstance(this.getContextWrapper()).isPickPlaceMode()) {
+            if (!Preferences.getInstance(this.getContextWrapper()).hasPlace()) {
+                return;
+            }
+        } else {
+            if(Preferences.getInstance(this.getContextWrapper()).getAssignedRequestType()==null){
+                return;
+            }
         }
         // now grab the data from the server
         UpdateIssuesAsyncTask updateIssuesTask = new UpdateIssuesAsyncTask(this);

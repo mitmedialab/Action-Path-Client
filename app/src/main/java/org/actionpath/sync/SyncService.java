@@ -33,10 +33,12 @@ public class SyncService extends Service implements
 
     private static boolean running = false;
 
-    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * 60 * 1000;
-    private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
-    private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
-    private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 5 * 60 * 1000;
+    private static int THIRTY_SECS_IN_MILLIS = 30 * 1000;
+    private static int ONE_MINUTE_IN_MILLIS = 60 * 1000;
+    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * ONE_MINUTE_IN_MILLIS;
+    private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * ONE_MINUTE_IN_MILLIS;
+    private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * ONE_MINUTE_IN_MILLIS;
+    private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 5 * ONE_MINUTE_IN_MILLIS;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
@@ -68,20 +70,20 @@ public class SyncService extends Service implements
         // upload log messages periodically
         TimerTask logUploaderTask = new LogUploadTimerTask(this,getInstallationId(),googleApiClient);
         logUploadTimer = new Timer();
-        logUploadTimer.schedule(logUploaderTask, 0, LOG_UPLOAD_INTERVAL);
+        logUploadTimer.schedule(logUploaderTask, THIRTY_SECS_IN_MILLIS, LOG_UPLOAD_INTERVAL);
         // upload responses periodically
         TimerTask responseUploaderTask = new ResponseUploadTimerTask(this,getInstallationId(),googleApiClient);
         responseUploadTimer = new Timer();
-        responseUploadTimer.schedule(responseUploaderTask, 0, RESPONSE_UPLOAD_INTERVAL);
+        responseUploadTimer.schedule(responseUploaderTask, THIRTY_SECS_IN_MILLIS, RESPONSE_UPLOAD_INTERVAL);
         // download new responses to issues you are following periodically
         TimerTask responseDownloaderTask = new ResponseDownloadTimerTask(this,getInstallationId());
         responseDownloadTimer = new Timer();
-        responseDownloadTimer.schedule(responseDownloaderTask, 0, RESPONSE_DOWNLOAD_INTERVAL);
+        responseDownloadTimer.schedule(responseDownloaderTask, THIRTY_SECS_IN_MILLIS, RESPONSE_DOWNLOAD_INTERVAL);
         // set up to download issues near me once a day at noon
         TimerTask issueDownloadTimerTask = new IssueDownloadTimerTask(googleApiClient,this);
         issueDownloadTimer = new Timer();
         if(Development.DEBUG_MODE){
-            responseDownloadTimer.schedule(issueDownloadTimerTask, 0, ISSUE_DOWNLOAD_DEBUG_INTERVAL);
+            responseDownloadTimer.schedule(issueDownloadTimerTask, THIRTY_SECS_IN_MILLIS, ISSUE_DOWNLOAD_DEBUG_INTERVAL);
         } else {
             // once a day at noon in release
             Calendar firstRunCal = Calendar.getInstance();

@@ -52,9 +52,11 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         // generate a new installId user if we need to
         if (!Installation.hasId()) {
             getInstallId(); // create the id
+            Log.i(TAG, "Created new install id " + getInstallId());
             new AsyncTask<Object, Void, Object>() {
                 @Override
                 protected Object doInBackground(Object[] params) {
+                    Log.i(TAG, "Sending new install id to server " + getInstallId());
                     logMsg(LogMsg.NO_ISSUE,LogMsg.ACTION_INSTALLED_APP,null);
                     return ActionPathServer.createInstall(getInstallId());
                 }
@@ -63,7 +65,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
                     boolean success = (boolean) o;
                     if (success) {
                         Snackbar.make(getWindow().getDecorView().findViewById(android.R.id.content),
-                                R.string.created_new_user, Snackbar.LENGTH_SHORT);
+                                R.string.created_new_installation, Snackbar.LENGTH_SHORT);
                     }
                 }
             }.execute();
