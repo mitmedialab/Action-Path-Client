@@ -18,6 +18,7 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_ENTERED_GEOFENCE = "EnteredGeofence";
     public static final String ACTION_LOADED_LATEST_ISSUES = "LoadedLatestIssues";
     public static final String ACTION_INSTALLED_APP = "InstalledApp";
+    public static final String ACTION_ISSUE_STATUS_UPDATED = "IssueStatusChanged";
     public static final String ACTION_CREATED_ISSUE = "CreatedIssueInDB";
     public static final String ACTION_PICKED_PLACE= "PickedPlace";
     public static final String ACTION_CLICKED_ABOUT = "ClickedAboutMenuItem";
@@ -27,6 +28,7 @@ public class LogMsg extends AbstractSyncableModel {
     public static final String ACTION_CLICKED_ISSUES_MAP = "ClickedIssuesMapMenuItem";
     public static final String ACTION_CLICKED_ALL_ISSUES = "ClickedAllIssuesMenuItem";
     public static final String ACTION_CLICKED_UPDATE_ISSUES = "ClickedUpdateIssuesMenuItem";
+    public static final String ACTION_BACKGROUND_TASK_UPDATED_ISSUES = "BackgroundTaskUpdatedIssues";
     public static final String ACTION_CLICKED_PICK_PLACE = "ClickedPickPlaceMenuItem";
     public static final String ACTION_CLICKED_HOME = "ClickedHomeMenuItem";
     public static final String ACTION_CLICKED_ON_UPDATE_NOTIFICATION="ClicksOnUpdateNotification";

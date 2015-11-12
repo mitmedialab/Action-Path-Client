@@ -16,8 +16,11 @@ import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Manage background syncing of various objects up and down to the server
@@ -30,7 +33,7 @@ public class SyncService extends Service implements
 
     private static boolean running = false;
 
-    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 10) * 60 * 1000;
+    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * 60 * 1000;
     private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
     private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
 
@@ -40,6 +43,7 @@ public class SyncService extends Service implements
     private Timer logUploadTimer;
     private Timer responseUploadTimer;
     private Timer responseDownloadTimer;
+    private Timer issueDownloadTimer;
 
     public SyncService() {
         super();
@@ -49,7 +53,7 @@ public class SyncService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         setRunning(true);
-        Log.i(TAG,"Starting SyncService");
+        Log.i(TAG, "Starting SyncService");
         // to set up the database correctly
         LogsDataSource.getInstance(this);
         ResponsesDataSource.getInstance(this);
@@ -72,6 +76,14 @@ public class SyncService extends Service implements
         TimerTask responseDownloaderTask = new ResponseDownloadTimerTask(this,getInstallationId());
         responseDownloadTimer = new Timer();
         responseDownloadTimer.schedule(responseDownloaderTask, 0, RESPONSE_DOWNLOAD_INTERVAL);
+        // set up to download issues near me once a day at noon
+        TimerTask issueDownloadTimerTask = new IssueDownloadTimerTask(googleApiClient,this);
+        issueDownloadTimer = new Timer();
+        Calendar firstRunCal = Calendar.getInstance();
+        firstRunCal.set(Calendar.HOUR_OF_DAY,12);
+        firstRunCal.set(Calendar.MINUTE,0);
+        issueDownloadTimer.schedule(issueDownloadTimerTask, firstRunCal.getTime(),
+                TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
         // gotta return that it's all good in the neighborhood
         return Service.START_REDELIVER_INTENT;
     }

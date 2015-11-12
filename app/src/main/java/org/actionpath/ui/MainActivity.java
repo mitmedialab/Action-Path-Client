@@ -4,10 +4,9 @@ import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -34,8 +33,7 @@ import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
 import org.actionpath.util.Development;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.actionpath.util.Preferences;
 
 /**
  * The entry point for the app, handles menu nav too
@@ -55,15 +53,20 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private static String TAG = MainActivity.class.getName();
 
-    private static String ISSUE_CHANGE_NOTIFICATION_TAG = "issueChange";
+    public static String ISSUE_CHANGE_NOTIFICATION_TAG = "issueChange";
+    private Preferences prefs;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        final ContextWrapper contextWrapper = this;
+
         Log.i(TAG, "onCreate");
 
         setContentView(R.layout.activity_main);
+
+        this.prefs = Preferences.getInstance(this);
 
         // setup the UI
         // @see http://www.android4devs.com/2015/06/navigation-view-material-design-support.html
@@ -87,7 +90,7 @@ public class MainActivity extends AbstractLocationActivity implements
                 drawerLayout.closeDrawers();
 
                 // show an alert that they need to pick a place first if they don't have one
-                if (!hasPlaceSet() && menuItem.getItemId() != R.id.nav_about && menuItem.getItemId() != R.id.nav_home) {
+                if (!Preferences.getInstance(contextWrapper).hasPlace() && menuItem.getItemId() != R.id.nav_about && menuItem.getItemId() != R.id.nav_home) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(R.string.need_to_pick_place)
                             .setTitle(R.string.error_dialog_title)
@@ -152,7 +155,7 @@ public class MainActivity extends AbstractLocationActivity implements
         }
         if(!startedWithFragmentToShow){
             Log.v(TAG,"Starting with default appropriate home fragment");
-            if(hasPlaceSet()) {
+            if(prefs.hasPlace()) {
                 showAppropriateHomeFragment();
             }   // if not, onResume will show the right UI
         }
@@ -172,7 +175,7 @@ public class MainActivity extends AbstractLocationActivity implements
             case R.id.nav_home:
                 Log.v(TAG,"Nav: home");
                 logMsg(LogMsg.ACTION_CLICKED_HOME);
-                if(!hasPlaceSet()){
+                if(!prefs.hasPlace()){
                     showPickPlaceFragment();
                 } else {
                     showAppropriateHomeFragment();
@@ -292,7 +295,7 @@ public class MainActivity extends AbstractLocationActivity implements
     public void onResume(){
         super.onResume();
         Log.i(TAG, "onResume");
-        if(!hasPlaceSet()){
+        if(!prefs.hasPlace()){
             Log.w(TAG, "onResume: No place set yet");
             showPickPlaceFragment();
         }
@@ -311,8 +314,9 @@ public class MainActivity extends AbstractLocationActivity implements
         TextView headerText = (TextView) findViewById(R.id.nav_bar_header_text);
         if(Config.getInstance().isAssignRequestTypeMode()) {
             //protect because on first run we don't have an assigned request type yet!
-            if(getPlace()!=null && getAssignedRequestType()!=null) {
-                headerText.setText(getPlace().name + ": " + getAssignedRequestType().nickname);
+            RequestType assignedRequestType = prefs.getAssignedRequestType();
+            if(getPlace()!=null && assignedRequestType!=null) {
+                headerText.setText(getPlace().name + ": " + assignedRequestType.nickname);
             }
         } else {
             headerText.setText(getString(R.string.app_name) + ": " + getPlace().name);
@@ -373,7 +377,8 @@ public class MainActivity extends AbstractLocationActivity implements
                 toolbar.setTitle(String.format(getResources().getString(R.string.recently_updated_issues_header), getPlace().name));
                 break;
         }
-        IssuesListFragment fragment = IssuesListFragment.newInstance(type, getPlaceId(), getAssignedRequestTypeId());
+        IssuesListFragment fragment = IssuesListFragment.newInstance(type, prefs.getPlaceId(),
+                prefs.getAssignedRequestTypeId());
         displayFragment(fragment);
     }
 
@@ -395,8 +400,8 @@ public class MainActivity extends AbstractLocationActivity implements
                 // Add the buttons
                 dialog.show();
             }
-            IssuesMapFragment mapFragment = IssuesMapFragment.newInstance(0,getPlaceId(),
-                        getAssignedRequestTypeId(),
+            IssuesMapFragment mapFragment = IssuesMapFragment.newInstance(0,prefs.getPlaceId(),
+                        prefs.getAssignedRequestTypeId(),
                         loc.getLatitude(), loc.getLongitude());
             displayFragment(mapFragment);
         } catch (GoogleApiClientNotConnectionException e) {
@@ -442,27 +447,18 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     @Override
-    public int getPlaceId() {
-        if(getPlace()==null){
-            return -1;
-        } else {
-            return getPlace().id;
-        }
-    }
-
-    @Override
     public void onPlaceSelected(Place place) {
         Log.d(TAG, "clicked place id: " + place.id);
         // now save that we set the place
-        savePlace(place);
+        prefs.savePlace(place);
         logMsg(LogMsg.NO_ISSUE, LogMsg.ACTION_PICKED_PLACE);
         // and jump to update the issues
         displayUpdateIssuesFragment();
     }
 
     @Override
-    public Context getContext() {
-        return this.getApplicationContext();
+    public ContextWrapper getContextWrapper() {
+        return this;
     }
 
     @Override
@@ -480,10 +476,16 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus){
         Log.d(TAG,"status change alert on issue "+issueId+": "+oldStatus+" -> "+newStatus);
+        Location loc = null;
+        try {
+            loc = getLocation();
+        } catch(GoogleApiClientNotConnectionException e){
+        }
+        logMsg(issueId, LogMsg.ACTION_ISSUE_STATUS_UPDATED, oldStatus + ":" + newStatus, loc);
         // Fire a low priority notification
         sendNotification(ISSUE_CHANGE_NOTIFICATION_TAG, issueId, newStatus);
         // Mark issue as having something "new" on fav list (to drive a UI indication)
-        IssuesDataSource.getInstance(this).updateIssueNewInfo(issueId,true);
+        IssuesDataSource.getInstance(this).updateIssueNewInfo(issueId, true);
     }
 
     /**
@@ -498,7 +500,7 @@ public class MainActivity extends AbstractLocationActivity implements
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String updateSummary = newStatus + ": " + issue.getSummary();
 
-        PendingIntent pi = getPendingIntentToIssueDetail(issueId);
+        PendingIntent pi = getPendingIntentToIssueDetail(this,issueId);
 
         // create the notification
         Notification.Builder notificationBuilder = new Notification.Builder(this);
@@ -516,18 +518,19 @@ public class MainActivity extends AbstractLocationActivity implements
         notificationManager.notify(notificationTag, issueId, notification);
     }
 
-    private PendingIntent getPendingIntentToIssueDetail(int issueId) {
-        Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
+    // TODO: move this to an intent helper class?
+    public static PendingIntent getPendingIntentToIssueDetail(ContextWrapper contextWrapper, int issueId) {
+        Issue issue = IssuesDataSource.getInstance(contextWrapper).getIssue(issueId);
         String summary = issue.getSummary();
 
         Log.v(TAG, "Returning update intent for IssueDetailActivity.class for issue: " + summary);
 
-        Intent updateIntent = new Intent(this, IssueDetailActivity.class)
+        Intent updateIntent = new Intent(contextWrapper, IssueDetailActivity.class)
                 .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
                 .putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, true)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        return PendingIntent.getActivity(this, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getActivity(contextWrapper, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private NotificationManager getNotificationManager() {
@@ -542,7 +545,7 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     private void updateIssues(){
-        Log.d(TAG,"request to update issues");
+        Log.d(TAG, "request to update issues");
         if(updateIssuesTask==null || updateIssuesTask.isCancelled() || updateIssuesTask.getStatus()==AsyncTask.Status.FINISHED) {
             updateIssuesTask = new UpdateIssuesAsyncTask(this);
             updateIssuesTask.execute();
@@ -552,40 +555,12 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onRequestTypeAssigned(RequestType requestType){
         Place place = Config.getInstance().getPlace();  // do this here so place and request type are guaranteed to be set together
-        savePlace(place);
+        prefs.savePlace(place);
         Log.d(TAG, "user was assigned " + requestType);
         updateNavBarHeaderText();
         logMsg(LogMsg.INVALID_ID, LogMsg.ACTION_PICKED_REQUEST_TYPE, requestType.name);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        try {
-            editor.putString(PREF_ITEM_REQUEST_TYPE_JSON, requestType.toJSONObject().toString());
-            editor.apply();
-        } catch (JSONException e){
-            Log.e(TAG,"Unable to save request type to shared preferences");
-        }
+        Preferences.getInstance(this).saveAssignedRequestType(requestType);
         displayUpdateIssuesFragment();
-    }
-
-    public int getAssignedRequestTypeId(){
-        if(getAssignedRequestType()==null){
-            return -1;
-        } else {
-            return getAssignedRequestType().id;
-        }
-    }
-
-    @Override
-    public RequestType getAssignedRequestType() {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        try {
-            if (settings.contains(PREF_ITEM_REQUEST_TYPE_JSON)) {
-                return RequestType.fromJSONObject(new JSONObject(settings.getString(PREF_ITEM_REQUEST_TYPE_JSON, "")));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Unable to load request type to shared preferences");
-        }
-        return null;
     }
 
     protected void logMsg(String action){

@@ -1,7 +1,6 @@
 package org.actionpath.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,28 +17,21 @@ import org.actionpath.R;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.properties.PropertiesDataSource;
 import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.places.Place;
 import org.actionpath.sync.SyncService;
-import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Config;
 import org.actionpath.util.Development;
 import org.actionpath.util.Installation;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.actionpath.util.Preferences;
 
 
 public abstract class AbstractBaseActivity extends AppCompatActivity {
 
     private final String TAG = this.getClass().getName();
-
-    public static final String PREFS_NAME = "ActionPathPrefs";
-    public static final String PREF_ITEM_REQUEST_TYPE_JSON = "assignedRequestTypeJSON";
-    public static final String PREF_ITEM_PLACE_JSON = "placeJSON";
-
-    public static int INVALID_PLACE_ID = -1;
 
     /**
      * Do any config and setup that applies no matter how we enter the app here
@@ -118,33 +110,8 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
         dataSource.updateIssueFollowed(2345, true);
     }
 
-    protected void savePlace(Place place){
-        Log.i(TAG, "Set place to: " + place.id + " = " + place.name);
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        try {
-            editor.putString(PREF_ITEM_PLACE_JSON, place.toJSONObject().toString());
-            editor.apply();
-        } catch (JSONException e){
-            Log.e(TAG,"Unable to save place to shared preferences");
-        }
-    }
-
     public Place getPlace() {
-        SharedPreferences settings = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
-        try {
-            if (settings.contains(PREF_ITEM_PLACE_JSON)) {
-                return Place.fromJson(new JSONObject(settings.getString(PREF_ITEM_PLACE_JSON, null)));
-            }
-        } catch (JSONException e) {
-            Log.e(TAG, "Unable to load place from shared preferences");
-        }
-        Log.w(TAG,"Warning, no place is set so I'm returning null!");
-        return null;
-    }
-
-    public boolean hasPlaceSet(){
-        return getPlace()!=null;
+        return Preferences.getInstance(this).getPlace();
     }
 
     protected void logMsg(int issueId, String action, Location loc){

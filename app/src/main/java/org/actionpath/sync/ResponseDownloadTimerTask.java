@@ -113,7 +113,7 @@ public class ResponseDownloadTimerTask extends TimerTask {
                 NotificationManager notificationManager =
                         (NotificationManager) contextWrapper.getSystemService(contextWrapper.NOTIFICATION_SERVICE);
                 notificationManager.notify(ISSUES_UPDATED_NOTIFICATION_TAG, ISSUES_UPDATED_NOTIFICATION_ID, notification);
-                Log.d(TAG,"Preppde notification ");
+                Log.d(TAG,"Prepped notification ");
             }
         } catch (URISyntaxException use){
             Log.e(TAG, "URL failed: "+use.toString());

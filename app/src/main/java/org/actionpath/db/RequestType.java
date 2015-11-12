@@ -8,6 +8,8 @@ import org.json.JSONObject;
  */
 public class RequestType {
 
+    public static int INVALID_ID = -1;
+
     public int id;
     public String name;
     public String nickname;

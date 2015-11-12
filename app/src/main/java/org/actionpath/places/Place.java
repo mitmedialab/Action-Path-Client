@@ -10,6 +10,8 @@ import android.util.Log;
 
 public class Place implements Serializable {
 
+    public static int INVALID_ID = -1;
+
     public static String TAG = Place.class.getName();
 
     // Fields

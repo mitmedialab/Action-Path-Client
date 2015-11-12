@@ -1,6 +1,6 @@
 package org.actionpath.tasks;
 
-import android.content.Context;
+import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -20,6 +20,7 @@ import org.actionpath.geofencing.GeofencingRemover;
 import org.actionpath.util.ActionPathServer;
 import org.actionpath.util.Config;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
+import org.actionpath.util.Preferences;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -43,15 +44,16 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
 
     @Override
     protected Object doInBackground(Object[] params) {
+        int placeId = Preferences.getInstance(listener.getContextWrapper()).getPlaceId();
         ArrayList<Issue> newIssues = new ArrayList<Issue>();
         try {
-            if(Config.getInstance(listener.getContext()).isPickPlaceMode()) {
+            if(Config.getInstance(listener.getContextWrapper()).isPickPlaceMode()) {
                 // fetch all the issues for this place
-                Log.d(TAG, "Loading new issues for place " + listener.getPlaceId());
-                newIssues = ActionPathServer.getLatestIssues(listener.getPlaceId());
-            } else if(Config.getInstance(listener.getContext()).isAssignRequestTypeMode()) {
+                Log.d(TAG, "Loading new issues for place " + placeId);
+                newIssues = ActionPathServer.getLatestIssues(placeId);
+            } else if(Config.getInstance(listener.getContextWrapper()).isAssignRequestTypeMode()) {
                 // fetch all the issues near me with this request type
-                RequestType requestType = listener.getAssignedRequestType();
+                RequestType requestType = Preferences.getInstance(listener.getContextWrapper()).getAssignedRequestType();
                 Log.d(TAG, "Loading new issues by location for request type " + requestType.id);
                 try {
                     Location loc = listener.getLocation();
@@ -60,7 +62,7 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
                     } else {
                         newIssues = ActionPathServer.getIssuesNear(loc.getLatitude(), loc.getLongitude(), requestType.id);
                         for(Issue i : newIssues){   // force them to have the "right" place id (ie. from the config file)
-                            i.setPlaceId(listener.getPlaceId());
+                            i.setPlaceId(placeId);
                             i.setRequestTypeId(requestType.id);
                         }
                     }
@@ -77,12 +79,12 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
                     }
                     dataSource.updateIssue(i, true);
                 } else {
-                    LogsDataSource.getInstance(listener.getContext()).insert(listener.getContext(),
+                    LogsDataSource.getInstance(listener.getContextWrapper()).insert(listener.getContextWrapper(),
                             LogMsg.ACTION_CREATED_ISSUE, null);
                     dataSource.insertIssue(i);
                 }
             }
-            Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + listener.getPlaceId());
+            Log.d(TAG, "Pulled " + newIssues.size() + " issues from the server for place " + placeId);
             removeExistingGeofencesExcept(newIssues);
             buildGeofences();
         } catch (URISyntaxException ex) {
@@ -101,7 +103,7 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
             issueIdsToKeep.add(issue.getId());
         }
         Log.d(TAG, "Removing existing geofences");
-        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(listener.getContext());
+        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(listener.getContextWrapper());
         Cursor cursor  = issuesDataSource.getIssuesWithGeofences();
         while(!cursor.isAfterLast()){
             int issueId = cursor.getInt(0);
@@ -109,7 +111,7 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
                 List<String> requestIds = new ArrayList<>();
                 requestIds.add(issueId+"");
                 GeofencingRemover remover = new GeofencingRemover(
-                        listener.getContext(),requestIds,this);
+                        listener.getContextWrapper(),requestIds,this);
                 remover.sendRequest();
             }
             cursor.moveToNext();
@@ -165,8 +167,9 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
      */
     private void buildGeofences(){
         Log.d(TAG, "Building geofences");
-        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(listener.getContext());
-        Cursor cursor = issuesDataSource.getIssuesToGeofenceCursor(listener.getPlaceId());
+        int placeId = Preferences.getInstance(listener.getContextWrapper()).getPlaceId();
+        IssuesDataSource issuesDataSource = IssuesDataSource.getInstance(listener.getContextWrapper());
+        Cursor cursor = issuesDataSource.getIssuesToGeofenceCursor(placeId);
         while (!cursor.isAfterLast()) {
             int issueId = cursor.getInt(0);
             Issue issue = issuesDataSource.getIssue(issueId);
@@ -190,17 +193,15 @@ public class UpdateIssuesAsyncTask extends AsyncTask<Object, Void, Object> imple
         geofenceBuilder.setExpirationDuration(Geofence.NEVER_EXPIRE);
         newGeofences.add(geofenceBuilder.build());
         GeofencingRegisterer registerer= new GeofencingRegisterer(
-                listener.getContext().getApplicationContext(), newGeofences,this);
+                listener.getContextWrapper(), newGeofences,this);
         registerer.sendRequest();
     }
 
     public interface OnIssuesUpdatedListener {
-        Context getContext();
-        int getPlaceId();
+        ContextWrapper getContextWrapper();
         void onIssuesUpdateSucceeded(int newIssueCount);
         void onIssueUpdateFailed();
         void onFollowedIssueStatusChanged(int issueId, String oldStatus, String newStatus);
         Location getLocation() throws GoogleApiClientNotConnectionException;
-        RequestType getAssignedRequestType();
     }
 }

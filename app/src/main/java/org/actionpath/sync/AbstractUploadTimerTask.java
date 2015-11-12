@@ -7,10 +7,9 @@ import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
-import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.AbstractSyncableDataSource;
+import org.actionpath.db.AbstractSyncableModel;
 import org.actionpath.db.SyncableDbHelper;
 import org.actionpath.util.ActionPathServer;
 import org.json.JSONArray;
@@ -18,23 +17,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.TimerTask;
 
 /**
  * Upload SyncableModels to the server
  */
-public abstract class AbstractUploadTimerTask extends TimerTask {
+public abstract class AbstractUploadTimerTask extends AbstractLocationTimerTask {
 
     public String TAG = this.getClass().getName();
 
-    protected GoogleApiClient googleApiClient;
     protected String installId;
     protected ContextWrapper contextWrapper;
     protected AbstractSyncableDataSource dataSource;
 
     public AbstractUploadTimerTask(ContextWrapper contextWrapper, GoogleApiClient googleApiClient, Context context, String installId) {
+        super(googleApiClient);
         this.contextWrapper = contextWrapper;
-        this.googleApiClient = googleApiClient;
         this.installId = installId;
     }
 
@@ -102,11 +99,6 @@ public abstract class AbstractUploadTimerTask extends TimerTask {
                 Log.e(TAG,"wasn't able to mark the records to sync as "+AbstractSyncableModel.STATUS_DID_NOT_SYNC);
             }
         }
-    }
-
-    private Location getLocation(){
-        return LocationServices.FusedLocationApi.getLastLocation(
-                googleApiClient);
     }
 
     private JSONArray getUnsyncedDataAsJson(){
