@@ -36,6 +36,7 @@ public class SyncService extends Service implements
     private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * 60 * 1000;
     private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
     private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * 60 * 1000;
+    private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 1 * 60 * 1000;
 
     private GoogleApiClient googleApiClient;
     private Location lastLocation;
@@ -79,11 +80,16 @@ public class SyncService extends Service implements
         // set up to download issues near me once a day at noon
         TimerTask issueDownloadTimerTask = new IssueDownloadTimerTask(googleApiClient,this);
         issueDownloadTimer = new Timer();
-        Calendar firstRunCal = Calendar.getInstance();
-        firstRunCal.set(Calendar.HOUR_OF_DAY,12);
-        firstRunCal.set(Calendar.MINUTE,0);
-        issueDownloadTimer.schedule(issueDownloadTimerTask, firstRunCal.getTime(),
-                TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        if(Development.DEBUG_MODE){
+            responseDownloadTimer.schedule(issueDownloadTimerTask, 0, ISSUE_DOWNLOAD_DEBUG_INTERVAL);
+        } else {
+            // once a day at noon in release
+            Calendar firstRunCal = Calendar.getInstance();
+            firstRunCal.set(Calendar.HOUR_OF_DAY,12);
+            firstRunCal.set(Calendar.MINUTE,0);
+            issueDownloadTimer.schedule(issueDownloadTimerTask, firstRunCal.getTime(),
+                    TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS));
+        }
         // gotta return that it's all good in the neighborhood
         return Service.START_REDELIVER_INTENT;
     }
