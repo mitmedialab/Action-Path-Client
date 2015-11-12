@@ -11,7 +11,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * Created by rahulb on 11/12/15.
+ * Wrapper around SharedPreferences object for the app.  Use as a singleton (even though it
+ * opens and closes the SharedPreferences as it needs to.
  */
 public class Preferences {
 
