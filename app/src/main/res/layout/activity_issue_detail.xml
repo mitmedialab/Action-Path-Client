@@ -90,7 +90,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/issue_detail_summary"
                 android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
-            />
 
             <TextView
                 android:paddingTop="@dimen/textview_title_padding"
