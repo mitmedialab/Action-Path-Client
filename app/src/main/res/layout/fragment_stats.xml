@@ -46,6 +46,11 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/stats_install_id"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/stats_debug_info"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
 
         </LinearLayout>
 

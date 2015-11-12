@@ -142,6 +142,7 @@
     <string name="stats_actions_taken_description">The number of times you have taken action on any issues</string>
     <string name="stats_response_rate_description">The percent of time you take action on an issue you get a notification about.</string>
     <string name="stats_install_id">Your install id is %s</string>
+    <string name="stats_debug_info">%1$d / %2$d</string>
 
     <string name="consent_title">CONSENT TO PARTICIPATE IN NON-BIOMEDICAL RESEARCH</string>
     <string name="consent_summary">You or your child are asked to participate in a research study conducted by Erhardt Graeff, a PhD student at the Media Lab at the Massachusetts Institute of Technology (M.I.T.). Results will contribute to research publications by Erhardt Graeff and to ongoing development of the Action Path app. You or your child was selected as a possible participant in this study because membership in a local organization. You should read the information below, and ask questions about anything you do not understand, before deciding whether or not to participate.</string>

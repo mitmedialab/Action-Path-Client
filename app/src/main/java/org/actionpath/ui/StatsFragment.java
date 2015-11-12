@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import org.actionpath.R;
+import org.actionpath.db.logs.LogsDataSource;
 import org.actionpath.db.properties.PropertiesDataSource;
+import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.util.Installation;
 
 /**
@@ -24,6 +26,7 @@ public class StatsFragment extends Fragment {
     public static final String TAG = StatsFragment.class.getName();
 
     private PropertiesDataSource dataSource;
+    private TextView toSyncText;
 
     /**
      * Use this factory method to create a new instance of
@@ -55,7 +58,7 @@ public class StatsFragment extends Fragment {
         Log.d(TAG, "Ther are " + dataSource.count() + " properties in the table");
         TextView actionsTaken = (TextView) view.findViewById(R.id.stats_actions_taken_head);
         String actionsTakenCountText = getResources().getQuantityString(R.plurals.response_count,
-                dataSource.getActionsTakenCount(),dataSource.getActionsTakenCount(),dataSource.getActionsTakenCount());
+                dataSource.getActionsTakenCount(), dataSource.getActionsTakenCount(), dataSource.getActionsTakenCount());
         actionsTaken.setText(actionsTakenCountText);
         // set the percent response rate
         TextView responseRate = (TextView) view.findViewById(R.id.stats_response_rate_head);
@@ -67,12 +70,19 @@ public class StatsFragment extends Fragment {
         String installIdStr = getResources().getString(R.string.stats_install_id);
         String installIdText = String.format(installIdStr, Installation.id(this.getActivity()));
         installIdView.setText(installIdText);
+        // and to sync info
+        toSyncText= (TextView) view.findViewById(R.id.stats_debug_info);
         return view;
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onResume() {
+        super.onResume();
+        long responsesToUpload = ResponsesDataSource.getInstance(this.getActivity()).countDataToSync() + ResponsesDataSource.getInstance(this.getActivity()).countDataNeedingLocation();
+        long logsToUpload = LogsDataSource.getInstance(this.getActivity()).countDataToSync() + LogsDataSource.getInstance(this.getActivity()).countDataNeedingLocation();
+        String syncBaseString = getResources().getString(R.string.stats_debug_info);
+        String syncFormattedStr = String.format(syncBaseString, logsToUpload, responsesToUpload);
+        toSyncText.setText(syncFormattedStr);
     }
 
 }
