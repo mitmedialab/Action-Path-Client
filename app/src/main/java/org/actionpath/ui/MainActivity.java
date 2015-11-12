@@ -60,6 +60,7 @@ public class MainActivity extends AbstractLocationActivity implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Log.i(TAG, "onCreate");
 
         setContentView(R.layout.activity_main);
@@ -86,7 +87,7 @@ public class MainActivity extends AbstractLocationActivity implements
                 drawerLayout.closeDrawers();
 
                 // show an alert that they need to pick a place first if they don't have one
-                if(!hasPlaceSet() && menuItem.getItemId()!=R.id.nav_about && menuItem.getItemId()!=R.id.nav_home){
+                if (!hasPlaceSet() && menuItem.getItemId() != R.id.nav_about && menuItem.getItemId() != R.id.nav_home) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setMessage(R.string.need_to_pick_place)
                             .setTitle(R.string.error_dialog_title)
@@ -134,7 +135,8 @@ public class MainActivity extends AbstractLocationActivity implements
         boolean startedWithFragmentToShow = false;
         Intent intent  = getIntent();
         if(intent!=null) {
-            Bundle bundle = getIntent().getExtras();
+            Bundle bundle = null;
+            bundle = getIntent().getExtras();
             if(bundle!=null) {
                 if (bundle.containsKey(PARAM_FRAGMENT_MENU_ID)) {
                     int menuItemToClick = bundle.getInt(PARAM_FRAGMENT_MENU_ID);
@@ -150,9 +152,10 @@ public class MainActivity extends AbstractLocationActivity implements
         }
         if(!startedWithFragmentToShow){
             Log.v(TAG,"Starting with default appropriate home fragment");
-            showAppropriateHomeFragment();
+            if(hasPlaceSet()) {
+                showAppropriateHomeFragment();
+            }   // if not, onResume will show the right UI
         }
-
         // automatically update issues (if we have all the info we need to)
         /*if( (Config.getInstance().isPickPlaceMode() && (getPlace() == null))
                 || (Config.getInstance().isAssignRequestTypeMode() && getAssignedRequestType()!=null)){
@@ -318,7 +321,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private void showAppropriateHomeFragment(){
         Log.v(TAG,"Showing showAppropriateHomeFragment");
-        if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
+        if((getPlace()!=null) && (IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0)){
             displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
         } else {
             displayIssuesListFragment(IssuesDataSource.ALL_ISSUES_LIST);
