@@ -125,10 +125,13 @@ public class MainActivity extends AbstractLocationActivity implements
         //Setting the actionbarToggle to drawer layout
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        //calling sync state is necessay or else your hamburger icon wont show up
+        //calling sync state is necessary or else your hamburger icon wont show up
         actionBarDrawerToggle.syncState();
 
+        updateNavBarHeaderText();
+
         // handle the case where this was started from an intent (ie. from a notification)
+        boolean startedWithFragmentToShow = false;
         Intent intent  = getIntent();
         if(intent!=null) {
             Bundle bundle = getIntent().getExtras();
@@ -141,8 +144,13 @@ public class MainActivity extends AbstractLocationActivity implements
                         logMsg(LogMsg.ACTION_CLICKED_ON_UPDATED_ISSUES_NOTIFICATION);
                     }
                     handleMenuItemClick(menuItemToClick);
+                    startedWithFragmentToShow = true;
                 }
             }
+        }
+        if(!startedWithFragmentToShow){
+            Log.v(TAG,"Starting with default appropriate home fragment");
+            showAppropriateHomeFragment();
         }
 
         // automatically update issues (if we have all the info we need to)
@@ -152,6 +160,7 @@ public class MainActivity extends AbstractLocationActivity implements
         } else {
             Log.v(TAG,"not enough info to update issues now, skipping");
         }*/
+
     }
 
     private boolean handleMenuItemClick(int menuItemId) {
@@ -283,9 +292,6 @@ public class MainActivity extends AbstractLocationActivity implements
         if(!hasPlaceSet()){
             Log.w(TAG, "onResume: No place set yet");
             showPickPlaceFragment();
-        } else {
-            showAppropriateHomeFragment();
-            updateNavBarHeaderText();
         }
         // now update the dynamic nav menu text
         /*long responsesToUpload = ResponsesDataSource.getInstance(this).countDataToSync() + ResponsesDataSource.getInstance(this).countDataNeedingLocation();
@@ -311,6 +317,7 @@ public class MainActivity extends AbstractLocationActivity implements
     }
 
     private void showAppropriateHomeFragment(){
+        Log.v(TAG,"Showing showAppropriateHomeFragment");
         if(IssuesDataSource.getInstance(this).countFollowedIssues(getPlace().id)>0){
             displayIssuesListFragment(IssuesDataSource.FOLLOWED_ISSUES_LIST);
         } else {
@@ -329,8 +336,7 @@ public class MainActivity extends AbstractLocationActivity implements
 
     private void displayFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.replace(R.id.main_content, fragment).addToBackStack(null).commit();
     }
 
     private void displayUpdateIssuesFragment(){
