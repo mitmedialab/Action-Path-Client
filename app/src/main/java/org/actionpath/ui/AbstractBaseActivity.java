@@ -80,7 +80,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
             ImageLoader.getInstance().init(config);
         }
         // create the issue database
-        addTestIssues();
+        //addTestIssues();
         // make sure the config is initialized
         Config.getInstance(this);
     }
