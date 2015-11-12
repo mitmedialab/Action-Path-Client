@@ -62,7 +62,7 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String summary = issue.getSummary();
 
-        PendingIntent pi = MainActivity.getPendingIntentToIssueDetail(this, issueId);
+        PendingIntent pi = MainActivity.getPendingIntentToIssueDetail(this, issueId, false, true);
 
         // create the notification
         Builder notificationBuilder = new Notification.Builder(this);

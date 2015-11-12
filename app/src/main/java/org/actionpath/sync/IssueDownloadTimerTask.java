@@ -92,7 +92,7 @@ public class IssueDownloadTimerTask extends AbstractLocationTimerTask implements
         // fire a notification
         Issue issue = IssuesDataSource.getInstance(this.getContextWrapper()).getIssue(issueId);
         String updateSummary = newStatus + ": " + issue.getSummary();
-        PendingIntent pi = MainActivity.getPendingIntentToIssueDetail(this.getContextWrapper(), issueId);
+        PendingIntent pi = MainActivity.getPendingIntentToIssueDetail(this.getContextWrapper(), issueId, true, false);
         Notification.Builder notificationBuilder = new Notification.Builder(this.getContextWrapper());
         notificationBuilder
                 .setPriority(Notification.PRIORITY_LOW)

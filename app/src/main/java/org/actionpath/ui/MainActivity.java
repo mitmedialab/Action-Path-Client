@@ -506,7 +506,7 @@ public class MainActivity extends AbstractLocationBaseActivity implements
         Issue issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         String updateSummary = newStatus + ": " + issue.getSummary();
 
-        PendingIntent pi = getPendingIntentToIssueDetail(this,issueId);
+        PendingIntent pi = getPendingIntentToIssueDetail(this, issueId, true, false);
 
         // create the notification
         Notification.Builder notificationBuilder = new Notification.Builder(this);
@@ -525,16 +525,17 @@ public class MainActivity extends AbstractLocationBaseActivity implements
     }
 
     // TODO: move this to an intent helper class?
-    public static PendingIntent getPendingIntentToIssueDetail(ContextWrapper contextWrapper, int issueId) {
+    public static PendingIntent getPendingIntentToIssueDetail(ContextWrapper contextWrapper, int issueId, boolean fromUpdate, boolean fromGeofence) {
         Issue issue = IssuesDataSource.getInstance(contextWrapper).getIssue(issueId);
         String summary = issue.getSummary();
 
         Log.v(TAG, "Returning update intent for IssueDetailActivity.class for issue: " + summary);
 
         Intent updateIntent = new Intent(contextWrapper, IssueDetailActivity.class)
-                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
-                .putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, true)
-                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId);
+        updateIntent.putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, fromUpdate);
+        updateIntent.putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, fromGeofence);
+        updateIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(contextWrapper, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
