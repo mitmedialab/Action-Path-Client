@@ -450,6 +450,7 @@ public class MainActivity extends AbstractLocationBaseActivity implements
     @Override
     public void onIssueSelected(int issueId) {
         Log.d(TAG, "clicked item with id: " + issueId);
+        drawerLayout.closeDrawers();    //Safety - close the drawers just in cas
         logMsg(issueId, LogMsg.ACTION_CLICKED_ON_ISSUE_IN_LIST);
         // Then you start a new Activity via Intent
         Intent intent = new Intent()
