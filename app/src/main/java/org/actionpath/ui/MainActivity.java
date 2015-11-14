@@ -295,7 +295,7 @@ public class MainActivity extends AbstractLocationBaseActivity implements
     public void onResume(){
         super.onResume();
         Log.i(TAG, "onResume");
-        if(!prefs.hasGivenConsent()){
+        if(!Development.DEBUG_MODE && !prefs.hasGivenConsent()){
             Intent intent = new Intent().setClass(this, ConsentActivity.class);
             startActivity(intent);
             return;
@@ -347,28 +347,35 @@ public class MainActivity extends AbstractLocationBaseActivity implements
         }
     }
 
-    private void displayFragment(Fragment fragment){
+    private void displayFragment(Fragment fragment) {
+        displayFragment(fragment, true);
+    }
+    private void displayFragment(Fragment fragment, boolean addToBackStack){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_content, fragment).addToBackStack(null).commit();
+        fragmentTransaction.replace(R.id.main_content, fragment);
+        if(addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        };
+        fragmentTransaction.commit();
     }
 
     private void displayUpdateIssuesFragment(){
         toolbar.setTitle(String.format(getResources().getString(R.string.update_issues_header), getPlace().name));
         logMsg(LogMsg.ACTION_LOADED_LATEST_ISSUES);
         UpdateIssuesFragment fragment = UpdateIssuesFragment.newInstance(getPlace().id);
-        displayFragment(fragment);
+        displayFragment(fragment, false);
     }
 
     private void displayPickPlaceFragment(){
         toolbar.setTitle(R.string.pick_place_header);
         PickPlaceListFragment fragment = PickPlaceListFragment.newInstance();
-        displayFragment(fragment);
+        displayFragment(fragment, false);
     }
 
     private void displayAssignRequestTypeFragment(){
         toolbar.setTitle(R.string.assign_request_type_header);
         AssignRequestTypeFragment fragment = AssignRequestTypeFragment.newInstance();
-        displayFragment(fragment);
+        displayFragment(fragment, false);
     }
 
     private void displayIssuesListFragment(int type){
