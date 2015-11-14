@@ -155,8 +155,7 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLongitude());
         GoogleMapOptions options = new GoogleMapOptions();
         options.mapType(GoogleMap.MAP_TYPE_NORMAL)
-                .camera(CameraPosition.fromLatLngZoom(issueLatLng, 14))
-                .liteMode(true);
+                .camera(CameraPosition.fromLatLngZoom(issueLatLng, 14));
         SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.issue_detail_map_wrapper, mapFragment);
