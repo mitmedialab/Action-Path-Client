@@ -50,12 +50,6 @@ public class GeofencingReceiver extends ReceiveGeofenceTransitionIntentService {
         Log.e(TAG, "GeofencingReceiver Error: " + i);
     }
 
-    /**
-     * Posts a notification in the notification bar when a transition is detected.
-     * If the user clicks the notification, control goes to the main Activity.
-     * param transitionType The type of transition that occurred.
-     * For now, ActionPath only handles enter transitionTypes
-     */
     private void sendNotification(int issueId) {
         Log.d(TAG,"Sending notification for issueId: "+issueId);
 
