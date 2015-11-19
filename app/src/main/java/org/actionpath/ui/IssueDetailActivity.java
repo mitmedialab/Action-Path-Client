@@ -68,6 +68,8 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
 
+        Log.d(TAG, "Issue Detail onCreate");
+
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -135,7 +137,7 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
     @Override
     public void onResume(){
         super.onResume();
-        Log.i(TAG, "Showing details for issue " + issueId);
+        Log.i(TAG, "onResume: Showing details for issue " + issueId);
         issue = IssuesDataSource.getInstance(this).getIssue(issueId);
         Log.v(TAG, "  at (" + issue.getLatitude() + "," + issue.getLongitude() + ")");
         Log.v(TAG, "  geofenced = " + issue.isGeofenceCreated() + " (radius=" + issue.getRadius() + ")");
