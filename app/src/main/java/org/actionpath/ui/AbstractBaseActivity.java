@@ -57,7 +57,7 @@ public abstract class AbstractBaseActivity extends AppCompatActivity {
                 @Override
                 protected Object doInBackground(Object[] params) {
                     Log.i(TAG, "Sending new install id to server " + getInstallId());
-                    logMsg(LogMsg.NO_ISSUE,LogMsg.ACTION_INSTALLED_APP,null);
+                    logMsg(LogMsg.NO_ISSUE,LogMsg.ACTION_INSTALLED_APP,Development.DEBUG_MODE+"",null);
                     return ActionPathServer.createInstall(getInstallId());
                 }
                 @Override
