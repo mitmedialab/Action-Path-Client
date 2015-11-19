@@ -24,5 +24,4 @@ public class LogUploadTimerTask extends AbstractUploadTimerTask {
         return ActionPathServer.BASE_URL + "/logs/sync.json";
     }
 
-
 }
