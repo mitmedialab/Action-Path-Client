@@ -35,7 +35,7 @@ public class SyncService extends Service implements
 
     private static int THIRTY_SECS_IN_MILLIS = 30 * 1000;
     private static int ONE_MINUTE_IN_MILLIS = 60 * 1000;
-    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 720) * ONE_MINUTE_IN_MILLIS;
+    private static int LOG_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 180) * ONE_MINUTE_IN_MILLIS;
     private static int RESPONSE_UPLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * ONE_MINUTE_IN_MILLIS;
     private static int RESPONSE_DOWNLOAD_INTERVAL = (Development.DEBUG_MODE ? 1 : 5) * ONE_MINUTE_IN_MILLIS;
     private static int ISSUE_DOWNLOAD_DEBUG_INTERVAL = 5 * ONE_MINUTE_IN_MILLIS;
