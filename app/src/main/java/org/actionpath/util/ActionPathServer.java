@@ -37,7 +37,7 @@ public class ActionPathServer {
     public static final String TAG = ActionPathServer.class.getName();
 
     // TODO: fix server to remove error - "javax.net.ssl.SSLPeerUnverifiedException: No peer certificate"
-    public static final String BASE_URL = (Development.DEBUG_MODE) ? "https://dev.api.actionpath.org" : "http://api.actionpath.org";
+    public static final String BASE_URL = (Development.DEBUG_MODE) ? "https://api.dev.actionpath.org" : "http://api.actionpath.org";
 
     public static final String RESPONSE_STATUS = "status";
     public static final String RESPONSE_STATUS_OK = "ok";
