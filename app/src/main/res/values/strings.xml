@@ -169,6 +169,8 @@
     <string name="consent_rights_text">You and your child are not waiving any legal claims, rights or remedies because of your participation in this research study. If you feel you have been treated unfairly, or you have questions regarding your rights as a research subject, you may contact the Chairman of the Committee on the Use of Humans as Experimental Subjects, M.I.T., Room E25-143B, 77 Massachusetts Ave, Cambridge, MA 02139, phone 1-617-253 6787.</string>
     <string name="consent_agreement_title">AGREEMENT</string>
     <string name="consent_agreement_text">I understand the procedures described above. My questions have been answered to my satisfaction, and I agree to participate in this study.</string>
+    <string name="stats_sync_now">Sync Now</string>
+    <string name="stats_email_logs">Email Logs</string>
 
 
 </resources>

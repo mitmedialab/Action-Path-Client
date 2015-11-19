@@ -11,6 +11,7 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -24,16 +25,32 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.actionpath.R;
+import org.actionpath.db.AbstractSyncableDataSource;
 import org.actionpath.db.RequestType;
 import org.actionpath.db.issues.Issue;
 import org.actionpath.db.issues.IssuesDataSource;
 import org.actionpath.db.logs.LogMsg;
+import org.actionpath.db.logs.LogsDataSource;
+import org.actionpath.db.responses.ResponsesDataSource;
 import org.actionpath.places.Place;
+import org.actionpath.sync.LogUploadTimerTask;
+import org.actionpath.sync.ResponseUploadTimerTask;
 import org.actionpath.tasks.UpdateIssuesAsyncTask;
 import org.actionpath.util.Config;
 import org.actionpath.util.Development;
+import org.actionpath.util.DeviceUtil;
 import org.actionpath.util.GoogleApiClientNotConnectionException;
+import org.actionpath.util.Installation;
 import org.actionpath.util.Preferences;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * The entry point for the app, handles menu nav too
@@ -41,7 +58,7 @@ import org.actionpath.util.Preferences;
 public class MainActivity extends AbstractLocationBaseActivity implements
         IssuesListFragment.OnIssueSelectedListener, PickPlaceListFragment.OnPlaceSelectedListener,
         UpdateIssuesAsyncTask.OnIssuesUpdatedListener, AboutFragment.OnDisplayExternalURLListener,
-        AssignRequestTypeFragment.OnRequestTypeAssignedListener {
+        AssignRequestTypeFragment.OnRequestTypeAssignedListener, StatsFragment.DataSyncListener {
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -217,34 +234,45 @@ public class MainActivity extends AbstractLocationBaseActivity implements
                 displayAboutFragment();
                 return true;
             case R.id.nav_stats:
-                Log.v(TAG,"Nav: stats");
+                Log.v(TAG, "Nav: stats");
                 logMsg(LogMsg.ACTION_CLICKED_STATS);
                 displayStatsFragment();
                 return true;
-            /*case R.id.nav_save_debug_info:
-                Log.v(TAG,"Nav: save debug info");
-                logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
-                try {
-                    ArrayList<String> filePaths = new ArrayList<String>();
-                    String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
-                    String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
-                    if (logsFilePath != null) filePaths.add(logsFilePath);
-                    if (responsesFilePath != null) filePaths.add(responsesFilePath);
-                    Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
-                    sendEmailWithUnsyncedRecords(filePaths);
-                } catch (IOException ioe) {
-                    Log.e(TAG, "Unable to backup unsynced records " + ioe.toString());
-                    Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
-                }
-                displayIssuesListFragment(IssuesFragmentList.FOLLOWED_ISSUES);
-                return true;*/
             default:
                 Log.e(TAG, "Got an unknown selection from nav drawer menu :-(");
                 return true;
         }
     }
 
-    /*
+    public void onDataSyncUpload() {
+        Log.v(TAG,"Data Sync via upload");
+        // upload the logs
+        TimerTask logUploaderTask = new LogUploadTimerTask(this, Installation.id(this),googleApiClient);
+        Timer logUploadTimer = new Timer();
+        logUploadTimer.schedule(logUploaderTask, 0);
+        TimerTask responseUploaderTask = new ResponseUploadTimerTask(this, Installation.id(this),googleApiClient);
+        Timer responseUploadTimer = new Timer();
+        responseUploadTimer.schedule(responseUploaderTask, 0);
+        Log.d(TAG,"Created timers to upload logs now");
+    }
+
+    public void onDataSyncUploadEmail(){
+        Log.v(TAG,"Data Sync via email");
+        logMsg(LogMsg.ACTION_SAVING_DEBUG_INFO);
+        try {
+            ArrayList<String> filePaths = new ArrayList<>();
+            String logsFilePath = saveUnsyncedRecordsToFileSystem(LogsDataSource.getInstance(), "logs.json");
+            String responsesFilePath = saveUnsyncedRecordsToFileSystem(ResponsesDataSource.getInstance(), "responses.json");
+            if (logsFilePath != null) filePaths.add(logsFilePath);
+            if (responsesFilePath != null) filePaths.add(responsesFilePath);
+            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_worked, Snackbar.LENGTH_SHORT).show();
+            sendEmailWithUnsyncedRecords(filePaths);
+        } catch (IOException ioe) {
+            Log.e(TAG, "Unable to backup unsynced records " + ioe.toString());
+            Snackbar.make(findViewById(R.id.main_content), R.string.backup_unsynced_records_failed, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
     private void sendEmailWithUnsyncedRecords(ArrayList<String> filePaths) {
         ArrayList<Uri> uris = new ArrayList<Uri>();
         for (String file : filePaths) {
@@ -289,7 +317,6 @@ public class MainActivity extends AbstractLocationBaseActivity implements
         Log.i(TAG,"File created at "+file.getAbsolutePath());
         return file;
     }
-    */
 
     @Override
     public void onResume(){

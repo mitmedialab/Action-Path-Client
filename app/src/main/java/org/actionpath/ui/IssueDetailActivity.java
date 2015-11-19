@@ -107,9 +107,13 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
             @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
         };
         // parse the intent args
-        Bundle bundle = getIntent().getExtras();
+        setInfoFromBundle(getIntent().getExtras());
+    }
+
+    private void setInfoFromBundle(Bundle bundle){
         // TODO: handle case where issueID is unknown or badly formed
         issueId = bundle.getInt(PARAM_ISSUE_ID);
+        Log.i(TAG, "Bundle says issue " + issueId);
         fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
         fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
         if(fromGeofenceNotification){
@@ -124,7 +128,8 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
      * @param intent
      */
     public void onNewIntent(Intent intent){
-        Log.d(TAG,"issue detail onNewIntent: " + intent);
+        Log.d(TAG,"issue detail onNewIntent, probably from notification: ");
+        setInfoFromBundle(intent.getExtras());
     }
 
     @Override
@@ -276,7 +281,6 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         //followToolbarMenuItem.setTitle(stringId);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         /*
@@ -308,7 +312,6 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         googleMap.addMarker(new MarkerOptions()
                 .position(issueLatLng)
                 .title(issue.getSummary()));
-
     }
 
     private void showTakeActionFragment(){

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.actionpath.R;
@@ -27,6 +28,7 @@ public class StatsFragment extends Fragment {
 
     private PropertiesDataSource dataSource;
     private TextView toSyncText;
+    private DataSyncListener listener;
 
     /**
      * Use this factory method to create a new instance of
@@ -72,6 +74,14 @@ public class StatsFragment extends Fragment {
         installIdView.setText(installIdText);
         // and to sync info
         toSyncText= (TextView) view.findViewById(R.id.stats_debug_info);
+        Button syncNowButton = (Button) view.findViewById(R.id.stats_sync_now);
+        syncNowButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view) { listener.onDataSyncUpload(); }
+        });
+        Button emailLogsButton = (Button) view.findViewById(R.id.stats_email_logs);
+        emailLogsButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view) { listener.onDataSyncUploadEmail(); }
+        });
         return view;
     }
 
@@ -83,6 +93,17 @@ public class StatsFragment extends Fragment {
         String syncBaseString = getResources().getString(R.string.stats_debug_info);
         String syncFormattedStr = String.format(syncBaseString, logsToUpload, responsesToUpload);
         toSyncText.setText(syncFormattedStr);
+    }
+
+    @Override
+    public void onAttach(Activity activity){
+        super.onAttach(activity);
+        listener = (DataSyncListener) activity;
+    }
+
+    public interface DataSyncListener{
+        void onDataSyncUpload();
+        void onDataSyncUploadEmail();
     }
 
 }

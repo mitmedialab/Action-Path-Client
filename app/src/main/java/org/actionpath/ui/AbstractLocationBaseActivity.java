@@ -33,7 +33,7 @@ public abstract class AbstractLocationBaseActivity extends AbstractBaseActivity 
 
     private final String TAG = this.getClass().getName();
 
-    private GoogleApiClient googleApiClient;
+    protected GoogleApiClient googleApiClient;
     private Location lastLocation;
     private boolean hasLocation = false;
 
