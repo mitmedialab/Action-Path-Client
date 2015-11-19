@@ -38,11 +38,6 @@
             android:checked="false"
             android:icon="@drawable/ic_action_location_searching"
             android:title="@string/nav_pick_place"/> -->
-        <!--<item
-            android:id="@+id/nav_save_debug_info"
-            android:checked="false"
-            android:icon="@drawable/ic_launcher"
-            android:title="@string/nav_save_debug_info"/>-->
         <item
             android:id="@+id/nav_stats"
             android:checked="false"
