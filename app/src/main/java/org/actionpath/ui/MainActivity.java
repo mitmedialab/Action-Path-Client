@@ -567,10 +567,10 @@ public class MainActivity extends AbstractLocationBaseActivity implements
         Log.v(TAG, "Returning update intent for IssueDetailActivity.class for issue: " + summary);
 
         Intent updateIntent = new Intent(contextWrapper, IssueDetailActivity.class)
-                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId);
-        updateIntent.putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, fromUpdate);
-        updateIntent.putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, fromGeofence);
-        updateIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                .putExtra(IssueDetailActivity.PARAM_ISSUE_ID, issueId)
+                .putExtra(IssueDetailActivity.PARAM_FROM_UPDATE_NOTIFICATION, fromUpdate)
+                .putExtra(IssueDetailActivity.PARAM_FROM_GEOFENCE_NOTIFICATION, fromGeofence)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(contextWrapper, 0, updateIntent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
