@@ -44,14 +44,22 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
 
     public String TAG = this.getClass().getName();
 
-    private Menu toolbarMenu;
-    private CollapsingToolbarLayout collapsingToolbar;
-    private Issue issue;
     private ImageLoader imageLoader;
     private boolean fromGeofenceNotification;
     private boolean fromUpdateNotification;
 
     private View.OnClickListener onFollowClickListener;
+    private Menu toolbarMenu;
+    private CollapsingToolbarLayout collapsingToolbar;
+    private int issueId;
+    private Issue issue;
+    private TextView summary;
+    private TextView description;
+    private TextView status;
+    private ImageView issueImage;
+    private TextView location;
+    private Button walkThereButton;
+    private Button viewOnlineButton;
 
     private FloatingActionButton followFloatingButton;
 
@@ -60,21 +68,7 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
 
-        Bundle bundle = getIntent().getExtras();
-        // TODO: handle case where issueID is unknown or badly formed
-        int issueID = bundle.getInt(PARAM_ISSUE_ID);
-        fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
-        fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
-        if(fromGeofenceNotification){
-            logMsg(issueID, LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
-        } else if (fromUpdateNotification) {
-            logMsg(issueID,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
-        }
-        Log.i(TAG, "Showing details for issue " + issueID);
-        issue = IssuesDataSource.getInstance(this).getIssue(issueID);
-        Log.v(TAG,"  at ("+issue.getLatitude()+","+issue.getLongitude()+")");
-        Log.v(TAG, "  geofenced = " + issue.isGeofenceCreated()+" (radius="+issue.getRadius()+")");
-
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -89,17 +83,61 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
                 onBackPressed();
             }
         });
-
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(issue.getSummary());
-
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(this);
+        summary = (TextView) findViewById(R.id.issue_detail_summary);
+        description = (TextView) findViewById(R.id.issue_detail_description);
+        status = (TextView) findViewById(R.id.issue_detail_status);
+        location = (TextView) findViewById(R.id.issue_detail_location);
+        walkThereButton = (Button) findViewById(R.id.issue_detail_walk_there_button);
+        viewOnlineButton = (Button) findViewById(R.id.issue_detail_view_online);
+        followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
+        followFloatingButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
+        });
+        Button takeActionButton = (Button) findViewById(R.id.issue_detail_take_action_button);
+        takeActionButton.setOnClickListener(new View.OnClickListener(){
+            @Override public void onClick(View view) { showTakeActionFragment(); }
+        });
+        if(imageLoader==null || !imageLoader.isInited()){
+            imageLoader = ImageLoader.getInstance();
+        }
+        issueImage = (ImageView) findViewById(R.id.issue_detail_backdrop);
+        onFollowClickListener = new View.OnClickListener() {
+            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
+        };
+        // parse the intent args
+        Bundle bundle = getIntent().getExtras();
+        // TODO: handle case where issueID is unknown or badly formed
+        issueId = bundle.getInt(PARAM_ISSUE_ID);
+        fromGeofenceNotification = bundle.getBoolean(PARAM_FROM_GEOFENCE_NOTIFICATION);
+        fromUpdateNotification = bundle.getBoolean(PARAM_FROM_UPDATE_NOTIFICATION);
+        if(fromGeofenceNotification){
+            logMsg(issueId, LogMsg.ACTION_CLICKED_ON_SURVEY_NOTIFICATION);
+        } else if (fromUpdateNotification) {
+            logMsg(issueId,LogMsg.ACTION_CLICKED_ON_UPDATE_NOTIFICATION);
+        }
+    }
 
-        TextView summary = (TextView) findViewById(R.id.issue_detail_summary);
+    /**
+     * http://developer.android.com/reference/android/app/Activity.html#onNewIntent(android.content.Intent)
+     * @param intent
+     */
+    public void onNewIntent(Intent intent){
+        Log.d(TAG,"issue detail onNewIntent: " + intent);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.i(TAG, "Showing details for issue " + issueId);
+        issue = IssuesDataSource.getInstance(this).getIssue(issueId);
+        Log.v(TAG, "  at (" + issue.getLatitude() + "," + issue.getLongitude() + ")");
+        Log.v(TAG, "  geofenced = " + issue.isGeofenceCreated() + " (radius=" + issue.getRadius() + ")");
+        // populate the UI
+        updateFollowedButtons(issue.isFollowed());
+        collapsingToolbar.setTitle(issue.getSummary());
         summary.setText(issue.getSummary());
-
-        TextView description = (TextView) findViewById(R.id.issue_detail_description);
         if (!issue.getDescription().equals("")) {
             description.setText(issue.getDescription());
         } else {
@@ -107,13 +145,8 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
             findViewById(R.id.issue_detail_description_header).setVisibility(View.GONE);
             description.setVisibility(View.GONE);
         }
-
-        TextView status = (TextView) findViewById(R.id.issue_detail_status);
         status.setText(issue.getStatus());
-        TextView location = (TextView) findViewById(R.id.issue_detail_location);
         location.setText(issue.getAddress());
-
-        Button walkThereButton = (Button) findViewById(R.id.issue_detail_walk_there_button);
         walkThereButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,8 +156,6 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
                 startActivity(mapIntent);
             }
         });
-
-        Button viewOnlineButton = (Button) findViewById(R.id.issue_detail_view_online);
         viewOnlineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,17 +171,6 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         } else {
             viewOnlineButton.setVisibility(View.VISIBLE);
         }
-
-        followFloatingButton = (FloatingActionButton) findViewById(R.id.issue_detail_favorite_button);
-        followFloatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View view) { changeFollowedAndUpdateUI(view); }
-        });
-
-        Button takeActionButton = (Button) findViewById(R.id.issue_detail_take_action_button);
-        takeActionButton.setOnClickListener(new View.OnClickListener(){
-            @Override public void onClick(View view) { showTakeActionFragment(); }
-        });
-
         // create and add the map
         LatLng issueLatLng = new LatLng(issue.getLatitude(), issue.getLongitude());
         GoogleMapOptions options = new GoogleMapOptions();
@@ -161,7 +181,6 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
         fragmentTransaction.replace(R.id.issue_detail_map_wrapper, mapFragment);
         fragmentTransaction.commit();
         mapFragment.getMapAsync(this);
-
         // show the issue's image, failing that the latest image from someone else's responses
         String headerImageUrl = null;
         if(issue.hasImageUrl()){
@@ -174,25 +193,11 @@ public class IssueDetailActivity extends AbstractLocationBaseActivity implements
             }
         }
         if(headerImageUrl!=null){
-            if(imageLoader==null || !imageLoader.isInited()){
-                imageLoader = ImageLoader.getInstance();
-            }
-            ImageView issueImage = (ImageView) findViewById(R.id.issue_detail_backdrop);
             imageLoader.displayImage(headerImageUrl, issueImage);
+            issueImage.setVisibility(View.VISIBLE);
+        } else {
+            issueImage.setVisibility(View.GONE);
         }
-
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        updateFollowedButtons(issue.isFollowed());
-    }
-
-    @Override
-    public void onResume(){
-        super.onResume();
-        issue = IssuesDataSource.getInstance(this).getIssue(issue.getId());
         // update the count of your responses
         Log.v(TAG,"Issue has "+issue.getResponseCount()+" responses");
         Log.v(TAG, "Updating response count feedack to " + issue.getResponseCount());
